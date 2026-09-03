@@ -49,6 +49,9 @@ V = {
     '90': 'raw/VID-20260825-WA0090.mp4',
     '91': 'raw/VID-20260825-WA0091.mp4',
     '92': 'raw/VID-20260825-WA0092(1).mp4',
+    # novos clipes de coffee, ja com a marca d'agua removida (delogo)
+    '338': 'raw/VID-20260903-WA0338.mp4',
+    '339': 'raw/VID-20260903-WA0339.mp4',
 }
 P = {k: f'raw/IMG-20260825-WA0{k}.jpg'
      for k in ('048', '049', '050', '052', '055', '103', '104', '105', '106', '107')}
@@ -68,8 +71,12 @@ SHOTS = [
     dict(src='V:36', tin=2.45, b=3, z=1.06, note='o rapaz entrando no espaco do evento'),
     dict(src='V:91', tin=2.10, b=3, z=1.00, note='coffee: agua sendo servida (detalhe com movimento)'),
 
-    # ===== BUILD (4-12s): coffee, networking, a sala enchendo =================
+    # ===== BUILD (4-14s): coffee ampliado (2 clipes novos) + networking =======
+    # V:338 e V:339 sao os clipes novos, com a marca d'agua removida. Dao uma
+    # visao mais ampla do coffee: a mesa montada, as bebidas e as pessoas.
+    dict(src='V:338', tin=0.10, b=3, z=1.02, note='COFFEE (novo, sem marca): mesa ampla - garrafa, doces, arranjo floral'),
     dict(src='P:104', tin=0.0, b=2, z=1.06, zto=1.16, note='foto: mesa do coffee (push-in lento)'),
+    dict(src='V:339', tin=0.05, b=1, z=1.03, note='COFFEE (novo, sem marca): bebidas e pessoas ao fundo (networking)'),
     dict(src='V:36', tin=4.75, b=2, z=1.08, note='participantes conversando junto as cadeiras (networking)'),
     dict(src='V:86', tin=1.00, b=2, z=1.06, note='plano alto: a sala se enchendo (antecipa o drop)'),
     dict(src='V:84', tin=2.55, b=2, z=1.00, note='PLANO ALTO AMPLO: sala lotada'),

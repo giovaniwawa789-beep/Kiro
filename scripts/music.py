@@ -29,7 +29,7 @@ SR = 48000
 BPM = 120.0
 BEAT = 60.0 / BPM
 BAR = BEAT * 4
-NBARS = 19
+NBARS = 20
 TAIL = 2.5
 DUR = NBARS * BAR + TAIL
 N = int(DUR * SR)
@@ -214,18 +214,18 @@ def setb(rng_, layers):
         ARR[b] |= set(layers)
 
 
-# v4: 19 compassos (38s), alinhado ao novo corte. O drop bate no compasso 6
-# (12s), exatamente na revelacao da logo no telao (plano HERO).
+# v5: 20 compassos (40s). +1 compasso no build para acomodar os 2 clipes novos
+# de coffee. O drop bate no compasso 7 (14s), na revelacao da logo (plano HERO).
 setb(range(0, 2),   'pa')          #  0-4s   INTRO (abertura + coffee)
-setb(range(2, 6),   'paHb')        #  4-12s  BUILD (coffee, sala enchendo)
-setb(range(6, 12),  'pakchbolr')   # 12-24s  DROP 1 (bate na logo)
-setb(range(12, 15), 'pakchbl')     # 24-30s  ATO 2
-setb(range(13, 15), 'cor')
-setb(range(15, 17), 'ps')          # 30-34s  BREAKDOWN (musica abre, mensagem)
-setb(range(17, 19), 'ps')          # 34-38s  CARTAO FINAL (resolve)
+setb(range(2, 7),   'paHb')        #  4-14s  BUILD (coffee ampliado, sala enchendo)
+setb(range(7, 13),  'pakchbolr')   # 14-26s  DROP 1 (bate na logo)
+setb(range(13, 16), 'pakchbl')     # 26-32s  ATO 2
+setb(range(14, 16), 'cor')
+setb(range(16, 18), 'ps')          # 32-36s  BREAKDOWN (musica abre, mensagem)
+setb(range(18, 20), 'ps')          # 36-40s  CARTAO FINAL (resolve)
 
-SECTIONS = [('intro', 0, 2), ('build', 2, 6), ('drop1', 6, 12), ('ato2', 12, 15),
-            ('breakdown', 15, 17), ('endcard', 17, 19)]
+SECTIONS = [('intro', 0, 2), ('build', 2, 7), ('drop1', 7, 13), ('ato2', 13, 16),
+            ('breakdown', 16, 18), ('endcard', 18, 20)]
 
 # ----------------------------------------------------------------------- render
 drums = np.zeros(N)     # vai para o reverb curto
@@ -308,12 +308,12 @@ for b in range(NBARS):
         beats.append(round(t0 + s * BEAT, 4))
 
 # viradas
-# viradas: riser + impacto no drop (compasso 6 = 12s, na revelacao da logo)
-add(drums, riser(BAR * 1.8, vel=0.9), 6 * BAR - BAR * 1.8)
-add(drums, impact(0.95), 6 * BAR)
-add(drums, riser(BAR * 0.8, vel=0.45)[::-1], 15 * BAR)   # downlifter no breakdown
-add(drums, impact(0.6), 15 * BAR)                        # marca a entrada da mensagem
-add(tonal, strings(CH[0]['str'], BAR * 2.2, vel=0.34, fc=1900), 17 * BAR)  # cartao final
+# viradas: riser + impacto no drop (compasso 7 = 14s, na revelacao da logo)
+add(drums, riser(BAR * 1.8, vel=0.9), 7 * BAR - BAR * 1.8)
+add(drums, impact(0.95), 7 * BAR)
+add(drums, riser(BAR * 0.8, vel=0.45)[::-1], 16 * BAR)   # downlifter no breakdown
+add(drums, impact(0.6), 16 * BAR)                        # marca a entrada da mensagem
+add(tonal, strings(CH[0]['str'], BAR * 2.2, vel=0.34, fc=1900), 18 * BAR)  # cartao final
 
 # --------------------------------------------------------------- sidechain real
 duck = np.ones(N)

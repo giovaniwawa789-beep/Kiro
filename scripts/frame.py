@@ -26,6 +26,9 @@ GRADE = {
     '90': dict(rr=1.01, gg=1.01, bb=1.00, blk=4,  whi=242, sat=1.08, gam=1.00),
     '91': dict(rr=0.98, gg=1.00, bb=1.24, blk=1,  whi=244, sat=1.06, gam=1.00),
     '92': dict(rr=1.01, gg=1.01, bb=0.99, blk=2,  whi=241, sat=1.08, gam=1.00),
+    # novos clipes de coffee (marca d'agua removida). Dominante amarelo-verde.
+    '338': dict(rr=1.00, gg=1.00, bb=1.30, blk=14, whi=214, sat=1.05, gam=1.00),
+    '339': dict(rr=1.00, gg=1.00, bb=1.25, blk=22, whi=222, sat=1.05, gam=1.00),
     # --- fotos: coffee (dominante amarelo-verde forte) -------------------
     'I103': dict(rr=0.97, gg=0.99, bb=1.36, blk=1, whi=246, sat=1.04, gam=1.02),
     'I104': dict(rr=0.97, gg=1.00, bb=1.31, blk=1, whi=246, sat=1.04, gam=1.02),
@@ -45,7 +48,10 @@ def grade_key(path):
     name = path.split('/')[-1]
     if name.startswith('IMG'):
         return 'I' + name.split('WA0')[1][:3]
-    return name.split('WA00')[1][:2]
+    tok = name.split('WA')[1].split('.')[0].split('(')[0]  # '0036' ou '0338'
+    if tok in ('0338', '0339'):        # novos clipes de coffee (WA03xx)
+        return tok[1:]                  # -> '338' / '339'
+    return tok[2:4]                     # '0036' -> '36'
 
 
 def grade_filter(path):
