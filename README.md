@@ -20,7 +20,18 @@ Os arquivos estão em [`videos/`](videos/). No GitHub, abra o arquivo e clique e
 
 Todas as versões têm os mesmos 1680 quadros, 56,0 s e o mesmo áudio.
 
-## O que mudou nesta versão (v2)
+## O que mudou nesta versão (v3)
+
+- **Abertura:** a primeira cena passou a ser a **iluminação** (as luminárias
+  esféricas + treliça, em câmera lenta), com o título *DE BUILDER A FOUNDER*
+  surgindo sobre ela. Logo depois vem o **rapaz entrando**. Ordem: iluminação →
+  rapaz entrando.
+- **Encerramento:** a última cena escurece e, desse preto, nasce a **assinatura
+  sem data** (*DE BUILDER A FOUNDER* + as quatro marcas), no lugar da arte de
+  divulgação que tinha "inscrições abertas / data". Fonte em
+  [`assets/keyart_sem_data.png`](assets/keyart_sem_data.png).
+
+## O que mudou na v2
 
 1. **Cartão final com a arte oficial.** A cena do painel escurece (~51 s) e a arte
    *DE BUILDER A FOUNDER* — com as quatro marcas (Liga, Behring Founders, NXTP,

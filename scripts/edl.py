@@ -58,9 +58,12 @@ STAB = {'36', '37', '78', '80', '84', '85', '86', '87', '91'}
 
 SHOTS = [
     # ===== ATO 1 / INTRO (0-6s): expectativa, planos longos, musica so pad ====
-    dict(src='V:36', tin=0.55, b=3, z=1.02, note='HOOK - chegada: participantes na porta de vidro'),
-    dict(src='V:85', tin=1.90, b=3, tsrc=1.20, z=1.04, note='tilt nas luminarias do galpao (respiro / camera lenta)'),
-    dict(src='V:36', tin=2.45, b=3, z=1.06, note='participante entrando no espaco do evento'),
+    # ABERTURA: a iluminacao (luminarias esfericas + treliça) em camera lenta,
+    # com o titulo DE BUILDER A FOUNDER surgindo sobre ela. Depois, o rapaz
+    # entrando. Ordem pedida pelo cliente: iluminacao -> rapaz entrando.
+    dict(src='V:85', tin=1.90, b=3, tsrc=1.20, z=1.04, note='ABERTURA - iluminacao/telao (camera lenta), titulo sobre a cena'),
+    dict(src='V:36', tin=2.45, b=3, z=1.06, note='o rapaz entrando no espaco do evento'),
+    dict(src='V:36', tin=0.55, b=3, z=1.02, note='chegada: participantes na porta de vidro'),
     dict(src='V:37', tin=0.60, b=3, z=1.00, note='coffee: arranjo floral e mesa posta (detalhe premium)'),
 
     # ===== ATO 1 / BUILD (6-12s): coffee, networking, hats entram ============
@@ -119,7 +122,7 @@ SHOTS = [
     # A arte tem fundo preto, entao ela nasce do preto do plano anterior:
     # a transicao le como continuacao do escurecimento, nao como colagem.
     dict(src='A:endcard', tin=0.0, b=8, z=1.00, zto=1.035, fadein=0.9,
-         note='arte DE BUILDER A FOUNDER com as marcas'),
+         note='assinatura DE BUILDER A FOUNDER (sem data) com as 4 marcas'),
 ]
 
 

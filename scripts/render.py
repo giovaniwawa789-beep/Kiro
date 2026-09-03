@@ -205,8 +205,10 @@ def finalize(total, bd0, bd1):
     # So titulo de abertura e mensagem do breakdown entram como overlay. O
     # cartao final agora e um plano proprio da EDL (com as marcas), entao nao
     # ha mais overlay de end card aqui.
+    # titulo surge logo sobre a abertura (a iluminacao/telao), reforcando o
+    # "telao com a logo"; mensagem no respiro.
     blocks = [
-        ('title.png', 1.60, 5.60),
+        ('title.png', 0.60, 5.20),
         ('msg.png', bd0 + 0.30, bd1 - 0.20),
     ]
     ins = ['-i', f'{BUILD}/video_cut.mp4', '-i', f'{BUILD}/audio.wav']
@@ -244,7 +246,7 @@ def finalize_45(total, bd0, bd1, yoff=140):
     foi escolhido para preservar as logos projetadas no alto do quadro.
     """
     T = f'{BUILD}/titles'
-    blocks = [('title.png', 1.60, 5.60), ('msg.png', bd0 + 0.30, bd1 - 0.20)]
+    blocks = [('title.png', 0.60, 5.20), ('msg.png', bd0 + 0.30, bd1 - 0.20)]
     ins = ['-i', f'{BUILD}/video_cut.mp4', '-i', f'{BUILD}/audio.wav']
     for f, _, _ in blocks:
         ins += ['-framerate', str(FPS), '-loop', '1', '-t', f'{total:.3f}',
