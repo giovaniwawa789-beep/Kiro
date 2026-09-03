@@ -4,7 +4,7 @@ Aftermovie do evento **DE BUILDER A FOUNDER** — Liga Empreendedora da Unicamp,
 Fundação Behring, NXTP, Endeavor e Alexandre Philippi (Sharpi), 25.08.
 Montado a partir de 14 vídeos e 14 fotos do bruto.
 
-**56,0 s · 44 planos · 120 BPM com todos os cortes na batida.**
+**38,0 s · 26 planos · 120 BPM com todos os cortes na batida.**
 
 ## Baixar o vídeo
 
@@ -13,14 +13,31 @@ Os arquivos estão em [`videos/`](videos/). No GitHub, abra o arquivo e clique e
 
 | Arquivo | Tamanho | Resolução | Uso |
 |---|---|---|---|
-| [`...9x16_720p.mp4`](videos/aftermovie_de_builder_a_founder_9x16_720p.mp4) | 10,8 MB | 720×1280 | **Reels / Stories — comece por este** |
-| [`...4x5_720p.mp4`](videos/aftermovie_de_builder_a_founder_4x5_720p.mp4) | 8,9 MB | 720×900 | Feed do Instagram e LinkedIn |
-| [`...9x16_1080p.mp4`](videos/aftermovie_de_builder_a_founder_9x16_1080p.mp4) | 23,6 MB | 1080×1920 | Resolução cheia |
-| [`...9x16_480p.mp4`](videos/aftermovie_de_builder_a_founder_9x16_480p.mp4) | 5,0 MB | 480×854 | Se a conexão estiver ruim |
+| [`...9x16_720p.mp4`](videos/aftermovie_de_builder_a_founder_9x16_720p.mp4) | 6,7 MB | 720×1280 | **Reels / Stories — comece por este** |
+| [`...4x5_720p.mp4`](videos/aftermovie_de_builder_a_founder_4x5_720p.mp4) | 5,5 MB | 720×900 | Feed do Instagram e LinkedIn |
+| [`...9x16_1080p.mp4`](videos/aftermovie_de_builder_a_founder_9x16_1080p.mp4) | 14,7 MB | 1080×1920 | Resolução cheia |
+| [`...9x16_480p.mp4`](videos/aftermovie_de_builder_a_founder_9x16_480p.mp4) | 3,1 MB | 480×854 | Conexão ruim |
 
-Todas as versões têm os mesmos 1680 quadros, 56,0 s e o mesmo áudio.
+Todas as versões têm os mesmos 1140 quadros, 38,0 s e o mesmo áudio.
 
-## O que mudou nesta versão (v3)
+## O que mudou nesta versão (v4)
+
+Base no seu corte **"clideo"** — reconstruído em alta resolução (o arquivo clideo
+vinha em 720p **horizontal com barras pretas** (conteúdo real ~405 px de largura),
+**marca d'água "clideo.com"** e recomprimido). Em vez de reaproveitar aquele arquivo
+degradado, mapeei quadro a quadro o que você manteve e **reproduzi o mesmo corte a
+partir do master 1080×1920 original** — sem marca d'água e em resolução cheia.
+
+- **Duração:** 38,0 s (era 56 s). Removidas as partes repetidas que você cortou:
+  a chegada/coffee do início e toda a montagem rápida do final.
+- **Música re-sincronizada** para a nova duração (19 compassos, 120 BPM). Mesmo som
+  da v2/v3; o **drop bate aos 12 s exatamente na revelação da logo no telão**.
+- **Abertura:** iluminação/telão (com o título) → rapaz entrando (ordem mantida).
+- **Encerramento:** a cena escurece e a **assinatura sem data** (as 4 marcas) nasce
+  do preto.
+- Todos os cortes seguem na batida (desvio 0 ms).
+
+## O que mudou na v3
 
 - **Abertura:** a primeira cena passou a ser a **iluminação** (as luminárias
   esféricas + treliça, em câmera lenta), com o título *DE BUILDER A FOUNDER*

@@ -57,70 +57,51 @@ P = {k: f'raw/IMG-20260825-WA0{k}.jpg'
 STAB = {'36', '37', '78', '80', '84', '85', '86', '87', '91'}
 
 SHOTS = [
-    # ===== ATO 1 / INTRO (0-6s): expectativa, planos longos, musica so pad ====
-    # ABERTURA: a iluminacao (luminarias esfericas + treliça) em camera lenta,
-    # com o titulo DE BUILDER A FOUNDER surgindo sobre ela. Depois, o rapaz
-    # entrando. Ordem pedida pelo cliente: iluminacao -> rapaz entrando.
+    # ===== v4: estrutura baseada no corte "clideo" do cliente =================
+    # O cliente recortou o v3 removendo as partes repetidas: a chegada/coffee do
+    # inicio (que repetia) e TODA a montagem rapida do final (que reusava clipes).
+    # Reproduzo esse corte no master em alta resolucao (sem marca d'agua) e
+    # re-sincronizo a musica a esta nova duracao (38s). Ver EDICAO.md.
+    #
+    # ATO 1 / INTRO (0-4s): abertura -> coffee. Ordem: iluminacao, depois rapaz.
     dict(src='V:85', tin=1.90, b=3, tsrc=1.20, z=1.04, note='ABERTURA - iluminacao/telao (camera lenta), titulo sobre a cena'),
     dict(src='V:36', tin=2.45, b=3, z=1.06, note='o rapaz entrando no espaco do evento'),
-    dict(src='V:36', tin=0.55, b=3, z=1.02, note='chegada: participantes na porta de vidro'),
-    dict(src='V:37', tin=0.60, b=3, z=1.00, note='coffee: arranjo floral e mesa posta (detalhe premium)'),
-
-    # ===== ATO 1 / BUILD (6-12s): coffee, networking, hats entram ============
-    dict(src='V:37', tin=1.75, b=3, z=1.10, note='coffee: mao arrumando o prato (gesto humano)'),
     dict(src='V:91', tin=2.10, b=3, z=1.00, note='coffee: agua sendo servida (detalhe com movimento)'),
+
+    # ===== BUILD (4-12s): coffee, networking, a sala enchendo =================
     dict(src='P:104', tin=0.0, b=2, z=1.06, zto=1.16, note='foto: mesa do coffee (push-in lento)'),
     dict(src='V:36', tin=4.75, b=2, z=1.08, note='participantes conversando junto as cadeiras (networking)'),
     dict(src='V:86', tin=1.00, b=2, z=1.06, note='plano alto: a sala se enchendo (antecipa o drop)'),
-
-    # ===== DROP 1 (12-24s): o evento acontece, energia sobe ===================
-    dict(src='V:84', tin=2.55, b=2, z=1.00, note='PLANO ALTO AMPLO: sala lotada (entra no impacto do drop)'),
+    dict(src='V:84', tin=2.55, b=2, z=1.00, note='PLANO ALTO AMPLO: sala lotada'),
     dict(src='V:78', tin=0.90, b=2, z=1.04, note='plateia de tras: a sala cheia'),
     dict(src='P:049', tin=0.0, b=2, z=1.04, zto=1.14, note='foto: plateia lotada'),
     dict(src='V:90', tin=0.25, b=3, z=1.00, note='POV entre a plateia: o painel ao fundo'),
-    dict(src='V:79', tin=0.60, b=3, z=1.00, note='HERO: painel com as logos Liga/NXTP/Endeavor projetadas'),
+
+    # ===== DROP 1 (12-24s): energia sobe; o drop bate na revelacao da logo ====
+    dict(src='V:79', tin=0.60, b=4, z=1.00, note='HERO/telao: painel com as logos Liga/NXTP/Endeavor (drop bate aqui)'),
     dict(src='V:80', tin=0.25, b=2, z=1.05, note='painel em angulo alto (plano mais nitido do material)'),
     dict(src='P:050', tin=0.0, b=2, z=1.05, zto=1.15, note='foto: plateia atenta (camiseta Behring Academy)'),
     dict(src='V:86', tin=4.55, b=2, z=1.08, note='plano alto: plateia e palco'),
     dict(src='V:88', tin=0.95, b=3, z=1.06, note='convidada falando ao microfone'),
     dict(src='V:92', tin=3.95, b=3, z=1.00, note='wide: o painel na fachada de vidro'),
 
-    # ===== ATO 2 (24-34s): conteudo, respiro maior, reacoes ==================
+    # ===== ATO 2 (24-30s): conteudo, reacoes ==================================
     dict(src='V:79', tin=3.40, b=3, z=1.12, note='painel: gesto com o microfone'),
     dict(src='V:89', tin=2.70, b=3, z=1.04, note='painel: troca entre as convidadas'),
     dict(src='P:052', tin=0.0, b=2, z=1.06, zto=1.16, note='foto: plateia e arquibancada'),
-    dict(src='V:87', tin=3.00, b=3, z=1.30, pany=-0.55, note='wide das quatro convidadas em contraluz (reenquadrado para cima)'),
+    dict(src='V:87', tin=3.00, b=3, z=1.30, pany=-0.55, note='wide das quatro convidadas em contraluz (reenquadrado)'),
     dict(src='V:89', tin=4.30, b=3, z=1.16, note='reacao: sorrisos no painel'),
     dict(src='P:055', tin=0.0, b=2, z=1.04, zto=1.14, note='foto: arquibancada lotada'),
+
+    # ===== BREAKDOWN (30-34s): musica abre, entra a mensagem em texto =========
     dict(src='V:88', tin=5.60, b=4, z=1.08, note='risada / reacao das convidadas'),
-
-    # ===== BREAKDOWN (34-38s): musica abre, entra a mensagem em texto ========
     dict(src='V:79', tin=6.30, b=4, z=1.04, zto=1.10, note='painel estavel - musica reduz, entra o texto'),
-    dict(src='V:90', tin=2.50, b=4, tsrc=1.80, z=1.02, zto=1.10, note='painel entre a plateia (camera lenta suave)'),
+    dict(src='V:90', tin=2.50, b=4, tsrc=1.80, z=1.02, zto=1.10, fadeout=1.4,
+         note='painel (camera lenta) - a cena escurece aqui'),
 
-    # ===== DROP FINAL (38-48s): melhores momentos, cortes de 1 batida ========
-    dict(src='V:36', tin=1.10, b=1, z=1.16, note='chegada (flash) - entra no impacto do drop final'),
-    dict(src='V:91', tin=2.60, b=1, z=1.12, note='coffee: agua'),
-    dict(src='P:107', tin=0.0, b=1, z=1.10, note='foto: coffee, garrafoes'),
-    dict(src='V:92', tin=8.20, b=2, z=1.06, note='pan: plateia e painel'),
-    dict(src='V:80', tin=0.70, b=1, z=1.12, note='painel (flash)'),
-    dict(src='V:84', tin=3.10, b=2, z=1.08, note='plano alto amplo'),
-    dict(src='P:106', tin=0.0, b=1, z=1.08, note='foto: coffee com participantes'),
-    dict(src='V:89', tin=3.30, b=2, z=1.10, note='painel: energia'),
-    dict(src='V:37', tin=5.00, b=1, z=1.16, note='coffee: detalhe da mesa'),
-    dict(src='V:78', tin=3.60, b=2, z=1.06, note='plateia de tras'),
-    dict(src='P:048', tin=0.0, b=1, z=1.06, note='foto: painel com a plateia'),
-    dict(src='V:88', tin=6.40, b=2, z=1.14, note='risada (melhor momento humano do material)'),
-    dict(src='V:86', tin=5.05, b=3, z=1.00, note='plano alto: a comunidade reunida'),
-
-    # ===== OUTRO (48-52s): encerramento ====================================
-    dict(src='V:84', tin=2.60, b=4, tsrc=1.50, z=1.00, zto=1.06, note='ultimo plano amplo: a sala cheia (slow)'),
-    dict(src='V:79', tin=0.80, b=4, tsrc=1.60, z=1.00, zto=1.05, fadeout=1.3,
-         note='fechamento nas marcas projetadas - a cena escurece aqui'),
-
-    # ===== CARTAO FINAL (52-56s) ==========================================
-    # A arte tem fundo preto, entao ela nasce do preto do plano anterior:
-    # a transicao le como continuacao do escurecimento, nao como colagem.
+    # ===== CARTAO FINAL (34-38s) ==============================================
+    # A arte tem fundo preto: nasce do preto do plano anterior, como continuacao
+    # do escurecimento. Assinatura DE BUILDER A FOUNDER sem data, com as 4 marcas.
     dict(src='A:endcard', tin=0.0, b=8, z=1.00, zto=1.035, fadein=0.9,
          note='assinatura DE BUILDER A FOUNDER (sem data) com as 4 marcas'),
 ]
