@@ -102,8 +102,10 @@ SHOTS = [
     # ===== CARTAO FINAL (34-38s) ==============================================
     # A arte tem fundo preto: nasce do preto do plano anterior, como continuacao
     # do escurecimento. Assinatura DE BUILDER A FOUNDER sem data, com as 4 marcas.
-    dict(src='A:endcard', tin=0.0, b=8, z=1.00, zto=1.035, fadein=0.9,
-         note='assinatura DE BUILDER A FOUNDER (sem data) com as 4 marcas'),
+    # cartao final ESTATICO: sem zoom drift. O zoompan, mesmo com drift minimo,
+    # gera tremor sub-pixel numa arte com texto/logos finos. Aqui fica travado.
+    dict(src='A:endcard', tin=0.0, b=8, z=1.00, fadein=0.9,
+         note='assinatura DE BUILDER A FOUNDER (sem data) - estatico, sem tremor'),
 ]
 
 
