@@ -1,0 +1,70 @@
+  #  t_ini  t_fim   dur  bt origem           in   vel        zoom  est  nota
+  1   0.00   1.50  1.50   3 WA0036         0.55  1.00        1.02  sim  HOOK - chegada: participantes na porta de vidro
+  2   1.50   3.00  1.50   3 WA0085         1.90  0.80        1.04  sim  tilt nas luminarias do galpao (respiro / camera lenta)
+  3   3.00   4.50  1.50   3 WA0036         2.45  1.00        1.06  sim  participante entrando no espaco do evento
+  4   4.50   6.00  1.50   3 WA0037         0.60  1.00        1.00  sim  coffee: arranjo floral e mesa posta (detalhe premium)
+  5   6.00   7.50  1.50   3 WA0037         1.75  1.00        1.10  sim  coffee: mao arrumando o prato (gesto humano)
+  6   7.50   9.00  1.50   3 WA0091         2.10  1.00        1.00  sim  coffee: agua sendo servida (detalhe com movimento)
+  7   9.00  10.00  1.00   2 FWA0104        0.00  1.00   1.06>1.16    -  foto: mesa do coffee (push-in lento)
+  8  10.00  11.00  1.00   2 WA0036         4.75  1.00        1.08  sim  participantes conversando junto as cadeiras (networking)
+  9  11.00  12.00  1.00   2 WA0086         1.00  1.00        1.06  sim  plano alto: a sala se enchendo (antecipa o drop)
+ 10  12.00  13.00  1.00   2 WA0084         2.55  1.00        1.00  sim  PLANO ALTO AMPLO: sala lotada (entra no impacto do drop)
+ 11  13.00  14.00  1.00   2 WA0078         0.90  1.00        1.04  sim  plateia de tras: a sala cheia
+ 12  14.00  15.00  1.00   2 FWA0049        0.00  1.00   1.04>1.14    -  foto: plateia lotada
+ 13  15.00  16.50  1.50   3 WA0090         0.25  1.00        1.00    -  POV entre a plateia: o painel ao fundo
+ 14  16.50  18.00  1.50   3 WA0079         0.60  1.00        1.00    -  HERO: painel com as logos Liga/NXTP/Endeavor projetadas
+ 15  18.00  19.00  1.00   2 WA0080         0.25  1.00        1.05  sim  painel em angulo alto (plano mais nitido do material)
+ 16  19.00  20.00  1.00   2 FWA0050        0.00  1.00   1.05>1.15    -  foto: plateia atenta (camiseta Behring Academy)
+ 17  20.00  21.00  1.00   2 WA0086         4.55  1.00        1.08  sim  plano alto: plateia e palco
+ 18  21.00  22.50  1.50   3 WA0088         0.95  1.00        1.06    -  convidada falando ao microfone
+ 19  22.50  24.00  1.50   3 WA0092         3.95  1.00        1.00    -  wide: o painel na fachada de vidro
+ 20  24.00  25.50  1.50   3 WA0079         3.40  1.00        1.12    -  painel: gesto com o microfone
+ 21  25.50  27.00  1.50   3 WA0089         2.70  1.00        1.04    -  painel: troca entre as convidadas
+ 22  27.00  28.00  1.00   2 FWA0052        0.00  1.00   1.06>1.16    -  foto: plateia e arquibancada
+ 23  28.00  29.50  1.50   3 WA0087         3.00  1.00        1.30  sim  wide das quatro convidadas em contraluz (reenquadrado para cima)
+ 24  29.50  31.00  1.50   3 WA0089         4.30  1.00        1.16    -  reacao: sorrisos no painel
+ 25  31.00  32.00  1.00   2 FWA0055        0.00  1.00   1.04>1.14    -  foto: arquibancada lotada
+ 26  32.00  34.00  2.00   4 WA0088         5.60  1.00        1.08    -  risada / reacao das convidadas
+ 27  34.00  36.00  2.00   4 WA0079         6.30  1.00   1.04>1.10    -  painel estavel - musica reduz, entra o texto
+ 28  36.00  38.00  2.00   4 WA0090         2.50  0.90   1.02>1.10    -  painel entre a plateia (camera lenta suave)
+ 29  38.00  38.50  0.50   1 WA0036         1.10  1.00        1.16  sim  chegada (flash) - entra no impacto do drop final
+ 30  38.50  39.00  0.50   1 WA0091         2.60  1.00        1.12  sim  coffee: agua
+ 31  39.00  39.50  0.50   1 FWA0107        0.00  1.00        1.10    -  foto: coffee, garrafoes
+ 32  39.50  40.50  1.00   2 WA0092         8.20  1.00        1.06    -  pan: plateia e painel
+ 33  40.50  41.00  0.50   1 WA0080         0.70  1.00        1.12  sim  painel (flash)
+ 34  41.00  42.00  1.00   2 WA0084         3.10  1.00        1.08  sim  plano alto amplo
+ 35  42.00  42.50  0.50   1 FWA0106        0.00  1.00        1.08    -  foto: coffee com participantes
+ 36  42.50  43.50  1.00   2 WA0089         3.30  1.00        1.10    -  painel: energia
+ 37  43.50  44.00  0.50   1 WA0037         5.00  1.00        1.16  sim  coffee: detalhe da mesa
+ 38  44.00  45.00  1.00   2 WA0078         3.60  1.00        1.06  sim  plateia de tras
+ 39  45.00  45.50  0.50   1 FWA0048        0.00  1.00        1.06    -  foto: painel com a plateia
+ 40  45.50  46.50  1.00   2 WA0088         6.40  1.00        1.14    -  risada (melhor momento humano do material)
+ 41  46.50  48.00  1.50   3 WA0086         5.05  1.00        1.00  sim  plano alto: a comunidade reunida
+ 42  48.00  50.00  2.00   4 WA0084         2.60  0.75   1.00>1.06  sim  ultimo plano amplo: a sala cheia (slow)
+ 43  50.00  52.00  2.00   4 WA0079         0.80  0.80   1.00>1.05    -  fechamento nas marcas projetadas + end card
+
+TOTAL: 52.00s | 43 planos | media 1.21s por plano
+
+fontes distintas: 22  |  reuso maximo: 4x
+  4x  VID-20260825-WA0036(1).mp4
+  4x  VID-20260825-WA0079(1).mp4
+  3x  VID-20260825-WA0037(1).mp4
+  3x  VID-20260825-WA0086(1).mp4
+  3x  VID-20260825-WA0084(1).mp4
+  3x  VID-20260825-WA0088(1).mp4
+  3x  VID-20260825-WA0089.mp4
+  2x  VID-20260825-WA0091.mp4
+  2x  VID-20260825-WA0078(1).mp4
+  2x  VID-20260825-WA0090.mp4
+  2x  VID-20260825-WA0080(1).mp4
+  2x  VID-20260825-WA0092(1).mp4
+  1x  VID-20260825-WA0085.mp4
+  1x  IMG-20260825-WA0104.jpg
+  1x  IMG-20260825-WA0049.jpg
+  1x  IMG-20260825-WA0050.jpg
+  1x  IMG-20260825-WA0052.jpg
+  1x  VID-20260825-WA0087.mp4
+  1x  IMG-20260825-WA0055.jpg
+  1x  IMG-20260825-WA0107.jpg
+  1x  IMG-20260825-WA0106.jpg
+  1x  IMG-20260825-WA0048.jpg

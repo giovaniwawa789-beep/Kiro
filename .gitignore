@@ -1,0 +1,11 @@
+raw/
+build/
+tools/
+analysis/frames/
+analysis/idx/
+analysis/sheets/
+analysis/storyboard/
+analysis/audio/
+analysis/audio_boost/
+*.trf
+__pycache__/
