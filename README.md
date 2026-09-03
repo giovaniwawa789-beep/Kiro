@@ -13,14 +13,14 @@ Os arquivos estão em [`videos/`](videos/). No GitHub, abra o arquivo e clique e
 | [`aftermovie_9x16_720p.mp4`](videos/aftermovie_9x16_720p.mp4) | 10,6 MB | 720×1280 | **Reels / Stories — comece por este** |
 | [`aftermovie_4x5_720p.mp4`](videos/aftermovie_4x5_720p.mp4) | 8,7 MB | 720×900 | Feed do Instagram e LinkedIn |
 | [`aftermovie_9x16_480p.mp4`](videos/aftermovie_9x16_480p.mp4) | 3,7 MB | 480×854 | Se a conexão estiver ruim |
+| [`aftermovie_9x16_1080p.mp4`](videos/aftermovie_9x16_1080p.mp4) | 20,6 MB | 1080×1920 | Resolução cheia |
 
-Os masters em 1080p estão anexados na
-[Release v1](../../releases/latest), com link direto de download.
-
-> O bruto é 464×832 (compressão do WhatsApp), então **720p já é upscale**: as versões
-> acima são visualmente indistinguíveis do master de 1080p — a comparação a 100% está
-> em [`analysis/QC_COMPRESSAO.jpg`](analysis/QC_COMPRESSAO.jpg). Instagram e LinkedIn
+> O bruto é 464×832 (compressão do WhatsApp), então **720p já é upscale**: a versão de
+> 720p é visualmente indistinguível da de 1080p — a comparação a 100% está em
+> [`analysis/QC_COMPRESSAO.jpg`](analysis/QC_COMPRESSAO.jpg). Instagram e LinkedIn
 > recodificam tudo no upload, então enviar o arquivo maior não melhora o resultado.
+
+Todas as versões têm os mesmos 1560 quadros, 52,0 s e o mesmo áudio.
 
 ## Três pontos antes de aprovar
 
