@@ -1,325 +1,420 @@
 #!/usr/bin/env python3
-"""Trilha original para o aftermovie: melodic/organic house, 120 BPM, Lá menor.
-Feita do zero (sintese) para (a) nao ter risco de licenciamento e
-(b) me dar a grade de batidas exata para sincronizar os cortes.
+"""Trilha v2 do aftermovie "DE BUILDER A FOUNDER".
 
-Estrutura: intro -> build -> drop 1 -> ambiente -> ato 2 -> breakdown -> drop final -> outro
+Reescrita a partir da v1 (preservada em music_v1.py). O que mudou e por que:
+
+  - progressao Am - C - G - F (i-III-VII-VI), anthemica e com mais elevacao,
+    no lugar da Am-F-C-G da v1, que resolvia rapido demais e soava polida;
+  - acordes em PIANO ELETRICO por FM em vez de stack de serras: timbre com
+    corpo e mais "humano", que e o que faltava para a ideia de encontro;
+  - GANCHO melodico de 4 notas que repete e se desenvolve -- a v1 so tinha
+    arpejo, entao nao ficava nada na cabeca;
+  - SIDECHAIN de verdade (envelope de duck disparado pelo bumbo) no lugar do
+    truque de abrir buraco no baixo;
+  - percussao organica (shaker com swing, rim, tom) para dar levada humana;
+  - dois reverbs (room curto na bateria, hall longo em pads e lead), com
+    compressao de bus e saturacao suave na mixagem.
+
+120 BPM (mesma grade da v1, entao os 43 cortes continuam na batida), La menor,
+28 compassos = 56.0s -- 2 compassos a mais que a v1 para o cartao final.
 """
 import json
+import os
+import wave
+
 import numpy as np
-from scipy.signal import fftconvolve, butter, sosfilt
+from scipy.signal import butter, fftconvolve, sosfilt
 
 SR = 48000
 BPM = 120.0
-BEAT = 60.0 / BPM          # 0.5 s
-BAR = BEAT * 4             # 2.0 s
-NBARS = 26
-TAIL = 2.0
+BEAT = 60.0 / BPM
+BAR = BEAT * 4
+NBARS = 28
+TAIL = 2.5
 DUR = NBARS * BAR + TAIL
 N = int(DUR * SR)
+SWING = 0.012          # atraso dos 16avos impares, em segundos
 
-rng = np.random.default_rng(7)
-
-
-# ----------------------------------------------------------------- utilidades
-def t_of(nsamp):
-    return np.arange(nsamp) / SR
+rng = np.random.default_rng(11)
 
 
-def env_ad(n, a, d, curve=2.0):
-    """Envelope attack/decay exponencial."""
-    e = np.zeros(n)
-    na = max(1, int(a * SR))
-    e[:na] = np.linspace(0, 1, na) ** 0.6
-    nd = n - na
-    if nd > 0:
-        e[na:] = np.exp(-np.linspace(0, curve * 5, nd))
-    return e
-
-
-def env_adsr(n, a, d, s, r):
-    na, nd, nr = int(a * SR), int(d * SR), int(r * SR)
-    ns = max(0, n - na - nd - nr)
-    return np.concatenate([
-        np.linspace(0, 1, na) ** 0.7,
-        np.linspace(1, s, nd),
-        np.full(ns, s),
-        np.linspace(s, 0, nr) ** 1.5,
-    ])[:n]
+# ------------------------------------------------------------------ utilidades
+def tt(n):
+    return np.arange(n) / SR
 
 
 def lp(x, fc, order=4):
-    sos = butter(order, min(fc, SR / 2 * 0.98), 'low', fs=SR, output='sos')
-    return sosfilt(sos, x)
+    return sosfilt(butter(order, min(fc, SR * 0.49), 'low', fs=SR, output='sos'), x)
 
 
 def hp(x, fc, order=4):
-    sos = butter(order, max(fc, 10), 'high', fs=SR, output='sos')
-    return sosfilt(sos, x)
+    return sosfilt(butter(order, max(fc, 15), 'high', fs=SR, output='sos'), x)
+
+
+def bp(x, f1, f2, order=4):
+    return sosfilt(butter(order, [max(f1, 20), min(f2, SR * 0.49)], 'band',
+                          fs=SR, output='sos'), x)
 
 
 def add(buf, x, at):
     i = int(at * SR)
-    if i >= len(buf):
+    if i >= len(buf) or i < 0:
         return
     n = min(len(x), len(buf) - i)
     buf[i:i + n] += x[:n]
 
 
-def reverb_ir(dur=1.8, decay=5.5, pre=0.012):
+def ir_reverb(dur, decay, damp, pre=0.008):
     n = int(dur * SR)
-    ir = rng.normal(0, 1, n) * np.exp(-np.linspace(0, decay, n))
-    ir = lp(ir, 7000)
-    ir[:int(pre * SR)] *= np.linspace(0, 1, int(pre * SR))
-    return ir / np.abs(ir).max()
+    x = rng.normal(0, 1, n) * np.exp(-np.linspace(0, decay, n))
+    x = lp(x, damp)
+    k = int(pre * SR)
+    x[:k] *= np.linspace(0, 1, k)
+    return x / (np.abs(x).max() + 1e-9)
 
 
 # --------------------------------------------------------------- instrumentos
 def kick(vel=1.0):
-    n = int(0.42 * SR)
-    tt = t_of(n)
-    f = 52 + 118 * np.exp(-tt * 42)                 # pitch drop
-    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 7.2)
-    click = rng.normal(0, 1, n) * np.exp(-tt * 320) * 0.35
-    click = hp(click, 1200)
-    x = (body * 1.0 + click) * vel
-    return np.tanh(x * 1.5) * 0.9
+    """Tres camadas: sub com queda de tom, corpo e clique."""
+    n = int(0.5 * SR)
+    t = tt(n)
+    f = 44 + 135 * np.exp(-t * 38)
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 7.0)
+    body = np.sin(2 * np.pi * 92 * t) * np.exp(-t * 26) * 0.45
+    click = hp(rng.normal(0, 1, n), 1600) * np.exp(-t * 300) * 0.30
+    return np.tanh((sub + body + click) * 1.45) * 0.92 * vel
 
 
-def clap(vel=1.0):
-    n = int(0.30 * SR)
-    tt = t_of(n)
-    bursts = np.zeros(n)
-    for k, off in enumerate([0.0, 0.010, 0.020, 0.032]):
+def snap(vel=1.0):
+    """Clap/snare com corpo e cauda curta de sala."""
+    n = int(0.34 * SR)
+    t = tt(n)
+    layers = np.zeros(n)
+    for off, g in ((0.0, 0.75), (0.009, 0.7), (0.019, 0.65), (0.030, 1.0)):
         i = int(off * SR)
-        seg = rng.normal(0, 1, n - i) * np.exp(-t_of(n - i) * (70 if k < 3 else 16))
-        bursts[i:] += seg * (0.7 if k < 3 else 1.0)
-    x = hp(bursts, 900)
-    x = lp(x, 7500)
-    return x / (np.abs(x).max() + 1e-9) * 0.5 * vel
+        seg = rng.normal(0, 1, n - i) * np.exp(-tt(n - i) * (85 if g < 1 else 19))
+        layers[i:] += seg * g
+    x = bp(layers, 1100, 7200)
+    tone = np.sin(2 * np.pi * 195 * t) * np.exp(-t * 55) * 0.20
+    x = x / (np.abs(x).max() + 1e-9) + tone
+    return x * 0.46 * vel
 
 
-def hat(vel=1.0, open_=False):
-    d = 0.16 if open_ else 0.045
-    n = int(d * SR)
-    x = rng.normal(0, 1, n) * np.exp(-t_of(n) * (14 if open_ else 60))
-    x = hp(x, 7000)
-    return x / (np.abs(x).max() + 1e-9) * (0.17 if open_ else 0.125) * vel
+def shaker(vel=1.0, open_=False):
+    n = int((0.14 if open_ else 0.055) * SR)
+    x = bp(rng.normal(0, 1, n), 4200, 11000)
+    x *= np.exp(-tt(n) * (16 if open_ else 78))
+    return x / (np.abs(x).max() + 1e-9) * (0.13 if open_ else 0.10) * vel
 
 
-def pluck(freq, dur, vel=1.0, detune=0.004):
+def rim(vel=1.0):
+    n = int(0.09 * SR)
+    t = tt(n)
+    x = (np.sin(2 * np.pi * 1750 * t) + 0.6 * np.sin(2 * np.pi * 2400 * t))
+    x *= np.exp(-t * 120)
+    x += hp(rng.normal(0, 1, n), 3000) * np.exp(-t * 170) * 0.5
+    return x / (np.abs(x).max() + 1e-9) * 0.16 * vel
+
+
+def tom(freq, vel=1.0):
+    n = int(0.30 * SR)
+    t = tt(n)
+    f = freq * (1 + 0.5 * np.exp(-t * 30))
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 11)
+    return np.tanh(x * 1.2) * 0.30 * vel
+
+
+def ep(freq, dur, vel=1.0, ratio=1.0, index=2.6):
+    """Piano eletrico por FM (tipo Rhodes): indice de modulacao decai,
+    o que da o ataque com brilho e a sustentacao doce."""
     n = int(dur * SR)
-    tt = t_of(n)
-    x = np.zeros(n)
-    for m, amp in ((1, 1.0), (2, 0.30), (3, 0.12), (4, 0.05)):
-        for dt in (-detune, detune):
-            x += amp * np.sin(2 * np.pi * freq * m * (1 + dt) * tt)
-    x *= env_ad(n, 0.004, dur, curve=1.4)
-    return x / 3.0 * vel
+    t = tt(n)
+    I = index * np.exp(-t * 5.5)
+    x = np.sin(2 * np.pi * freq * t + I * np.sin(2 * np.pi * freq * ratio * t))
+    env = np.exp(-t * 2.1) * (1 - np.exp(-t * 320))
+    return x * env * 0.5 * vel
 
 
-def pad(freqs, dur, vel=1.0, fc=2200):
-    """Stack de saws suaves com lowpass -> pad quente."""
+def pluck(freq, dur, vel=1.0):
     n = int(dur * SR)
-    tt = t_of(n)
+    t = tt(n)
+    I = 3.2 * np.exp(-t * 22)
+    x = np.sin(2 * np.pi * freq * t + I * np.sin(2 * np.pi * freq * 3.0 * t))
+    x *= np.exp(-t * 9.0) * (1 - np.exp(-t * 900))
+    return x * 0.42 * vel
+
+
+def sub_bass(freq, dur, vel=1.0):
+    n = int(dur * SR)
+    t = tt(n)
+    x = np.sin(2 * np.pi * freq * t) + 0.30 * np.sin(2 * np.pi * freq * 2 * t)
+    x += 0.12 * np.sin(2 * np.pi * freq * 3 * t)
+    env = (1 - np.exp(-t * 400)) * np.exp(-t * 1.1)
+    return np.tanh(x * env * 1.02) * 0.68 * vel
+
+
+def strings(freqs, dur, vel=1.0, fc=2400):
+    """Almofada de cordas: serras suaves, ataque lento, para os momentos de
+    elevacao (entrada dos drops e o cartao final)."""
+    n = int(dur * SR)
+    t = tt(n)
     x = np.zeros(n)
     for f in freqs:
-        for dt in (-0.006, 0.0, 0.006):
-            ph = 2 * np.pi * f * (1 + dt) * tt
-            # saw suave por sintese aditiva
-            for h in range(1, 9):
-                x += np.sin(ph * h) / (h ** 1.35)
-    x /= (len(freqs) * 3 * 2.2)
+        for det in (-0.004, 0.0, 0.005):
+            ph = 2 * np.pi * f * (1 + det) * t
+            for h in range(1, 10):
+                x += np.sin(ph * h + h) / (h ** 1.5)
+    x /= (len(freqs) * 3 * 2.4)
     x = lp(x, fc)
-    x *= env_adsr(n, dur * 0.22, dur * 0.15, 0.78, dur * 0.38)
-    return x * vel
-
-
-def sub(freq, dur, vel=1.0):
-    n = int(dur * SR)
-    tt = t_of(n)
-    x = np.sin(2 * np.pi * freq * tt) + 0.22 * np.sin(2 * np.pi * freq * 2 * tt)
-    x *= env_adsr(n, 0.008, 0.05, 0.85, 0.06)
-    return np.tanh(x * 1.2) * 0.42 * vel
+    a = int(n * 0.30)
+    env = np.concatenate([np.linspace(0, 1, a) ** 1.6,
+                          np.linspace(1, 0.25, n - a) ** 1.3])
+    return x * env * vel
 
 
 def riser(dur, vel=1.0):
     n = int(dur * SR)
-    tt = t_of(n)
-    noise = rng.normal(0, 1, n)
+    nz = rng.normal(0, 1, n)
     out = np.zeros(n)
-    step = int(0.05 * SR)
+    step = int(0.04 * SR)
     for i in range(0, n - step, step):
-        fc = 400 + 7000 * (i / n) ** 1.7
-        out[i:i + step] = hp(noise[i:i + step], fc)[:step]
-    out *= (np.linspace(0, 1, n) ** 2.2)
-    return out / (np.abs(out).max() + 1e-9) * 0.30 * vel
+        out[i:i + step] = hp(nz[i:i + step], 300 + 6500 * (i / n) ** 1.8)[:step]
+    out *= np.linspace(0, 1, n) ** 2.4
+    return out / (np.abs(out).max() + 1e-9) * 0.26 * vel
 
 
 def impact(vel=1.0):
-    n = int(1.6 * SR)
-    tt = t_of(n)
-    boom = np.sin(2 * np.pi * (68 * np.exp(-tt * 2.2) + 34) * tt) * np.exp(-tt * 2.6)
-    nz = lp(rng.normal(0, 1, n), 2500) * np.exp(-tt * 5.5) * 0.5
-    x = boom + nz
-    return np.tanh(x * 1.3) * 0.65 * vel
+    n = int(1.9 * SR)
+    t = tt(n)
+    boom = np.sin(2 * np.pi * (60 * np.exp(-t * 2.0) + 32) * t) * np.exp(-t * 2.3)
+    crack = lp(rng.normal(0, 1, n), 3200) * np.exp(-t * 6.5) * 0.45
+    return np.tanh((boom + crack) * 1.25) * 0.62 * vel
 
 
-# ------------------------------------------------------------------ harmonia
-# Am9  ->  Fmaj7  ->  C(add9)  ->  Gsus  (i - VI - III - VII), 1 compasso cada
-CHORDS = [
-    dict(name="Am9",   pad=[220.00, 261.63, 329.63, 493.88], root=55.00,
-         arp=[440.00, 523.25, 659.25, 987.77]),
-    dict(name="Fmaj7", pad=[174.61, 220.00, 261.63, 329.63], root=43.65,
-         arp=[349.23, 440.00, 523.25, 659.25]),
-    dict(name="Cadd9", pad=[261.63, 329.63, 392.00, 587.33], root=65.41,
-         arp=[523.25, 659.25, 783.99, 587.33]),
-    dict(name="Gsus",  pad=[196.00, 246.94, 293.66, 329.63], root=49.00,
-         arp=[392.00, 493.88, 587.33, 659.25]),
+# -------------------------------------------------------------------- harmonia
+# Am - C - G - F  (i - III - VII - VI): mais elevacao que a Am-F-C-G da v1
+CH = [
+    dict(n='Am', ep=[220.00, 261.63, 329.63], root=55.00,
+         str=[220.00, 261.63, 329.63, 440.00], hook=[659.25, 587.33, 523.25, 493.88]),
+    dict(n='C', ep=[261.63, 329.63, 392.00], root=65.41,
+         str=[261.63, 329.63, 392.00, 523.25], hook=[659.25, 523.25, 587.33, 523.25]),
+    dict(n='G', ep=[246.94, 293.66, 392.00], root=49.00,
+         str=[196.00, 246.94, 293.66, 392.00], hook=[587.33, 493.88, 440.00, 392.00]),
+    dict(n='F', ep=[261.63, 349.23, 440.00], root=43.65,
+         str=[174.61, 261.63, 349.23, 440.00], hook=[523.25, 440.00, 392.00, 349.23]),
 ]
 
-# arranjo por compasso: quais camadas tocam
-# k=kick c=clap h=hats(16th) H=hats(8th) o=openhat b=sub p=pad a=arp l=lead
-ARR = {}
-for b in range(NBARS):
-    ARR[b] = set()
+# arranjo: k=bumbo c=clap h=shaker16 H=shaker8 o=shaker aberto r=rim
+#          b=sub p=piano eletrico a=arpejo l=gancho s=cordas t=tom
+ARR = {b: set() for b in range(NBARS)}
 
 
-def setbars(rng_bars, layers):
-    for b in rng_bars:
+def setb(rng_, layers):
+    for b in rng_:
         ARR[b] |= set(layers)
 
 
-setbars(range(0, 3),   "pa")          #  0-6s   INTRO
-setbars(range(3, 6),   "paH")         #  6-12s  BUILD
-setbars(range(4, 6),   "b")
-setbars(range(6, 12),  "pakchbo")     # 12-24s  DROP 1
-setbars(range(12, 17), "pakchb")      # 24-34s  ATO 2
-setbars(range(14, 17), "co")
-setbars(range(17, 19), "p")           # 34-38s  BREAKDOWN (batida de texto)
-setbars(range(19, 24), "pakchbol")    # 38-48s  DROP FINAL
-setbars(range(24, 26), "p")           # 48-52s  OUTRO
-setbars(range(24, 25), "kb")
+setb(range(0, 3),   'pa')          #  0-6s   INTRO
+setb(range(3, 6),   'paHb')        #  6-12s  BUILD
+setb(range(6, 12),  'pakchbolr')   # 12-24s  DROP 1
+setb(range(12, 17), 'pakchbl')     # 24-34s  ATO 2
+setb(range(14, 17), 'cor')
+setb(range(17, 19), 'ps')          # 34-38s  BREAKDOWN
+setb(range(19, 24), 'pakchbolrs')  # 38-48s  DROP FINAL
+setb(range(24, 26), 'pals')        # 48-52s  OUTRO
+setb(range(26, 28), 'ps')          # 52-56s  CARTAO FINAL
 
-# ------------------------------------------------------------------- render
-music = np.zeros(N)
+SECTIONS = [('intro', 0, 3), ('build', 3, 6), ('drop1', 6, 12), ('ato2', 12, 17),
+            ('breakdown', 17, 19), ('dropfinal', 19, 24), ('outro', 24, 26),
+            ('endcard', 26, 28)]
+
+# ----------------------------------------------------------------------- render
+drums = np.zeros(N)     # vai para o reverb curto
+tonal = np.zeros(N)     # vai para o hall
+dry = np.zeros(N)       # baixo: sem reverb
+kick_times = []
 beats = []
-sections = [
-    ("intro", 0, 3), ("build", 3, 6), ("drop1", 6, 12), ("ato2", 12, 17),
-    ("breakdown", 17, 19), ("dropfinal", 19, 24), ("outro", 24, 26),
-]
+
+HOOK_RHYTHM = [(0.0, 0.9), (0.75, 0.55), (1.5, 0.85), (2.5, 0.6), (3.0, 0.75)]
 
 for b in range(NBARS):
     t0 = b * BAR
-    ch = CHORDS[b % 4]
+    c = CH[b % 4]
     L = ARR[b]
-    intensity = 0.55 if b < 6 else (1.0 if b >= 19 else 0.85)
+    inten = 0.55 if b < 6 else (1.0 if 19 <= b < 24 else 0.86)
 
     if 'p' in L:
-        fc = 900 if b < 3 else (1500 if b < 6 else (1200 if 17 <= b < 19 else 2600))
-        vel = 0.5 if b < 3 else (0.62 if b < 6 else (0.75 if 17 <= b < 19 else 0.58))
-        if b >= 24:
-            vel *= 0.9
-        add(music, pad(ch['pad'], BAR * 1.05, vel=vel, fc=fc), t0)
+        vel = 0.55 if b < 3 else (0.7 if b < 6 else (0.66 if 17 <= b < 19 or b >= 26 else 0.62))
+        # acordes em contratempo dao a levada de house organico
+        for off, g in ((0.0, 1.0), (1.5, 0.6), (2.5, 0.75), (3.5, 0.5)):
+            if b < 3 and off in (1.5, 3.5):
+                continue
+            for f in c['ep']:
+                add(tonal, ep(f, 1.1, vel=vel * g), t0 + off * BEAT)
 
     if 'a' in L:
-        # arpejo em 16avos, padrao com variacao
-        pat = [0, 1, 2, 3, 2, 1, 3, 2, 0, 2, 3, 1, 2, 3, 1, 0]
-        for s in range(16):
-            if b < 3 and s % 2 == 1:
+        pat = [0, 1, 2, 1, 0, 2, 1, 2]
+        for s in range(8):
+            if b < 3 and s % 2:
                 continue
-            v = (0.30 if b < 6 else 0.42) * (1.0 if s % 4 == 0 else 0.72)
-            if 17 <= b < 19:
-                v *= 0.5
-            add(music, pluck(ch['arp'][pat[s]], 0.34, vel=v), t0 + s * BEAT / 4)
+            sw = SWING if s % 2 else 0.0
+            add(tonal, pluck(c['ep'][pat[s] % 3] * 2, 0.30,
+                             vel=(0.20 if b < 6 else 0.26) * (1.0 if s % 4 == 0 else 0.7)),
+                t0 + s * BEAT / 2 + sw)
 
     if 'l' in L:
-        # lead: notas longas em oitava alta no drop final
-        lead_pat = [(0.0, 0), (1.0, 2), (2.0, 3), (3.0, 1)]
-        for off, idx in lead_pat:
-            add(music, pluck(ch['arp'][idx] * 2, 0.9, vel=0.16, detune=0.008), t0 + off * BEAT)
+        for off, g in HOOK_RHYTHM:
+            i = int(off * 2) % 4
+            add(tonal, pluck(c['hook'][i], 0.55, vel=0.30 * g * inten), t0 + off * BEAT)
+
+    if 's' in L:
+        add(tonal, strings(c['str'], BAR * 1.15,
+                           vel=(0.22 if 17 <= b < 19 or b >= 26 else 0.20)), t0)
 
     if 'b' in L:
-        # sub bass: oitavos com sidechain implicito (gap no downbeat do kick)
         for s in range(8):
-            if 'k' in L and s % 2 == 0:
-                add(music, sub(ch['root'], BEAT * 0.40, vel=0.85 * intensity), t0 + s * BEAT / 2 + 0.055)
-            else:
-                add(music, sub(ch['root'], BEAT * 0.46, vel=0.80 * intensity), t0 + s * BEAT / 2)
+            add(dry, sub_bass(c['root'], BEAT * 0.52, vel=0.9 * inten), t0 + s * BEAT / 2)
 
     if 'k' in L:
         for s in range(4):
-            add(music, kick(vel=(1.0 if s == 0 else 0.9) * intensity), t0 + s * BEAT)
+            add(drums, kick(vel=(1.0 if s == 0 else 0.92) * inten), t0 + s * BEAT)
+            kick_times.append(t0 + s * BEAT)
 
     if 'c' in L:
         for s in (1, 3):
-            add(music, clap(vel=0.9 * intensity), t0 + s * BEAT)
+            add(drums, snap(vel=0.92 * inten), t0 + s * BEAT)
 
     if 'h' in L:
         for s in range(16):
-            v = 1.0 if s % 4 == 0 else (0.55 if s % 2 == 0 else 0.38)
-            add(music, hat(vel=v * intensity), t0 + s * BEAT / 4)
+            sw = SWING if s % 2 else 0.0
+            v = 1.0 if s % 4 == 0 else (0.5 if s % 2 == 0 else 0.34)
+            add(drums, shaker(vel=v * inten), t0 + s * BEAT / 4 + sw)
     elif 'H' in L:
         for s in range(8):
-            add(music, hat(vel=(0.8 if s % 2 == 0 else 0.45) * intensity), t0 + s * BEAT / 2)
+            add(drums, shaker(vel=(0.75 if s % 2 == 0 else 0.42) * inten), t0 + s * BEAT / 2)
 
     if 'o' in L:
-        for s in (1, 3):
-            add(music, hat(vel=0.7 * intensity, open_=True), t0 + s * BEAT + BEAT / 2)
+        add(drums, shaker(vel=0.7 * inten, open_=True), t0 + 1.5 * BEAT)
+        add(drums, shaker(vel=0.7 * inten, open_=True), t0 + 3.5 * BEAT)
+
+    if 'r' in L:
+        for off in (0.75, 2.25, 2.75):
+            add(drums, rim(vel=0.55 * inten), t0 + off * BEAT)
+
+    if 't' in L or (b in (11, 23) and 'k' in L):
+        for i, off in enumerate((3.0, 3.25, 3.5, 3.75)):
+            add(drums, tom(150 - i * 14, vel=0.8), t0 + off * BEAT)
 
     for s in range(4):
         beats.append(round(t0 + s * BEAT, 4))
 
-# risers e impactos nas viradas
-add(music, riser(BAR * 1.6, vel=0.8), 6 * BAR - BAR * 1.6)      # entrada do drop 1
-add(music, impact(0.9), 6 * BAR)
-add(music, riser(BAR * 1.9, vel=1.0), 19 * BAR - BAR * 1.9)     # entrada do drop final
-add(music, impact(1.0), 19 * BAR)
-add(music, impact(0.75), 24 * BAR)                              # ultimo acento
-# downlifter suave no breakdown
-add(music, riser(BAR * 0.9, vel=0.5)[::-1], 17 * BAR)
+# viradas
+add(drums, riser(BAR * 1.7, vel=0.85), 6 * BAR - BAR * 1.7)
+add(drums, impact(0.92), 6 * BAR)
+add(drums, riser(BAR * 2.0, vel=1.0), 19 * BAR - BAR * 2.0)
+add(drums, impact(1.0), 19 * BAR)
+add(drums, impact(0.7), 24 * BAR)
+add(drums, riser(BAR * 0.8, vel=0.45)[::-1], 17 * BAR)   # downlifter no breakdown
+add(tonal, strings(CH[0]['str'], BAR * 2.2, vel=0.34, fc=1900), 26 * BAR)
 
-# ------------------------------------------------------------- espacializacao
-ir = reverb_ir()
-wet = fftconvolve(music, ir)[:N]
-mix = music * 0.84 + wet * 0.17
-mix = hp(mix, 28)
-# high-shelf suave para tirar aspereza dos agudos + teto de "ar"
-mix = mix - 0.42 * hp(mix, 9000)
-mix = lp(mix, 16500, order=2)
+# --------------------------------------------------------------- sidechain real
+duck = np.ones(N)
+atk, rel = int(0.006 * SR), 0.085
+for kt in kick_times:
+    i = int(kt * SR)
+    if i >= N:
+        continue
+    seg = min(int(0.34 * SR), N - i)
+    env = 1.0 - 0.50 * np.exp(-tt(seg) / rel)
+    env[:atk] = np.linspace(1.0, env[atk] if atk < seg else 0.4, min(atk, seg))
+    duck[i:i + seg] = np.minimum(duck[i:i + seg], env)
 
-# leve stereo: atrasos/filtros distintos por canal (Haas suave)
-d = int(0.008 * SR)
-Lch = mix.copy()
-Rch = np.concatenate([np.zeros(d), mix[:-d]])
-Rch = lp(Rch, 15000)
-wide = 0.13
-st = np.stack([Lch * (1 - wide) + Rch * wide, Rch * (1 - wide) + Lch * wide], axis=1)
+dry *= duck
+tonal *= (0.45 + 0.55 * duck)      # acordes cedem menos que o baixo
 
-# fade final
-fn = int(1.6 * SR)
+# ------------------------------------------------------------------- espaco/mix
+room = ir_reverb(0.55, 9.0, 6000)
+hall = ir_reverb(2.4, 5.0, 5200)
+drums_w = fftconvolve(drums, room)[:N]
+tonal_w = fftconvolve(tonal, hall)[:N]
+
+mix = drums * 0.95 + drums_w * 0.10 + tonal * 0.90 + tonal_w * 0.26 + dry * 2.1
+# calor de fita
+mix += lp(rng.normal(0, 1, N), 9000) * 0.0016
+mix = hp(mix, 26)
+mix -= 0.34 * hp(mix, 9500)        # tira aspereza
+mix = lp(mix, 16800, order=2)
+
+
+def compress(x, thr=0.55, ratio=2.0, atk=0.012, rel=0.22):
+    """Compressor de bus simples, para colar a mixagem."""
+    env = np.abs(x)
+    a, r = np.exp(-1 / (atk * SR)), np.exp(-1 / (rel * SR))
+    e, out = 0.0, np.empty_like(env)
+    for i, v in enumerate(env):
+        coef = a if v > e else r
+        e = coef * e + (1 - coef) * v
+        out[i] = e
+    g = np.ones_like(out)
+    over = out > thr
+    g[over] = (thr + (out[over] - thr) / ratio) / out[over]
+    return x * g
+
+
+# ---- cola e arco dinamico ---------------------------------------------------
+# ORDEM IMPORTA: o compressor de bus vem ANTES do ganho de arranjo. Ao contrario,
+# ele reduz justamente os drops (que passam do limiar) e deixa o breakdown
+# intacto, desfazendo o arco que a secao seguinte tenta impor.
+mix /= (np.abs(mix).max() + 1e-9)
+mix *= 0.80
+mix = compress(mix)
+
+# arco dinamico por secao: intro baixo, drops cheios, breakdown recuado,
+# cartao final resolvendo.
+SEC_GAIN = {'intro': 0.53, 'build': 0.62, 'drop1': 1.00, 'ato2': 0.90,
+            'breakdown': 0.40, 'dropfinal': 1.00, 'outro': 0.66, 'endcard': 0.40}
+gain = np.ones(N)
+for name, b0, b1 in SECTIONS:
+    i0, i1 = int(b0 * BAR * SR), min(int(b1 * BAR * SR), N)
+    gain[i0:i1] = SEC_GAIN[name]
+gain[min(int(SECTIONS[-1][2] * BAR * SR), N - 1):] = SEC_GAIN['endcard']
+k = int(0.40 * SR)
+gain = np.convolve(gain, np.ones(k) / k, mode='same')
+mix *= gain
+
+# limitador de seguranca: age so acima de 0.92, para nao mexer no arco
+over = np.abs(mix) > 0.92
+mix[over] = np.sign(mix[over]) * (0.92 + np.tanh((np.abs(mix[over]) - 0.92) * 6) * 0.07)
+
+# stereo: Haas suave + largura
+d = int(0.0075 * SR)
+Lc = mix.copy()
+Rc = np.concatenate([np.zeros(d), mix[:-d]])
+w = 0.14
+st = np.stack([Lc * (1 - w) + Rc * w, Rc * (1 - w) + Lc * w], axis=1)
+
+fn = int(2.0 * SR)
 st[-fn:] *= np.linspace(1, 0, fn)[:, None]
-st[:int(0.05 * SR)] *= np.linspace(0, 1, int(0.05 * SR))[:, None]
-
-st = np.tanh(st * 1.08)
+k = int(0.04 * SR)
+st[:k] *= np.linspace(0, 1, k)[:, None]
 st /= (np.abs(st).max() + 1e-9)
-st *= 0.94
+st *= 0.95
 
-import wave
-out = '/projects/sandbox/aftermovie/build/music.wav'
-import os
 os.makedirs('/projects/sandbox/aftermovie/build', exist_ok=True)
-w = wave.open(out, 'w')
-w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
-w.writeframes((st * 32767).astype(np.int16).tobytes())
-w.close()
+out = '/projects/sandbox/aftermovie/build/music.wav'
+w_ = wave.open(out, 'w')
+w_.setnchannels(2)
+w_.setsampwidth(2)
+w_.setframerate(SR)
+w_.writeframes((st * 32767).astype(np.int16).tobytes())
+w_.close()
 
-grid = dict(bpm=BPM, beat=BEAT, bar=BAR, nbars=NBARS, dur=round(DUR, 3),
-            beats=beats,
-            sections=[dict(name=n, bar0=a, bar1=b, t0=round(a * BAR, 3), t1=round(b * BAR, 3))
-                      for n, a, b in sections])
-json.dump(grid, open('/projects/sandbox/aftermovie/build/grid.json', 'w'), indent=1)
+json.dump(dict(bpm=BPM, beat=BEAT, bar=BAR, nbars=NBARS, dur=round(DUR, 3),
+               beats=beats,
+               sections=[dict(name=n, bar0=a, bar1=b_, t0=round(a * BAR, 3),
+                              t1=round(b_ * BAR, 3)) for n, a, b_ in SECTIONS]),
+          open('/projects/sandbox/aftermovie/build/grid.json', 'w'), indent=1)
 
-print(f"music.wav  {DUR:.2f}s  {BPM:.0f} BPM  beat={BEAT}s  bar={BAR}s  compassos={NBARS}")
-for s in grid['sections']:
-    print(f"  {s['name']:<10} compassos {s['bar0']:>2}-{s['bar1']:<2}  t {s['t0']:>6.2f}-{s['t1']:>6.2f}s")
+print(f"music.wav  {DUR:.2f}s  {BPM:.0f} BPM  Am-C-G-F  {NBARS} compassos")
+for n, a, b_ in SECTIONS:
+    print(f"  {n:<10} compassos {a:>2}-{b_:<2}  t {a * BAR:>6.2f}-{b_ * BAR:>6.2f}s")

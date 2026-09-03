@@ -64,6 +64,17 @@ def source_for(e):
     return f"{ROOT}/{e['path']}"
 
 
+def fade_suffix(e):
+    """Fade in/out baked no proprio plano. Usado para o ultimo plano de video
+    escurecer (fadeout) e o cartao final nascer desse preto (fadein)."""
+    parts = []
+    if e.get('fadein'):
+        parts.append(f"fade=t=in:st=0:d={e['fadein']:.3f}")
+    if e.get('fadeout'):
+        parts.append(f"fade=t=out:st={max(0, e['dur'] - e['fadeout']):.3f}:d={e['fadeout']:.3f}")
+    return (',' + ','.join(parts)) if parts else ''
+
+
 # ------------------------------------------------------------------ 2. planos
 def render_shots(tl):
     for e in tl:
@@ -72,17 +83,25 @@ def render_shots(tl):
             continue
         nfr = int(round(e['dur'] * FPS))
         src = source_for(e)
-        if e['kind'] == 'photo':
+        if e['kind'] == 'art':
+            # arte ja no formato 9:16 e com fundo preto: so escala e aplica o
+            # drift/fade. Sem grade de cor nem sharpen (e material grafico).
             vf = frame_filter(e['z'], e.get('zto'), nfr,
                               pan=e.get('pan', 0.0), pany=e.get('pany', 0.0))
-            vf += f",{grade_filter(e['path'])},{SHARPEN}"
+            vf += fade_suffix(e)
+            cmd = [FFMPEG] + LOG + ['-framerate', str(FPS), '-loop', '1',
+                                    '-t', f"{e['dur'] + 0.2:.4f}", '-i', src, '-vf', vf]
+        elif e['kind'] == 'photo':
+            vf = frame_filter(e['z'], e.get('zto'), nfr,
+                              pan=e.get('pan', 0.0), pany=e.get('pany', 0.0))
+            vf += f",{grade_filter(e['path'])},{SHARPEN}{fade_suffix(e)}"
             cmd = [FFMPEG] + LOG + ['-framerate', str(FPS), '-loop', '1',
                                     '-t', f"{e['dur'] + 0.2:.4f}", '-i', src, '-vf', vf]
         else:
             # o retiming entra dentro do frame_filter, antes do zoompan
             vf = frame_filter(e['z'], e.get('zto'), nfr, speed=e['speed'],
                               pan=e.get('pan', 0.0), pany=e.get('pany', 0.0))
-            vf += f",{grade_filter(e['path'])},{SHARPEN}"
+            vf += f",{grade_filter(e['path'])},{SHARPEN}{fade_suffix(e)}"
             # le um pouco mais da origem; -frames:v corta na medida exata
             cmd = [FFMPEG] + LOG + ['-ss', f"{e['tin']:.4f}",
                                     '-t', f"{e['tsrc'] + 0.25:.4f}",
@@ -183,11 +202,12 @@ def finalize(total, bd0, bd1):
     controle melhor de entreletra e sombra do que o drawtext daria.
     """
     T = f'{BUILD}/titles'
-    # (arquivo, entrada, saida) de cada bloco de texto
+    # So titulo de abertura e mensagem do breakdown entram como overlay. O
+    # cartao final agora e um plano proprio da EDL (com as marcas), entao nao
+    # ha mais overlay de end card aqui.
     blocks = [
         ('title.png', 1.60, 5.60),
         ('msg.png', bd0 + 0.30, bd1 - 0.20),
-        ('end.png', 49.90, total),
     ]
     ins = ['-i', f'{BUILD}/video_cut.mp4', '-i', f'{BUILD}/audio.wav']
     for f, _, _ in blocks:
@@ -205,7 +225,7 @@ def finalize(total, bd0, bd1):
     fc.append(f"[{cur}]fade=t=in:st=0:d=0.4,"
               f"fade=t=out:st={total - 0.7:.3f}:d=0.7[vout]")
 
-    dst = f'{OUT}/aftermovie_liga_endeavor_nxtp_9x16.mp4'
+    dst = f'{OUT}/aftermovie_de_builder_a_founder_9x16.mp4'
     run([FFMPEG] + LOG + ins + ['-filter_complex', ';'.join(fc),
                                 '-map', '[vout]', '-map', '1:a',
                                 '-c:v', 'libx264', '-crf', '19', '-preset', 'slow',
@@ -224,8 +244,7 @@ def finalize_45(total, bd0, bd1, yoff=140):
     foi escolhido para preservar as logos projetadas no alto do quadro.
     """
     T = f'{BUILD}/titles'
-    blocks = [('title.png', 1.60, 5.60), ('msg.png', bd0 + 0.30, bd1 - 0.20),
-              ('end.png', 49.90, total)]
+    blocks = [('title.png', 1.60, 5.60), ('msg.png', bd0 + 0.30, bd1 - 0.20)]
     ins = ['-i', f'{BUILD}/video_cut.mp4', '-i', f'{BUILD}/audio.wav']
     for f, _, _ in blocks:
         ins += ['-framerate', str(FPS), '-loop', '1', '-t', f'{total:.3f}',
@@ -241,7 +260,7 @@ def finalize_45(total, bd0, bd1, yoff=140):
         cur = f'v{i}'
     fc.append(f"[{cur}]fade=t=in:st=0:d=0.4,"
               f"fade=t=out:st={total - 0.7:.3f}:d=0.7[vout]")
-    dst = f'{OUT}/aftermovie_liga_endeavor_nxtp_4x5.mp4'
+    dst = f'{OUT}/aftermovie_de_builder_a_founder_4x5.mp4'
     run([FFMPEG] + LOG + ins + ['-filter_complex', ';'.join(fc),
                                 '-map', '[vout]', '-map', '1:a',
                                 '-c:v', 'libx264', '-crf', '19', '-preset', 'slow',

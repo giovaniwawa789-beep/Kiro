@@ -2,7 +2,7 @@
 """EDL (decupagem) do aftermovie Liga Empreendedora x Endeavor Behring NXTP.
 
 Grade musical: 120 BPM, beat = 0.5s, compasso = 2.0s. Todo corte cai na batida.
-Duracao final: 52.0s (26 compassos), 1080x1920 (9:16), 30 fps.
+Duracao final: 56.0s (28 compassos), 1080x1920 (9:16), 30 fps.
 
 CONTEUDO REAL DE CADA ARQUIVO (verificado quadro a quadro em analysis/INDEX_*.jpg):
   V36  chegada: participantes na porta de vidro, mochilas, atravessando o espaco
@@ -112,13 +112,27 @@ SHOTS = [
 
     # ===== OUTRO (48-52s): encerramento ====================================
     dict(src='V:84', tin=2.60, b=4, tsrc=1.50, z=1.00, zto=1.06, note='ultimo plano amplo: a sala cheia (slow)'),
-    dict(src='V:79', tin=0.80, b=4, tsrc=1.60, z=1.00, zto=1.05, note='fechamento nas marcas projetadas + end card'),
+    dict(src='V:79', tin=0.80, b=4, tsrc=1.60, z=1.00, zto=1.05, fadeout=1.3,
+         note='fechamento nas marcas projetadas - a cena escurece aqui'),
+
+    # ===== CARTAO FINAL (52-56s) ==========================================
+    # A arte tem fundo preto, entao ela nasce do preto do plano anterior:
+    # a transicao le como continuacao do escurecimento, nao como colagem.
+    dict(src='A:endcard', tin=0.0, b=8, z=1.00, zto=1.035, fadein=0.9,
+         note='arte DE BUILDER A FOUNDER com as marcas'),
 ]
+
+
+ART = {'endcard': 'build/titles/endcard.png'}
 
 
 def resolve(s):
     kind, key = s['src'].split(':')
-    return ('video', V[key]) if kind == 'V' else ('photo', P[key])
+    if kind == 'V':
+        return 'video', V[key]
+    if kind == 'A':
+        return 'art', ART[key]
+    return 'photo', P[key]
 
 
 def timeline():

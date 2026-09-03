@@ -21,13 +21,16 @@ BLACK = '/usr/share/fonts/google-noto/NotoSans-Black.ttf'
 BOLD = '/usr/share/fonts/google-noto/NotoSans-Bold.ttf'
 MED = '/usr/share/fonts/google-noto/NotoSans-Medium.ttf'
 
-TITLE_1 = 'LIGA EMPREENDEDORA'
-TITLE_2 = 'ENDEAVOR BEHRING NXTP'
-MSG_1 = 'QUEM EMPREENDE'
-MSG_2 = 'NÃO EMPREENDE SOZINHO'
-END_1 = 'A COMUNIDADE ESTÁ'
-END_2 = 'APENAS COMEÇANDO'
-END_3 = 'LIGA EMPREENDEDORA   ×   ENDEAVOR BEHRING NXTP'
+# Nome real do evento e copy da propria Liga, tirados do post de divulgacao
+# (instagram.com/p/DcBfSGjxTEN). A mensagem do breakdown NAO e mais texto
+# autoral meu: e a frase que a Liga escreveu para anunciar o evento, em
+# minusculas como eles usam.
+TITLE_1 = 'DE BUILDER A'
+TITLE_2 = 'FOUNDER'
+TITLE_3 = 'uma experiência de empreendedorismo'
+MSG_1 = 'ficou mais fácil criar.'
+MSG_2 = 'ficou mais difícil vencer.'
+YELLOW = (247, 184, 0)
 
 
 def draw_tracked(d, text, font, size, y, fill, track=0, center=True, x0=None):
@@ -65,27 +68,21 @@ def rule(d, y, w=64, alpha=210):
 
 # ------------------------------------------------------------------- titulo
 def _title(d):
-    rule(d, 1108, 56)
-    draw_tracked(d, TITLE_1, BLACK, 68, 1140, (255, 255, 255, 255), track=1)
-    draw_tracked(d, TITLE_2, MED, 38, 1236, (255, 255, 255, 236), track=5)
+    rule(d, 1058, 56)
+    draw_tracked(d, TITLE_1, BLACK, 76, 1090, (255, 255, 255, 255), track=0)
+    draw_tracked(d, TITLE_2, BLACK, 76, 1184, YELLOW + (255,), track=0)
+    draw_tracked(d, TITLE_3, MED, 30, 1300, (255, 255, 255, 224), track=3)
 
 
 # ---------------------------------------------------------------- mensagem
 def _msg(d):
-    draw_tracked(d, MSG_1, BLACK, 68, 842, (255, 255, 255, 255), track=1)
-    draw_tracked(d, MSG_2, BLACK, 68, 932, (255, 255, 255, 255), track=1)
+    draw_tracked(d, MSG_1, BLACK, 70, 838, (255, 255, 255, 240), track=0)
+    draw_tracked(d, MSG_2, BLACK, 70, 934, YELLOW + (255,), track=0)
 
 
 # ---------------------------------------------------------------- end card
-def _end(d):
-    draw_tracked(d, END_1, BLACK, 68, 828, (255, 255, 255, 255), track=1)
-    draw_tracked(d, END_2, BLACK, 68, 922, (255, 255, 255, 255), track=1)
-    rule(d, 1042, 72)
-    draw_tracked(d, END_3, MED, 29, 1076, (255, 255, 255, 226), track=3)
-
-
 if __name__ == '__main__':
-    for name, fn in (('title', _title), ('msg', _msg), ('end', _end)):
+    for name, fn in (('title', _title), ('msg', _msg)):
         p = f'{OUT}/{name}.png'
         layer(fn).save(p)
         print('gerado', p)
