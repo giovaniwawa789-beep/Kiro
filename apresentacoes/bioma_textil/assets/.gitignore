@@ -1,0 +1,8 @@
+# Recortes/tratamentos derivados das fotos de ../../../videos/
+# Regeneraveis com: python3 ../scripts/build_assets.py
+eco_*.jpg
+duo_*.jpg
+
+# A logomarca com fundo transparente fica versionada (ativo reutilizavel)
+!logo_dark.png
+!logo_white.png
