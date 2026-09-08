@@ -109,7 +109,7 @@ def s02(prs):
     txt(sl, ML, 1.98, 5.8, 1.5,
         "A Nunes & Lucato atua na cadeia de resíduos têxteis com estrutura "
         "própria de transformação, equipe treinada e rastreabilidade "
-        "documental completa — da coleta à destinação final ambientalmente "
+        "documental completa, da coleta à destinação final ambientalmente "
         "adequada.",
         size=10.8, color=GREY, ls=1.42)
 
@@ -218,7 +218,8 @@ def s04(prs):
 
     pic_frame(sl, f"{A}/eco_area_wide.jpg", 7.35, 2.42, 5.15, 2.90,
               line=RULE, bias_y=0.55)
-    caption(sl, 7.35, 5.42, 5.15, "Área livre do Ecoponto Belezinho — situação atual")
+    caption(sl, 7.35, 5.42, 5.15,
+            "Situação atual da área livre do Ecoponto Belezinho")
     skyline(sl, 7.35, 5.86, 5.15, 0.62, RULE, 1.0, 1.0)
     return sl
 
@@ -328,7 +329,7 @@ def s07(prs):
             arrow_abs(sl, [(ax, cy), (ax + gap - 0.12, cy)], INDIGO, 1.0, 0.085)
 
     note(sl, 4.72,
-         "Atividade derivada — PICOTAGEM: adequação dos materiais coletados às "
+         "PICOTAGEM (atividade derivada): adequação dos materiais coletados às "
          "especificidades do mercado de desfibramento e coprocessamento.",
          icon=ic_shred, color=INDIGO, h=0.68)
 
@@ -366,7 +367,7 @@ def s08(prs):
     pic_frame(sl, f"{A}/eco_vao_wide.jpg", 7.62, 2.02, 4.88, 3.62, line=RULE,
               bias_y=0.45)
     caption(sl, 7.62, 5.74, 4.88,
-            "Vão coberto do Ecoponto — área prevista para segregação e armazenamento")
+            "Vão coberto do Ecoponto, área prevista para segregação e armazenamento")
     return sl
 
 
@@ -777,7 +778,7 @@ def s17(prs):
 
     note(sl, 6.08,
          "Organização proposta sobre a área existente, sem intervenção "
-         "estrutural nesta etapa — representação conceitual, sem caráter de "
+         "estrutural nesta etapa. Representação conceitual, sem caráter de "
          "projeto executivo ou arquitetônico.",
          icon=None, color=GREY_LT, fill=TINT, h=0.52, size=8.6, tcolor=GREY)
     return sl
@@ -881,8 +882,8 @@ def s20(prs):
                       GREY_LT, 1.0, 0.075)
 
     note(sl, 5.30,
-         "Sequência de etapas sem definição de prazos nesta fase — o "
-         "cronograma será estabelecido em alinhamento com a Prefeitura de São Paulo.",
+         "Sequência de etapas sem definição de prazos nesta fase. O cronograma "
+         "será estabelecido em alinhamento com a Prefeitura de São Paulo.",
          icon=ic_clipboard, color=INDIGO, h=0.70)
     return sl
 
