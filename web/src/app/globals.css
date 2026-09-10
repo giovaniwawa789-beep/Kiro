@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Nunes e Lucato — design system (tema escuro "motion-first")
+   Tailwind v4: o tema vive aqui, não em tailwind.config.js
+   Para trocar a paleta, edite apenas os tokens abaixo.
+   ========================================================================== */
+@theme {
+  /* superfícies */
+  --color-base: #070b09;        /* near-black, fundo padrão */
+  --color-surface: #0e1512;     /* superfície elevada (cards, navbar) */
+  --color-surface-2: #131c18;   /* superfície mais clara */
+
+  /* marca — verde industrial (não o verde "reciclagem" saturado) */
+  --color-primary: #12b76a;     /* verde profundo */
+  --color-accent: #a3e635;      /* lima elétrico */
+  --color-teal: #0e7490;        /* suporte */
+
+  /* texto */
+  --color-ink: #f4f7f5;         /* títulos */
+  --color-body: #9ba8a1;        /* corpo */
+
+  /* traço */
+  --color-hairline: rgb(255 255 255 / 0.08);
+
+  /* tipografia */
+  --font-display: var(--font-sora), "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* movimento — nenhuma animação acima de 600ms */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-base);
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-base);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  /* foco visível em tudo que é interativo — anel no lima acento */
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-primary);
+    color: #04120b;
+  }
+
+  /* a barra fixa mede 72px; compensa o salto por âncora */
+  :target { scroll-margin-top: 96px; }
+}
+
+@layer components {
+  /* container de 1240px com respiro lateral */
+  .shell {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .shell { padding-inline: 2rem; }
+  }
+
+  /* glassmorphism sutil dos cards */
+  .glass {
+    background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-hairline);
+  }
+
+  /* brilho radial verde atrás de elementos-chave */
+  .glow::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20% auto -20%;
+    height: 70%;
+    background: radial-gradient(
+      55% 55% at 50% 40%,
+      color-mix(in oklab, var(--color-primary) 42%, transparent) 0%,
+      transparent 70%
+    );
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* grão sobre o fundo animado, 4% */
+  .noise {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* fundo aurora do hero: verde profundo -> teal -> preto.
+     Só transform/opacity animam, então não há reflow nem layout shift. */
+  .aurora {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  /* véu que mantém a base near-black e protege o contraste do texto */
+  .aurora::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 90% at 50% 0%, transparent 0%, var(--color-base) 78%),
+      linear-gradient(180deg, rgb(7 11 9 / 0.55) 0%, rgb(7 11 9 / 0.72) 100%);
+  }
+  .aurora span {
+    position: absolute;
+    display: block;
+    border-radius: 9999px;
+    filter: blur(96px);
+    will-change: transform;
+  }
+  .aurora span:nth-child(1) {
+    width: 60vw; height: 60vw; top: -18vw; left: -8vw;
+    background: color-mix(in oklab, var(--color-primary) 34%, transparent);
+    animation: drift-a 26s var(--ease-brand) infinite alternate;
+  }
+  .aurora span:nth-child(2) {
+    width: 52vw; height: 52vw; top: 4vw; right: -12vw;
+    background: color-mix(in oklab, var(--color-teal) 32%, transparent);
+    animation: drift-b 32s var(--ease-brand) infinite alternate;
+  }
+  .aurora span:nth-child(3) {
+    width: 40vw; height: 40vw; bottom: -16vw; left: 28vw;
+    background: color-mix(in oklab, var(--color-accent) 14%, transparent);
+    animation: drift-c 38s var(--ease-brand) infinite alternate;
+  }
+
+  .hairline { border-color: var(--color-hairline); }
+}
+
+@keyframes drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(6vw, 5vw, 0) scale(1.12); }
+}
+@keyframes drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to   { transform: translate3d(-7vw, 4vw, 0) scale(0.95); }
+}
+@keyframes drift-c {
+  from { transform: translate3d(0, 0, 0) scale(0.95); }
+  to   { transform: translate3d(4vw, -5vw, 0) scale(1.15); }
+}
+
+/* Acessibilidade: desliga fundo animado e transforms, mantém só fades curtos. */
+@media (prefers-reduced-motion: reduce) {
+  .aurora span { animation: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}
