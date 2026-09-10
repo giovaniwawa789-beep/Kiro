@@ -136,6 +136,7 @@ a { color: inherit; }
 .hero-stats > div { min-width: 0; }
 .hero-stat-n { font-size: 30px; line-height: 1; color: #fff; margin: 0; }
 .hero-stat-n--green { color: var(--nl-green); }
+.hero-stat-u { font-size: 17px; opacity: .7; }
 .hero-stats dd {
   margin: 9px 0 0; font-size: 12.5px; line-height: 1.55;
   color: rgba(255, 255, 255, .6);
@@ -221,6 +222,86 @@ a { color: inherit; }
   margin: 22px 0 0;
 }
 .card-text { margin: 13px 0 0; font-size: 14.5px; line-height: 1.68; color: var(--nl-grey); }
+
+/* ============================== REPERTÓRIO ============================== */
+/* antes e depois: prova visual da tese têxtil-para-têxtil */
+.ba {
+  display: grid; grid-template-columns: 1fr 120px 1fr;
+  gap: 24px; align-items: center; margin-top: 52px;
+}
+.ba-item { margin: 0; position: relative; }
+.ba-item img {
+  height: auto;
+  width: 100%; aspect-ratio: 1; object-fit: cover;
+  border: 1px solid var(--nl-rule); background: var(--nl-white);
+}
+.ba-tag {
+  position: absolute; top: 0; left: 0; z-index: 2;
+  font-size: 9.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+  padding: 7px 13px; background: var(--nl-ink); color: #fff;
+}
+.ba-tag--after { background: var(--nl-green); }
+.ba-item figcaption {
+  margin-top: 12px; font-size: 12.5px; line-height: 1.55; color: var(--nl-grey);
+}
+.ba-fio svg { width: 100%; height: auto; display: block; }
+
+/* cards de projeto */
+.projs { margin-top: 72px; display: flex; flex-direction: column; gap: 26px; }
+.proj {
+  display: grid; grid-template-columns: 0.85fr 1fr; gap: 0;
+  background: var(--nl-white); border: 1px solid var(--nl-rule);
+}
+.proj--rev .proj-media { order: 2; }
+.proj-media { overflow: hidden; background: var(--nl-tint); }
+.proj-media img { width: 100%; height: 100%; min-height: 260px; object-fit: cover; }
+.proj-body { padding: 34px 36px; display: flex; flex-direction: column; justify-content: center; }
+.proj-cli {
+  margin: 0; font-size: 10px; font-weight: 600; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--nl-indigo-600);
+}
+.proj-t {
+  font-family: var(--nl-font-display); font-weight: 700; font-size: 25px;
+  line-height: 1.24; letter-spacing: -.008em; margin: 12px 0 0; color: var(--nl-ink);
+}
+.proj-p { margin: 13px 0 0; font-size: 14.5px; line-height: 1.68; color: var(--nl-grey); }
+.proj-kv { list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.proj-kv li {
+  font-size: 13px; line-height: 1.5; color: var(--nl-ink-soft);
+  padding-top: 9px; border-top: 1px solid var(--nl-rule);
+}
+.proj-kv .nl-data { font-size: 14px; color: var(--nl-indigo-600); margin-right: 6px; }
+.proj-obs { color: var(--nl-grey-light); font-size: 12px; }
+
+/* galeria de produtos */
+.gal-t {
+  font-family: var(--nl-font-display); font-weight: 700; font-size: 24px;
+  margin: 72px 0 0; color: var(--nl-ink);
+}
+.gal {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px; margin-top: 24px;
+}
+.gal figure { margin: 0; }
+.gal img {
+  height: auto;
+  width: 100%; aspect-ratio: 1; object-fit: cover;
+  border: 1px solid var(--nl-rule); background: var(--nl-white);
+}
+.gal figcaption {
+  margin-top: 11px; font-size: 12px; font-weight: 500; color: var(--nl-ink-soft);
+}
+.gal-obs { margin: 22px 0 0; max-width: 74ch; font-size: 13px; line-height: 1.65; color: var(--nl-grey); }
+
+/* faixa de operação */
+.strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 60px; }
+.strip figure { margin: 0; }
+.strip img {
+  height: auto;
+  width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
+  border: 1px solid var(--nl-rule);
+}
+.strip figcaption { margin-top: 11px; font-size: 12.5px; line-height: 1.55; color: var(--nl-grey); }
 
 /* ============================== PROCESSO ============================== */
 .steps {
@@ -405,6 +486,10 @@ a { color: inherit; }
   .section { padding: 80px 0; }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
   .conf-grid { grid-template-columns: 1fr; gap: 40px; }
+  .proj, .proj--rev { grid-template-columns: 1fr; }
+  .proj--rev .proj-media { order: 0; }
+  .proj-media img { min-height: 300px; max-height: 380px; }
+  .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .cta-form { grid-template-columns: 1fr 1fr; }
   .cta-form .nl-btn { grid-column: 1 / -1; }
   .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
@@ -443,6 +528,14 @@ a { color: inherit; }
 
   .conf-table th { width: 44%; font-size: 9.5px; padding: 13px 12px; }
   .conf-table td { padding: 13px 12px; font-size: 13px; }
+
+  .ba { grid-template-columns: 1fr; gap: 18px; margin-top: 36px; }
+  .ba-fio { transform: rotate(90deg); width: 60px; margin: 0 auto; }
+  .projs { margin-top: 48px; gap: 20px; }
+  .proj-body { padding: 26px 24px; }
+  .proj-t { font-size: 21px; }
+  .gal-t { font-size: 21px; margin-top: 52px; }
+  .strip { grid-template-columns: 1fr; gap: 22px; margin-top: 44px; }
 
   .cta { padding: 72px 0; }
   .cta-form { grid-template-columns: 1fr; gap: 22px; }

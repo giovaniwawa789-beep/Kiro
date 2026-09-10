@@ -54,18 +54,41 @@
     '.bioma-stat, .bioma-col, .conf-table, .docs, .cta-title, .cta-lead, .cta-form'
   );
 
-  if (!reduced && 'IntersectionObserver' in window) {
-    Array.prototype.forEach.call(targets, function (el) { el.classList.add('reveal'); });
+  /* Verificação por posição, agendada em requestAnimationFrame.
+     Não usa IntersectionObserver de propósito: o IO não garante callback para
+     elementos que entram e saem da viewport entre frames (scroll muito rápido
+     ou salto por link de âncora), e o custo disso seria conteúdo preso em
+     opacity:0 — ou seja, invisível. Aqui, se o elemento já passou da dobra,
+     ele é revelado, sem depender de o navegador ter notado a transição. */
+  if (!reduced) {
+    var pendentes = Array.prototype.slice.call(targets);
+    pendentes.forEach(function (el) { el.classList.add('reveal'); });
 
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target); // dispara uma única vez
-      });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    var agendado = false;
 
-    Array.prototype.forEach.call(targets, function (el) { io.observe(el); });
+    function checa() {
+      var limite = window.innerHeight - 40;
+      for (var i = pendentes.length - 1; i >= 0; i--) {
+        if (pendentes[i].getBoundingClientRect().top < limite) {
+          pendentes[i].classList.add('is-visible');
+          pendentes.splice(i, 1);
+        }
+      }
+      if (!pendentes.length) {
+        window.removeEventListener('scroll', agenda);
+        window.removeEventListener('resize', agenda);
+      }
+    }
+
+    function agenda() {
+      if (agendado) return;
+      agendado = true;
+      window.requestAnimationFrame(function () { agendado = false; checa(); });
+    }
+
+    window.addEventListener('scroll', agenda, { passive: true });
+    window.addEventListener('resize', agenda);
+    checa();
   }
 
   /* ---------------- formulário ----------------
