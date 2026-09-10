@@ -4,29 +4,39 @@
 Prepara os ativos visuais do deck Nunes & Lucato / SINIR-MTR Login Unico Gov.br.
 
 FONTES DAS IMAGENS
-  1. Print proprio da Nunes & Lucato ...... Kiro/videos/Captura de Tela (8).png
-     Tela real de emissao de MTR (Dados do Gerador / Dados do Transportador),
-     capturada na conta da propria empresa. O CPF do usuario administrador e
-     TARJADO aqui, porque o material e distribuido a clientes.
+  1. Prints proprios da Nunes & Lucato .... Kiro/videos/Captura de Tela (8..12).png
+     Telas reais do MTR Nacional, capturadas na conta da propria empresa:
 
-  2. Figuras 1 a 15 do "Guia Rapido - Login Unico GOV.BR - MTR Nacional - Sinir"
-     (MMA / SINIR, versao 1.0, 05/01/2026), extraidas do PDF oficial.
-     O PDF declara: reproducao permitida sem fins lucrativos, parcial ou total,
-     por qualquer meio, desde que citada a fonte (MMA) e o sitio de origem.
-     -> A citacao e feita no rodape de cada slide que usa uma figura e no
-        slide de fontes. Ver README.md, secao "Licenca das imagens oficiais".
+       (8)  cabecalho da sessao (empresa / usuario / perfil Transportador)
+       (9)  menu Configuracoes aberto
+       (10) tela "Gerenciar Usuarios" com a lista de usuarios cadastrados
+       (11) janela "Adicionar/Editar Usuario" — topo do formulario
+       (12) janela "Adicionar/Editar Usuario" — fim do formulario e chaves
 
-  3. Logomarca Nunes & Lucato ............. reaproveitada de
+     Sao esses prints que sustentam o tutorial da Rota A (slides 9 a 12).
+
+     Sobre o CPF: ele NAO e tarjado por padrao. O CPF da responsavel aparece
+     de proposito nos slides 06, 10 e 20, porque o cliente precisa dele para
+     conceder a autorizacao — tarjar em um print e publicar no slide ao lado
+     seria incoerente. Para tarjar de todo modo, use TARJAR_CPF = True (cobre
+     o cabecalho; a linha da tabela em (10) tem caixa propria).
+
+  2. Logomarca Nunes & Lucato ............. reaproveitada de
      apresentacoes/bioma_textil/assets/logo_dark.png / logo_white.png
-     (ativo ja versionado, gerado por bioma_textil/scripts/build_assets.py
-      a partir de Kiro/videos/360355.jpg).
+
+  3. Figuras 1 a 15 do "Guia Rapido - Login Unico GOV.BR - MTR Nacional -
+     Sinir" (MMA / SINIR, versao 1.0, 05/01/2026), extraidas do PDF oficial.
+     O PDF declara: reproducao permitida sem fins lucrativos, parcial ou
+     total, por qualquer meio, desde que citada a fonte (MMA) e o sitio de
+     origem. A citacao e feita no pe de cada slide que usa uma figura e no
+     slide de fontes. Ver README.md.
+     Usadas na Rota B (slides 8, 13, 14, 15 e 16).
 
 Nao utiliza nenhuma imagem de banco de imagens nem de terceiros.
 """
 import io
 import os
 import shutil
-import sys
 import urllib.request
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -45,14 +55,44 @@ BIOMA = os.path.join(_APRE, "bioma_textil", "assets")
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(CACHE, exist_ok=True)
 
-SHOT = os.path.join(VID, "Captura de Tela (8).png")
+
+def _shot(n):
+    return os.path.join(VID, f"Captura de Tela ({n}).png")
+
+
+# Todos os prints sao 1360x768 e compartilham o mesmo cabecalho.
+# Recorte: nome de saida -> (numero do print, (x0, y0, x1, y1))
+CROPS = {
+    # cabecalho da sessao: empresa, usuario e perfil  (slide 05)
+    "mtr_perfil.png":    (8,  (170, 6, 520, 58)),
+    # menu Configuracoes aberto  (slide 09)
+    "mtr_menu.png":      (9,  (10, 180, 700, 525)),
+    # tela Gerenciar Usuarios inteira  (slide 09)
+    "mtr_gerenciar.png": (10, (10, 240, 1270, 592)),
+    # formulario Adicionar/Editar Usuario - topo  (slide 10)
+    "mtr_form_top.png":  (11, (335, 188, 1025, 662)),
+    # formulario - fim, com as chaves e o botao Salvar  (slide 11)
+    "mtr_form_bot.png":  (12, (335, 188, 1025, 662)),
+    # so a faixa das chaves Ativo / Padrao-Administrador / token  (slide 11)
+    "mtr_toggles.png":   (12, (345, 525, 1010, 640)),
+    # linha do usuario cadastrado, com Tipo, Situacao e Acoes  (slide 12)
+    "mtr_linha.png":     (10, (120, 445, 1260, 578)),
+}
+
+# Tarja opcional do CPF, em pixels do original 1360x768.
+TARJAR_CPF = False
+CPF_BOX_CABECALHO = (211, 25, 274, 39)     # cabecalho verde, prints 8 a 12
+CPF_BOX_TABELA = (128, 497, 250, 545)      # coluna CPF da tabela, print 10
+CPF_FILL_CABECALHO = (11, 89, 84)
+CPF_FILL_TABELA = (255, 255, 255)
+
+UPSCALE = 2.0
 
 GUIA_URL = ("https://portal-api.sinir.gov.br/wp-content/uploads/2026/07/"
             "Guia-Rapido-Login-Unico-GOV.BR-MTR-Nacional-Sinir.pdf")
 GUIA_PDF = os.path.join(CACHE, "guia_login_unico_sinir.pdf")
 
 # Figura oficial -> (pagina do PDF, indice da imagem naquela pagina)
-# Conferido visualmente: a ordem de extracao coincide com a ordem de leitura.
 FIGURAS = {
     1:  (6, 1),    # tela de login do MTR Nacional, botao "Entrar com GOV.BR"
     2:  (6, 0),    # gov.br - "Numero do CPF" + Continuar
@@ -70,22 +110,6 @@ FIGURAS = {
     14: (13, 0),   # formulario de cadastro do empreendimento
     15: (14, 0),   # botao "Solicitar Acesso"
 }
-
-# Tarja sobre o CPF do usuario administrador, em pixels do print original
-# (1360x768). Cobre apenas os 11 digitos; o CNPJ da empresa e mantido.
-CPF_BOX = (211, 25, 274, 39)
-CPF_FILL = (11, 89, 84)          # verde do cabecalho do SINIR
-
-# Recortes do print (x0, y0, x1, y1) no original 1360x768
-CROPS = {
-    "mtr_topbar.png":        (0, 0, 1360, 62),
-    "mtr_perfil.png":        (170, 6, 520, 58),
-    "mtr_gerador.png":       (250, 62, 1100, 380),
-    "mtr_transportador.png": (250, 392, 1100, 768),
-    "mtr_form_full.png":     (250, 62, 1100, 768),
-}
-
-UPSCALE = 2.0
 
 
 def _sharpen_up(im, factor=UPSCALE):
@@ -112,21 +136,38 @@ def build_logo():
         print("       rode antes: python3 ../../bioma_textil/scripts/build_assets.py")
 
 
-# ======================================================== 2. PRINT PROPRIO
-def build_shot():
-    if not os.path.exists(SHOT):
-        print(f"[shot] AVISO: print nao encontrado em {SHOT}")
-        return
-    im = Image.open(SHOT).convert("RGB")
-    print(f"[shot] origem {im.size}  ({os.path.basename(SHOT)})")
+# ======================================================== 2. PRINTS PROPRIOS
+_cache_src = {}
 
-    ImageDraw.Draw(im).rectangle(list(CPF_BOX), fill=CPF_FILL)
-    print(f"[shot] CPF do usuario administrador tarjado em {CPF_BOX}")
 
-    for name, box in CROPS.items():
+def _abrir(n):
+    """Abre o print n, aplicando a tarja do CPF se configurada."""
+    if n in _cache_src:
+        return _cache_src[n]
+    p = _shot(n)
+    if not os.path.exists(p):
+        print(f"[shot] AVISO: print nao encontrado: {p}")
+        _cache_src[n] = None
+        return None
+    im = Image.open(p).convert("RGB")
+    if TARJAR_CPF:
+        d = ImageDraw.Draw(im)
+        d.rectangle(list(CPF_BOX_CABECALHO), fill=CPF_FILL_CABECALHO)
+        if n == 10:
+            d.rectangle(list(CPF_BOX_TABELA), fill=CPF_FILL_TABELA)
+    _cache_src[n] = im
+    return im
+
+
+def build_shots():
+    print(f"[shot] TARJAR_CPF = {TARJAR_CPF}")
+    for name, (n, box) in CROPS.items():
+        im = _abrir(n)
+        if im is None:
+            continue
         c = _sharpen_up(im.crop(box))
         c.save(os.path.join(OUT, name), optimize=True)
-        print(f"[shot] {name:24s} {c.size}")
+        print(f"[shot] {name:20s} {str(c.size):14s} <- print ({n}) {box}")
 
 
 # ================================================= 3. FIGURAS OFICIAIS
@@ -164,8 +205,7 @@ def build_figuras():
         return
 
     reader = PdfReader(GUIA_PDF)
-    # imagens uteis por pagina, na ordem de leitura, ignorando os elementos
-    # repetidos do template grafico do guia
+    # ignora os elementos repetidos do template grafico do guia
     TEMPLATE = {(384, 436), (2172, 724), (295, 219), (803, 92), (1055, 1491)}
     por_pagina = {}
     for pi, page in enumerate(reader.pages, 1):
@@ -194,7 +234,7 @@ def build_figuras():
 if __name__ == "__main__":
     build_logo()
     print()
-    build_shot()
+    build_shots()
     print()
     build_figuras()
     print("\nOK -> ativos em", OUT)

@@ -51,9 +51,12 @@ FONTE_GUIA = ("Figura do Guia Rápido “Login Único GOV.BR — MTR Nacional/Si
               "MMA/SINIR, v. 1.0, 05/01/2026")
 
 # ------------------------------------------------- dados do nosso responsavel
-NL_NOME = "Ana Nunes Lucato"
+# Conferidos no print (10): e o registro que o sistema mostra para o CPF.
+NL_NOME = "Ana Paola Nunes Lucato"
 NL_CPF = "142.803.138-30"
 NL_EMAIL = "anapnuneslucato@gmail.com"
+NL_CARGO = "sócia"
+NL_CELULAR = "[INSERIR CELULAR]"
 
 # ------------------------------------------------- cores locais (nao no core)
 RED      = "C0392B"      # destaques nos prints e faixas de alerta
@@ -254,32 +257,6 @@ def breadcrumb(sl, x, y, w, itens, rh=0.44, gap=0.08, ativo=INDIGO):
                            (x + 0.36, yy + rh + gap - 0.005)], GREY_LT, 1.0,
                       0.050)
     return y + len(itens) * (rh + gap)
-
-
-def form_mock(sl, x, y, w, h, titulo, campos, nota=None, accent=INDIGO):
-    """Esquema vetorial de uma janela de formulario (nao e print)."""
-    rect(sl, x, y, w, h, fill=WHITE, line=RULE, lw=1.0)
-    rect(sl, x, y, w, 0.42, fill=accent)
-    txt(sl, x + 0.24, y, w - 0.90, 0.42, titulo, font=F_SB, size=9.8,
-        color=WHITE, anchor="m")
-    poly(sl, x + w - 0.44, y + 0.14, 0.14, [(0, 0), (100, 100)], color=WHITE,
-         lw=1.1)
-    poly(sl, x + w - 0.44, y + 0.14, 0.14, [(100, 0), (0, 100)], color=WHITE,
-         lw=1.1)
-    yy = y + 0.66
-    for rot, val in campos:
-        txt(sl, x + 0.26, yy, w - 0.52, 0.20, rot, font=F_REG, size=7.6,
-            color=GREY, tracking=1.1, caps=True)
-        rect(sl, x + 0.26, yy + 0.22, w - 0.52, 0.34, fill=TINT, line=RULE,
-             lw=0.9)
-        if val:
-            txt(sl, x + 0.38, yy + 0.22, w - 0.76, 0.34, val, font=F_SB,
-                size=9.2, color=INK, anchor="m")
-        yy += 0.68
-    if nota:
-        txt(sl, x + 0.26, yy - 0.04, w - 0.52, 0.40, nota, size=8.4,
-            color=GREY, ls=1.26)
-    return yy
 
 
 # =============================================================== IMAGENS
@@ -607,8 +584,8 @@ def s05(prs):
          h=0.62, w=5.30)
 
     box = shot(sl, "mtr_perfil.png", 6.95, 2.10, 5.53,
-               cap="Cabeçalho da nossa conta no MTR Nacional. O CPF do usuário "
-                   "administrador foi tarjado.", max_h=1.10)
+               cap="Cabeçalho da nossa conta no MTR Nacional: empresa, usuário "
+                   "e perfil.", max_h=1.10)
     hl(sl, box, 0.010, 0.640, 0.560, 0.320)
     txt(sl, 6.95, 3.42, 5.53, 0.60,
         "O nosso perfil no sistema é de Transportador. Ele nos permite "
@@ -682,14 +659,14 @@ def s07(prs):
         (INDIGO, "Rota A", "Você cadastra o nosso CPF", ic_menu, "Mais rápida",
          [("Quem executa", "o Administrador da sua unidade"),
           ("Quanto tempo", "poucos minutos"),
-          ("O que precisa", "nome, CPF e e-mail (slide 6)"),
-          ("Detalhada nos slides", "8 a 12")]),
+          ("O que precisa", "os dados do slide 10"),
+          ("Passo a passo", "slides 8 a 12, com as telas")]),
         (GREEN, "Rota B", "Nós solicitamos, você aprova", ic_user_check,
          "Menos trabalho",
          [("Quem executa", "nossa equipe faz o pedido"),
           ("Seu papel", "apenas aprovar a solicitação"),
           ("O que precisa", "nada de antemão"),
-          ("Detalhada nos slides", "13 a 15")]),
+          ("Passo a passo", "slides 13 a 15")]),
     ]
     for i, (cl, kicker, t, ic, pill_txt, pares) in enumerate(rotas):
         x = ML + i * (cw + 0.32)
@@ -740,174 +717,185 @@ def s08(prs):
             "Outlook, Hotmail e Live não são aceitos no cadastro no momento.")
 
 
-# ============================ 09 · ROTA A · GERENCIADOR DE USUARIOS
+# ============================== 09 · ROTA A · MEUS USUARIOS
 def s09(prs):
     sl = add_slide(prs)
     bg_white(sl)
     head(sl, "Rota A  ·  Passo 2 de 4",
-         [("Abra o ", {}), ("Gerenciador de Usuários", {"font": F_SB})], 9)
+         [("Abra ", {}), ("Configurações › Meus Usuários", {"font": F_SB})], 9)
+    note(sl, 1.94,
+         "No menu principal, abra Configurações e clique em Meus Usuários. A "
+         "tela Gerenciar Usuários lista quem tem acesso à unidade e traz o "
+         "botão Adicionar Usuário.", icon=ic_menu, h=0.58)
 
-    steps_list(sl, ML, 2.02, 5.40,
-               [("Confirme que você é Administrador",
-                 "Só o Usuário Administrador vê o menu de usuários."),
-                ("Abra o menu Configurações",
-                 "Fica no menu principal do sistema, já dentro da unidade."),
-                ("Entre em Meus Usuários",
-                 "Depois, em Gerenciador de Usuários."),
-                ("Clique em Adicionar Usuário",
-                 "Abre a janela de cadastro do novo acesso.")],
-               gap=0.94)
+    yimg = 2.72
+    w1 = 4.28
+    b1 = shot(sl, "mtr_menu.png", ML, yimg, w1)
+    hl(sl, b1, 0.428, 0.024, 0.228, 0.128, n=1, badge="tr")
+    hl(sl, b1, 0.430, 0.462, 0.190, 0.090, n=2, badge="tr")
 
-    txt(sl, 6.95, 1.98, 5.53, 0.28, "Caminho no menu", font=F_SB, size=9.2,
-        color=INDIGO, tracking=1.5, caps=True)
-    breadcrumb(sl, 6.95, 2.34, 5.53,
-               ["Configurações", "Meus Usuários", "Gerenciador de Usuários",
-                "Adicionar Usuário"], rh=0.50, gap=0.12)
+    x2 = ML + w1 + 0.34
+    w2 = CR - x2
+    b2 = shot(sl, "mtr_gerenciar.png", x2, yimg, w2)
+    hl(sl, b2, 0.090, 0.262, 0.122, 0.113, n=3, badge="tr")
 
-    note(sl, 4.88,
+    ycap = yimg + max(b1[3], b2[3]) + 0.08
+    caption(sl, ML, ycap, w1,
+            "Menu Configurações aberto: 1 o menu, 2 Meus Usuários.")
+    caption(sl, x2, ycap, w2,
+            "Tela Gerenciar Usuários: 3 o botão Adicionar Usuário e a lista "
+            "de quem já tem acesso.")
+
+    note(sl, 5.40,
          "Não encontrou o menu Configurações? Então esse login não é "
-         "Administrador da unidade. Peça a quem cadastrou a empresa no MTR, "
+         "Administrador da unidade. Procure quem cadastrou a empresa no MTR, "
          "ou fale com a gente.", icon=ic_warning, color=AMBER_DK,
-         fill=AMBER_LT, h=0.70, x=6.95, w=5.53, size=9.2)
-
-    note(sl, 5.90,
-         "O Administrador é quem cadastrou a empresa no MTR. Ele edita dados "
-         "cadastrais, gerencia usuários e concede permissões de acesso.",
-         icon=ic_shield, h=0.56)
-    source(sl, 6.50,
-           "Fonte: comunicado oficial do SINIR.  [PRINT PENDENTE — tela do "
-           "Gerenciador de Usuários]")
+         fill=AMBER_LT, h=0.58)
+    note(sl, 6.02,
+         "O mesmo caminho serve para aprovar uma solicitação da Rota B.",
+         icon=ic_bulb, h=0.42, size=9.2)
+    source(sl, 6.52, "Prints próprios da Nunes & Lucato — MTR Nacional.")
     return sl
 
 
-# ================================ 10 · ROTA A · ADICIONAR USUARIO
+# ================================ 10 · ROTA A · CAMPOS DO FORMULARIO
 def s10(prs):
     sl = add_slide(prs)
     bg_white(sl)
     head(sl, "Rota A  ·  Passo 3 de 4",
-         [("Preencha os dados do ", {}), ("novo usuário", {"font": F_SB})], 10)
+         [("Preencha os campos ", {}), ("obrigatórios", {"font": F_SB})], 10)
 
-    kv_card(sl, ML, 2.02, 5.66, 1.86, "Copie exatamente estes dados",
-            [("Nome completo", NL_NOME),
+    kv_card(sl, ML, 2.02, 6.10, 2.42, "Copie exatamente estes dados",
+            [("Nome", NL_NOME),
              ("CPF", NL_CPF),
-             ("E-mail", NL_EMAIL)],
-            icon=ic_cpf, accent=INDIGO, rh=0.32)
+             ("Cargo", NL_CARGO),
+             ("Celular", NL_CELULAR),
+             ("Email", NL_EMAIL)],
+            icon=ic_cpf, accent=INDIGO, rh=0.32, top=0.74)
 
-    bullets(sl, ML, 4.10, 5.40, 1.7,
-            ["O CPF precisa ser digitado sem erro: é ele que liga a conta "
-             "Gov.br à sua unidade.",
-             "O e-mail é o canal pelo qual o sistema comunica o acesso.",
-             "Marque a opção de Administrador conforme o slide 11.",
-             "Salve a janela para concluir o cadastro."],
-            size=9.8, color=INK_SOFT, dot_color=INDIGO, ls=1.30, gap=9)
+    txt(sl, ML, 4.62, 6.10, 0.26, "Campos opcionais", font=F_SB, size=9.2,
+        color=GREY, tracking=1.4, caps=True)
+    txt(sl, ML, 4.92, 6.10, 0.30,
+        "Departamento, Telefone e Ramal podem ficar em branco.",
+        size=9.6, color=INK_SOFT, ls=1.26)
 
-    form_mock(sl, 6.95, 2.02, 5.53, 3.60, "Adicionar Usuário",
-              [("Nome completo", NL_NOME),
-               ("CPF", NL_CPF),
-               ("E-mail", NL_EMAIL)],
-              nota="Esquema ilustrativo da janela de cadastro, montado a "
-                   "partir do procedimento descrito no comunicado do SINIR. "
-                   "Não é uma captura de tela: os rótulos e a ordem dos "
-                   "campos podem variar no sistema.")
+    note(sl, 5.40,
+         "O CPF é o que liga a conta Gov.br dela à sua unidade: um dígito "
+         "errado impede o vínculo. Os campos marcados com asterisco são "
+         "obrigatórios.", icon=ic_warning, color=RED, fill=RED_LT, h=0.72,
+         w=6.10)
 
-    source(sl, 5.98,
-           "Fonte: comunicado oficial do SINIR — “Menu Configurações > Meus "
-           "Usuários > Gerenciador de Usuários > Adicionar Usuário. Preencha "
-           "os dados solicitados na janela”.  [CONFIRMAR — rótulos exatos dos "
-           "campos]  [PRINT PENDENTE — janela Adicionar Usuário]")
+    box = shot(sl, "mtr_form_top.png", 7.22, 2.02, CR - 7.22,
+               max_h=3.86, center_in=(7.22, CR - 7.22))
+    for i, fy in enumerate((0.2363, 0.3734, 0.5105, 0.7848), start=1):
+        hl(sl, box, 0.022, fy, 0.935, 0.066, n=i, badge="tl")
+    caption(sl, 7.22, box[1] + box[3] + 0.08, CR - 7.22,
+            "Janela Adicionar/Editar Usuário: 1 Nome, 2 CPF, 3 Cargo, "
+            "4 Celular.")
+    source(sl, 6.44, "Print próprio da Nunes & Lucato — MTR Nacional.")
     return sl
 
 
-# ============================ 11 · ROTA A · ADMINISTRADOR OU PADRAO
+# ============================ 11 · ROTA A · ATIVO E TIPO DE USUARIO
 def s11(prs):
     sl = add_slide(prs)
     bg_white(sl)
     head(sl, "Rota A  ·  Passo 4 de 4",
-         [("Marque o tipo: ", {}),
-          ("Administrador ou Padrão", {"font": F_SB})], 11)
+         [("Deixe ", {}), ("Ativo", {"font": F_SB}), (", escolha o ", {}),
+          ("tipo", {"font": F_SB}), (" e salve", {})], 11)
+    note(sl, 1.94,
+         "No fim do formulário há três chaves e o botão Salvar. É aqui que "
+         "você define se a nossa responsável entra como Usuário Padrão ou "
+         "Usuário Administrador.", icon=ic_user_plus, h=0.58)
+
+    box = shot(sl, "mtr_toggles.png", ML, 2.70, 8.20)
+    hl(sl, box, 0.015, 0.130, 0.155, 0.304, n=1, badge="tl")
+    hl(sl, box, 0.2105, 0.087, 0.4737, 0.478, n=2, badge="tr")
+    hl(sl, box, 0.409, 0.600, 0.167, 0.296, n=3, badge="br")
+    caption(sl, ML, 2.70 + box[3] + 0.08, 8.20,
+            "1 chave Ativo · 2 Usuário Padrão ou Usuário Administrador · "
+            "3 botão Salvar.")
+
+    kv_card(sl, 9.30, 2.70, CR - 9.30, 1.72, "A terceira chave",
+            [("O que é", "token de API"),
+             ("Precisamos?", "não"),
+             ("Deixe", "desligada")],
+            icon=ic_key, accent=GREY, rh=0.30, size=8.8, top=0.72)
 
     cw = (CW - 0.32) / 2
-    y = 2.02
+    y = 4.72
     tipos = [
-        (INDIGO, "Marque “Administrador”", ic_shield, "Mais autonomia",
-         ["Cuidamos também da gestão de acessos da sua unidade.",
-          "Conseguimos incluir e desativar usuários da nossa equipe.",
-          "Útil se a sua equipe não quiser administrar o sistema.",
+        (INDIGO, "Usuário Administrador", ic_shield, "Sugerido",
+         ["Cuidamos também da gestão de acessos da unidade.",
           "Você continua Administrador: o seu acesso não muda."]),
-        (GREY, "Deixe como “Padrão”", ic_people, "Mais restrito",
-         ["Acessamos apenas a operação da unidade.",
-          "Não temos acesso aos dados cadastrais da empresa.",
-          "Não conseguimos gerenciar usuários da unidade.",
+        (GREY, "Usuário Padrão", ic_people, "Mais restrito",
+         ["Sem acesso aos dados cadastrais nem aos usuários.",
           "Suficiente para a rotina de emissão. [CONFIRMAR]"]),
     ]
     for i, (cl, t, ic, pill_txt, its) in enumerate(tipos):
         x = ML + i * (cw + 0.32)
-        card(sl, x, y, cw, 3.20, fill=WHITE, line=RULE, accent=cl)
-        ic(sl, x + 0.30, y + 0.32, 0.44, cl)
-        pill(sl, x + cw - 1.62, y + 0.32, 1.32, 0.28, pill_txt, fill=cl,
-             size=7.2)
-        txt(sl, x + 0.30, y + 0.92, cw - 0.60, 0.60, t, font=F_LIGHT,
-            size=15.5, color=INK, ls=1.22)
-        hline(sl, x + 0.30, y + 1.60, cw - 0.60, RULE, 1.0)
-        bullets(sl, x + 0.30, y + 1.78, cw - 0.66, 1.3, its, size=9.6,
-                color=INK_SOFT, dot_color=cl, ls=1.28, gap=8)
+        card(sl, x, y, cw, 1.56, fill=WHITE, line=RULE, accent=cl)
+        ic(sl, x + 0.28, y + 0.26, 0.36, cl)
+        pill(sl, x + cw - 1.42, y + 0.26, 1.12, 0.26, pill_txt, fill=cl,
+             size=7.0)
+        txt(sl, x + 0.76, y + 0.30, cw - 2.30, 0.30, t, font=F_SB, size=11.0,
+            color=INK)
+        bullets(sl, x + 0.28, y + 0.78, cw - 0.62, 0.7, its, size=9.2,
+                color=INK_SOFT, dot_color=cl, ls=1.26, gap=6)
 
-    note(sl, 5.34,
-         "Nossa sugestão: marque “Administrador” para a nossa responsável. "
-         "Assim resolvemos qualquer ajuste de acesso sem precisar acionar a "
-         "sua equipe de novo.", icon=ic_bulb, h=0.66)
-    source(sl, 6.14,
-           "Fonte: comunicado oficial do SINIR (atribuições de cada tipo de "
-           "usuário). [CONFIRMAR — se o perfil Padrão basta para emitir MTR "
-           "na sua unidade]  Você pode trocar o tipo depois, a qualquer "
-           "momento.")
+    source(sl, 6.44,
+           "Print próprio da Nunes & Lucato. [CONFIRMAR — se o perfil Padrão "
+           "basta para emitir MTR na sua unidade]  O tipo pode ser trocado "
+           "depois, a qualquer momento.")
     return sl
 
 
-# =============================== 12 · ROTA A · CONCLUIR E REVOGAR
+# =============================== 12 · ROTA A · CONFERIR E REVOGAR
 def s12(prs):
     sl = add_slide(prs)
     bg_white(sl)
     head(sl, "Rota A  ·  Conclusão",
-         [("Salve, confirme com a gente e ", {}),
+         [("Confira a lista e ", {}),
           ("saiba como revogar", {"font": F_SB})], 12)
+    note(sl, 1.94,
+         "Depois de salvar, a nossa responsável passa a aparecer em Usuários "
+         "Cadastrados. Confira as colunas Tipo e Situação — e nos avise.",
+         icon=ic_user_check, color=GREEN, fill=GREEN_LT, h=0.58)
 
-    txt(sl, ML, 1.98, 5.50, 0.28, "Depois de salvar", font=F_SB, size=9.2,
-        color=GREEN, tracking=1.5, caps=True)
-    checks = [("Confira o CPF cadastrado",
-               "Um dígito errado impede o vínculo."),
-              ("Confirme se o usuário ficou “Ativo”",
-               "É o que libera o acesso à unidade."),
-              ("Nos avise por escrito",
-               "Testamos o acesso e retomamos a emissão na mesma hora.")]
-    y = 2.36
-    for i, (t, d) in enumerate(checks):
-        yy = y + i * 0.80
-        rect(sl, ML, yy + 0.06, 0.30, 0.30, fill=None, line=GREEN, lw=1.3)
-        poly(sl, ML + 0.055, yy + 0.115, 0.19, [(10, 52), (40, 80), (92, 18)],
-             color=GREEN, lw=1.5)
-        txt(sl, ML + 0.50, yy, 5.0, 0.30, t, font=F_SB, size=10.6, color=INK,
-            ls=1.22)
-        txt(sl, ML + 0.50, yy + 0.30, 5.0, 0.30, d, size=9.0, color=GREY,
-            ls=1.24)
+    box = shot(sl, "mtr_linha.png", ML, 2.68, CW)
+    hl(sl, box, 0.6553, 0.005, 0.1158, 0.745, n=1, badge="br")
+    hl(sl, box, 0.8675, 0.005, 0.0579, 0.745, n=2, badge="br")
+    hl(sl, box, 0.9254, 0.005, 0.0482, 0.745, n=3, badge="br")
+    caption(sl, ML, 2.68 + box[3] + 0.08, CW,
+            "Lista de usuários cadastrados: 1 coluna Tipo · 2 coluna Situação "
+            "· 3 ícone de edição, em Ações.")
 
-    txt(sl, 6.95, 1.98, 5.53, 0.28, "Para retirar o acesso depois", font=F_SB,
-        size=9.2, color=INDIGO, tracking=1.5, caps=True)
-    breadcrumb(sl, 6.95, 2.34, 5.53,
-               ["Configurações", "Meus Usuários", "Gerenciador de Usuários",
-                "Ícone de edição do usuário"], rh=0.46, gap=0.10)
-    txt(sl, 6.95, 4.68, 5.53, 0.50,
-        "Na janela de edição, desmarque a opção “Ativo” e, se aplicável, "
-        "“Administrador”.", size=9.6, color=INK_SOFT, ls=1.30)
+    cw = (CW - 0.32) / 2
+    y = 4.58
+    card(sl, ML, y, cw, 1.30, fill=TINT, line=None, accent=GREEN)
+    ic_user_check(sl, ML + 0.28, y + 0.24, 0.34, GREEN)
+    txt(sl, ML + 0.74, y + 0.28, cw - 1.0, 0.28, "Confira antes de fechar",
+        font=F_SB, size=10.4, color=INK)
+    bullets(sl, ML + 0.28, y + 0.68, cw - 0.62, 0.6,
+            ["Situação: Ativo.",
+             "Tipo: conforme você escolheu no passo 4."],
+            size=9.2, color=INK_SOFT, dot_color=GREEN, ls=1.26, gap=6)
 
-    note(sl, 5.42,
-         "O acesso é reversível a qualquer momento e não depende de nós. "
+    x2 = ML + cw + 0.32
+    card(sl, x2, y, cw, 1.30, fill=TINT, line=None, accent=INDIGO)
+    ic_shield(sl, x2 + 0.28, y + 0.24, 0.34, INDIGO)
+    txt(sl, x2 + 0.74, y + 0.28, cw - 1.0, 0.28, "Para revogar depois",
+        font=F_SB, size=10.4, color=INK)
+    txt(sl, x2 + 0.28, y + 0.68, cw - 0.56, 0.56,
+        "Mesmo caminho, clique no ícone de edição e desligue a chave Ativo. "
+        "Reversível a qualquer momento, sem depender de nós.",
+        size=9.2, color=INK_SOFT, ls=1.28)
+
+    note(sl, 5.98,
          "Regra do sistema: um Administrador só pode ser inativado se houver "
-         "outro Administrador cadastrado na unidade.",
-         icon=ic_shield, color=GREEN, fill=GREEN_LT, h=0.76, size=10.0)
-    source(sl, 6.30,
-           "Fonte: comunicado oficial do SINIR (procedimento de inativação de "
-           "usuário).  [PRINT PENDENTE — janela de edição do usuário]")
+         "outro Administrador cadastrado na unidade.", icon=ic_warning,
+         color=AMBER_DK, fill=AMBER_LT, h=0.46, size=9.2)
+    source(sl, 6.50, "Print próprio da Nunes & Lucato — MTR Nacional.")
     return sl
 
 
@@ -927,8 +915,9 @@ def s13(prs):
          ("guia_fig07.png",
           "Figura 7 — destaque no botão “Pesquisar CPF/CNPJ”.")],
         hls_b=[(0.6916, 0.2040, 0.0906, 0.0580, 1, "tl")],
-        obs="Este passo é executado pela nossa equipe. Você não precisa fazer "
-            "nada ainda.")
+        obs="Este passo é da nossa equipe. Se o sistema não aceitar a "
+            "solicitação, confira em Configurações › Ativar solicitações "
+            "usuário se a sua unidade recebe pedidos de acesso. [CONFIRMAR]")
 
 
 # ============================== 14 · ROTA B · SOLICITAR O ACESSO
@@ -1140,8 +1129,8 @@ def s19(prs):
          "Crie em gov.br antes de tudo. E-mails Outlook, Hotmail e Live não "
          "são aceitos no momento."),
         ("Não aparece o menu Configurações",
-         "Esse login não é Administrador da unidade. Procure quem cadastrou a "
-         "empresa no MTR."),
+         "Esse login não é Administrador da unidade. Só ele vê Meus Usuários e "
+         "a tela Gerenciar Usuários."),
         ("O Administrador saiu da empresa",
          "Outro Administrador precisa assumir antes: só é possível inativar se "
          "houver outro cadastrado."),

@@ -21,7 +21,7 @@ material é obter a autorização de acesso.
 | `Nunes_Lucato_MTR_Login_Unico_Govbr.pptx` | **Entregável principal** — PPTX editável, 16:9, Montserrat |
 | `Nunes_Lucato_MTR_Login_Unico_Govbr.pdf` | Versão para envio / projeção |
 | `assets/` | Logomarca + prints tratados (derivados, regeneráveis) |
-| `scripts/build_assets.py` | Prepara o print próprio e extrai as figuras oficiais |
+| `scripts/build_assets.py` | Recorta os prints próprios e extrai as figuras oficiais |
 | `scripts/nl_sinir_deck.py` | Monta os 21 slides |
 
 ## Estrutura — 21 slides
@@ -36,10 +36,10 @@ material é obter a autorização de acesso.
 | 06 | A solução: você autoriza o nosso CPF | Solução |
 | 07 | As duas rotas (comparativo A × B) | Solução |
 | 08 | Rota A · 1 — entrar no MTR pelo Gov.br | Rota A |
-| 09 | Rota A · 2 — abrir o Gerenciador de Usuários | Rota A |
-| 10 | Rota A · 3 — preencher os dados do novo usuário | Rota A |
-| 11 | Rota A · 4 — Administrador ou Padrão | Rota A |
-| 12 | Rota A · conclusão — salvar, confirmar e revogar | Rota A |
+| 09 | Rota A · 2 — Configurações › Meus Usuários | Rota A |
+| 10 | Rota A · 3 — preencher os campos obrigatórios | Rota A |
+| 11 | Rota A · 4 — Ativo, tipo de usuário e Salvar | Rota A |
+| 12 | Rota A · conclusão — conferir a lista e revogar | Rota A |
 | 13 | Rota B · 1 — CPF sem vínculo | Rota B |
 | 14 | Rota B · 2 — localizar a empresa e solicitar acesso | Rota B |
 | 15 | Rota B · 3 — o Administrador aprova | Rota B |
@@ -52,24 +52,36 @@ material é obter a autorização de acesso.
 
 ### As duas rotas de autorização
 
-**Rota A (slides 8 a 12)** — o Administrador da unidade do cliente cadastra o
-CPF da nossa responsável: `Configurações › Meus Usuários › Gerenciador de
-Usuários › Adicionar Usuário`. É o tutorial detalhado pedido no briefing, com
-quatro passos, os dados a digitar, a decisão entre perfil Administrador e
-Padrão, e o procedimento de revogação.
+**Rota A (slides 8 a 12)** — o Administrador da unidade do cliente cadastra a
+nossa responsável. Quatro passos, **todos com a tela real**: entrar pelo
+Gov.br, abrir `Configurações › Meus Usuários`, preencher os campos
+obrigatórios na janela *Adicionar/Editar Usuário*, e definir a chave *Ativo* e
+o tipo de usuário antes de salvar. Fecha conferindo a linha na lista de
+usuários cadastrados e mostrando como revogar.
 
 **Rota B (slides 13 a 15)** — nossa equipe entra com o CPF da responsável,
 localiza a empresa por `Pesquisar CPF/CNPJ`, solicita acesso à unidade e o
-Administrador do cliente aprova. É o fluxo documentado no Guia Rápido oficial
-(Cenário 02), então tem telas reais.
+Administrador do cliente aprova. Fluxo documentado no Guia Rápido oficial
+(Cenário 02).
 
 **Alternativa (slide 17)** — o briefing pedia para registrar que a emissão
 continua possível se o gerador repassar o login e a senha Gov.br do CPF
 correspondente. Isso está no deck como escolha do cliente, ao lado dos pontos
-a considerar (a conta Gov.br é pessoal e intransferível, a mesma senha abre
-outros serviços do governo, e uma troca de senha derruba o acesso). As Rotas A
-e B aparecem como recomendadas porque dão o mesmo resultado prático sem expor
-a conta pessoal. **A decisão fica com o cliente** — nenhuma opção foi bloqueada.
+a considerar. As Rotas A e B aparecem como recomendadas porque dão o mesmo
+resultado sem expor a conta pessoal. **A decisão fica com o cliente.**
+
+## Correções trazidas pelos prints reais
+
+Os prints `Captura de Tela (9)` a `(12)` corrigiram duas coisas que estavam
+erradas quando o tutorial foi escrito só a partir do texto do comunicado:
+
+| Antes (texto do comunicado) | Agora (tela real) |
+|---|---|
+| `Configurações › Meus Usuários › Gerenciador de Usuários › Adicionar Usuário` (4 níveis) | `Configurações › Meus Usuários` → tela **Gerenciar Usuários** → botão **Adicionar Usuário** (3 níveis) |
+| Campos desconhecidos, esquema ilustrativo | Campos reais: **Nome\*, CPF\*, Cargo\*, Departamento, Celular\*, Telefone, Ramal, Email\***, chaves *Ativo* / *Usuário Padrão–Administrador* / *Pode gerar token API*, botão *Salvar* |
+
+O esquema vetorial da janela que existia no slide 10 foi substituído pelo print
+real, e o helper `form_mock()` foi removido do script.
 
 ## Dados preenchidos
 
@@ -77,18 +89,22 @@ Responsável da Nunes & Lucato, usada nos slides 06, 10, 15, 20 e 21:
 
 | Campo | Valor |
 |---|---|
-| Nome completo | Ana Nunes Lucato |
+| Nome | Ana Paola Nunes Lucato |
 | CPF | 142.803.138-30 |
-| E-mail | anapnuneslucato@gmail.com |
+| Cargo | sócia |
+| Celular | `[INSERIR CELULAR]` |
+| Email | anapnuneslucato@gmail.com |
 
 Ficam em constantes no topo de `nl_sinir_deck.py` (`NL_NOME`, `NL_CPF`,
-`NL_EMAIL`) — trocar num só lugar atualiza todos os slides.
+`NL_CARGO`, `NL_CELULAR`, `NL_EMAIL`) — trocar num só lugar atualiza todos os
+slides.
 
-> **Divergência a conferir.** O cabeçalho do sistema, no print de `videos/`,
-> mostra **“Ana Paola Nunes Lucato”**. O deck usa “Ana Nunes Lucato”, conforme
-> informado. Como o cadastro é vinculado a CPF, vale confirmar qual é o nome
-> completo do registro antes de enviar o material — um nome que não bate com o
-> CPF pode travar o cadastro no lado do cliente.
+O nome usado é **Ana Paola Nunes Lucato**, que é o que o print `(10)` mostra
+como registro do CPF no sistema — e não “Ana Nunes Lucato”, informado antes.
+Como o cadastro é vinculado a CPF, vale o nome do registro.
+
+**Celular é campo obrigatório** na janela de cadastro (print `(12)`) e ainda
+não foi informado. Sem ele o cliente não consegue concluir a Rota A.
 
 ## Identidade visual
 
@@ -108,22 +124,35 @@ Mesmo sistema de design do deck Bioma Têxtil, importado de
 ## Requisitos técnicos atendidos
 
 - PPTX 16:9 exato (13,3333 × 7,5 in) — verificado.
-- Ícones, diagramas, fluxos, “tabelas”, o esquema da janela *Adicionar Usuário*
-  e os destaques em vermelho são **formas nativas editáveis**. Nenhum destaque
-  foi queimado no pixel do print, então qualquer marcação pode ser movida no
-  PowerPoint.
+- Ícones, diagramas, fluxos, “tabelas” e os destaques em vermelho são **formas
+  nativas editáveis**. Nenhum destaque foi queimado no pixel do print, então
+  qualquer marcação pode ser movida no PowerPoint.
+- Os destaques usam **coordenadas fracionárias (0–1) da imagem**, medidas
+  pixel a pixel nos prints (bordas dos campos, limites das colunas da tabela,
+  posição das chaves e dos botões). Trocar um print pelo mesmo enquadramento
+  mantém tudo alinhado.
 - Transição *fade* discreta; sem animações.
 - `nl_sinir_deck.py --check` valida a geometria: acusa forma fora do slide e
   conteúdo invadindo a faixa do rodapé.
 
 ## Origem das imagens
 
-**1. Print próprio da Nunes & Lucato** — `videos/Captura de Tela (8).png`,
-tela real do sistema na conta da empresa. O deck usa o recorte do cabeçalho
-(slide 05). O **CPF exibido nesse cabeçalho é tarjado** por `build_assets.py`:
-não para esconder o CPF (ele aparece de propósito nos slides 06 e 10, porque o
-cliente precisa dele), mas para evitar exposição incidental dentro de um print
-de sessão logada. Para desligar, use `TARJAR_CPF = False`.
+**1. Prints próprios da Nunes & Lucato** — `videos/Captura de Tela (8..12).png`,
+telas reais do MTR Nacional na conta da empresa:
+
+| Print | Tela | Slide |
+|---|---|---|
+| (8) | cabeçalho da sessão: empresa, usuário e perfil | 05 |
+| (9) | menu *Configurações* aberto | 09 |
+| (10) | tela *Gerenciar Usuários* com a lista de usuários | 09 e 12 |
+| (11) | janela *Adicionar/Editar Usuário* — topo | 10 |
+| (12) | janela *Adicionar/Editar Usuário* — chaves e *Salvar* | 11 |
+
+O CPF **não** é tarjado: ele aparece de propósito nos slides 06, 10 e 20,
+porque o cliente precisa dele para conceder a autorização — tarjar num print e
+publicar no slide ao lado seria incoerente. Para tarjar de todo modo, use
+`TARJAR_CPF = True` em `build_assets.py` (há caixa para o cabeçalho e outra
+para a coluna CPF da tabela).
 
 **2. Figuras 1 a 15 do Guia Rápido oficial** — “Login Único GOV.BR — MTR
 Nacional/Sinir”, MMA/SINIR, versão 1.0, 05/01/2026, extraídas do PDF publicado
@@ -141,36 +170,29 @@ Ambiente e Mudança do Clima) e o sítio de origem. No deck, cada slide que usa
 uma figura traz o crédito no pé, e o slide 21 lista as fontes.
 
 > Como este é um material de orientação distribuído gratuitamente aos clientes,
-> a condição “sem fins lucrativos” foi considerada atendida. **Se o jurídico
-> preferir não depender dessa interpretação**, basta substituir
-> `assets/guia_fig*.png` por prints próprios das mesmas telas e regerar: os
-> destaques em vermelho usam coordenadas fracionárias (0–1) da imagem, então
-> continuam alinhados se o novo print tiver o mesmo enquadramento.
+> a condição “sem fins lucrativos” foi considerada atendida. Se o jurídico
+> preferir não depender dessa interpretação, basta substituir
+> `assets/guia_fig*.png` por prints próprios das mesmas telas e regerar.
 
 ## Integridade do conteúdo
 
-Não há dados inventados. O fluxo de acesso e de solicitação de vínculo vem do
-Guia Rápido oficial; os tipos de usuário (Administrador e Padrão), o caminho de
-menu `Configurações › Meus Usuários › Gerenciador de Usuários`, o procedimento
-de inativação, a restrição a e-mails Microsoft e o canal `mtr.sinir@mma.gov.br`
-vêm do comunicado oficial do SINIR.
-
-O slide 10 mostra um **esquema vetorial** da janela *Adicionar Usuário*, não um
-print. Isso está declarado no próprio slide: o SINIR documenta o caminho de
-menu e manda “preencher os dados solicitados na janela”, mas não publica a tela
-nem os rótulos dos campos.
+Não há dados inventados. A Rota A vem inteira dos prints próprios. O fluxo de
+acesso e de solicitação de vínculo vem do Guia Rápido oficial. Os tipos de
+usuário, o procedimento de inativação, a restrição a e-mails Microsoft e o
+canal `mtr.sinir@mma.gov.br` vêm do comunicado oficial do SINIR.
 
 Marcadores deixados de propósito:
 
-- `[INSERIR TELEFONE]` — contato (slide 21).
-- `[CONFIRMAR — rótulos exatos dos campos]` (slide 10).
+- `[INSERIR CELULAR]` (slide 10) — campo obrigatório do cadastro.
+- `[INSERIR TELEFONE]` (slide 21) — contato.
 - `[CONFIRMAR — se o perfil Padrão basta para emitir MTR]` (slide 11): o
   comunicado descreve o que o perfil Padrão **não** acessa (menus cadastrais e
-  de usuários), mas não afirma explicitamente que ele emite MTR.
-- `[PRINT PENDENTE]` (slides 09, 10, 12 e 15): telas do Gerenciador de
-  Usuários, da janela *Adicionar Usuário*, da janela de edição do usuário e da
-  aprovação da solicitação. O SINIR não publica essas telas e não temos print
-  próprio. **Nenhuma tela foi descrita como se houvesse print.**
+  de usuários), mas não afirma que ele emite MTR.
+- `[CONFIRMAR]` sobre `Configurações › Ativar solicitações usuário` (slide 13):
+  o menu existe no print `(9)` e o nome sugere que ele governa o recebimento de
+  solicitações da Rota B, mas isso não foi verificado.
+- `[PRINT PENDENTE]` (slide 15) — tela de aprovação da solicitação, do lado do
+  Administrador do cliente. É a única tela do fluxo que ainda falta.
 
 ## Regerar
 
@@ -180,7 +202,7 @@ variante Calibri.
 
 ```bash
 cd scripts
-python3 build_assets.py                                   # print + figuras -> ../assets
+python3 build_assets.py                                   # prints + figuras -> ../assets
 python3 nl_sinir_deck.py ../Nunes_Lucato_MTR_Login_Unico_Govbr.pptx
 python3 nl_sinir_deck.py --check                          # só valida o layout
 soffice --headless --convert-to pdf --outdir .. \
