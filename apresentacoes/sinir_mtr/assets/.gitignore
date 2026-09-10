@@ -1,0 +1,15 @@
+# Ativos derivados, regeneraveis com: python3 ../scripts/build_assets.py
+#
+# Recortes do print proprio (../../../videos/Captura de Tela (8).png)
+mtr_*.png
+
+# Figuras 1 a 15 extraidas do Guia Rapido oficial do MMA/SINIR
+guia_fig*.png
+
+# Cache do PDF oficial baixado pelo build_assets.py (16 MB)
+_cache/
+
+# A logomarca e copiada de ../../bioma_textil/assets/ e nao precisa ser
+# versionada de novo aqui
+logo_dark.png
+logo_white.png
