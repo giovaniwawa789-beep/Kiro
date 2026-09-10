@@ -56,7 +56,7 @@ NL_NOME = "Ana Paola Nunes Lucato"
 NL_CPF = "142.803.138-30"
 NL_EMAIL = "anapnuneslucato@gmail.com"
 NL_CARGO = "sócia"
-NL_CELULAR = "[INSERIR CELULAR]"
+NL_CELULAR = "(11) 94755-1771"
 
 # ------------------------------------------------- cores locais (nao no core)
 RED      = "C0392B"      # destaques nos prints e faixas de alerta
@@ -780,10 +780,10 @@ def s10(prs):
         size=9.6, color=INK_SOFT, ls=1.26)
 
     note(sl, 5.40,
-         "O CPF é o que liga a conta Gov.br dela à sua unidade: um dígito "
-         "errado impede o vínculo. Os campos marcados com asterisco são "
-         "obrigatórios.", icon=ic_warning, color=RED, fill=RED_LT, h=0.72,
-         w=6.10)
+         "Os cinco campos acima são os obrigatórios (marcados com asterisco no "
+         "sistema). O CPF é o que liga a conta Gov.br dela à sua unidade: um "
+         "dígito errado impede o vínculo.", icon=ic_warning, color=RED,
+         fill=RED_LT, h=0.72, w=6.10)
 
     box = shot(sl, "mtr_form_top.png", 7.22, 2.02, CR - 7.22,
                max_h=3.86, center_in=(7.22, CR - 7.22))
@@ -1227,7 +1227,7 @@ def s21(prs):
 
     contatos = [("Fale com a nossa equipe", NL_NOME),
                 ("E-mail", NL_EMAIL),
-                ("Telefone / WhatsApp", "[INSERIR TELEFONE]"),
+                ("Telefone / WhatsApp", NL_CELULAR),
                 ("Suporte oficial do MTR Nacional", "mtr.sinir@mma.gov.br")]
     y = 4.18
     for i, (k, v) in enumerate(contatos):

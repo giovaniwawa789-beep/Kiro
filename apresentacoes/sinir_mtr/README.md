@@ -92,7 +92,7 @@ Responsável da Nunes & Lucato, usada nos slides 06, 10, 15, 20 e 21:
 | Nome | Ana Paola Nunes Lucato |
 | CPF | 142.803.138-30 |
 | Cargo | sócia |
-| Celular | `[INSERIR CELULAR]` |
+| Celular / WhatsApp | (11) 94755-1771 |
 | Email | anapnuneslucato@gmail.com |
 
 Ficam em constantes no topo de `nl_sinir_deck.py` (`NL_NOME`, `NL_CPF`,
@@ -103,8 +103,11 @@ O nome usado é **Ana Paola Nunes Lucato**, que é o que o print `(10)` mostra
 como registro do CPF no sistema — e não “Ana Nunes Lucato”, informado antes.
 Como o cadastro é vinculado a CPF, vale o nome do registro.
 
-**Celular é campo obrigatório** na janela de cadastro (print `(12)`) e ainda
-não foi informado. Sem ele o cliente não consegue concluir a Rota A.
+O **celular é campo obrigatório** na janela de cadastro (print `(12)`) — sem
+ele o cliente não conclui a Rota A. O mesmo número aparece como contato no
+slide 21.
+
+Não há mais nenhum marcador `[INSERIR]` no deck: ele está pronto para envio.
 
 ## Identidade visual
 
@@ -183,8 +186,6 @@ canal `mtr.sinir@mma.gov.br` vêm do comunicado oficial do SINIR.
 
 Marcadores deixados de propósito:
 
-- `[INSERIR CELULAR]` (slide 10) — campo obrigatório do cadastro.
-- `[INSERIR TELEFONE]` (slide 21) — contato.
 - `[CONFIRMAR — se o perfil Padrão basta para emitir MTR]` (slide 11): o
   comunicado descreve o que o perfil Padrão **não** acessa (menus cadastrais e
   de usuários), mas não afirma que ele emite MTR.
