@@ -4,13 +4,19 @@
 Deck Nunes & Lucato — Mudanca no acesso ao MTR Nacional (Login Unico Gov.br).
 
 Comunicado aos clientes geradores: o que mudou desde 01/08/2026, por que a
-Nunes & Lucato deixou de conseguir emitir MTR em nome do gerador, as duas
-saidas possiveis e o tutorial completo de emissao.
+Nunes & Lucato deixou de conseguir emitir MTR em nome do gerador e — em
+detalhe — como autorizar o nosso usuario na unidade do cliente para que a
+emissao volte ao normal.
+
+ESCOPO. O deck cobre acesso ao sistema e cadastro/autorizacao de usuario.
+NAO ensina o gerador a preencher e emitir MTR: os slides de emissao (dados do
+gerador, dados do transportador, residuos/CDF) foram retirados de proposito,
+porque a emissao continua sendo feita por nos.
 
 Reaproveita o sistema de design de apresentacoes/bioma_textil/scripts/nl_core.py
 (paleta, tipografia, icones vetoriais, rodape com a logomarca) — nada e alterado
 no core; os icones novos (cadeado, chave, CPF, alerta, navegador, calendario,
-usuario+) sao definidos aqui.
+usuario+, proibido, engrenagem-menu) sao definidos aqui.
 
 Uso:
     python3 build_assets.py
@@ -39,16 +45,21 @@ from nl_core import *                                          # noqa: E402,F403
 from PIL import Image as _PIL                                  # noqa: E402
 
 A = nl.ASSETS
-TOTAL = 26
+TOTAL = 21
 LABEL = "MTR Nacional  ·  Login Único Gov.br"
 FONTE_GUIA = ("Figura do Guia Rápido “Login Único GOV.BR — MTR Nacional/Sinir”, "
               "MMA/SINIR, v. 1.0, 05/01/2026")
+
+# ------------------------------------------------- dados do nosso responsavel
+NL_NOME = "Ana Nunes Lucato"
+NL_CPF = "142.803.138-30"
+NL_EMAIL = "anapnuneslucato@gmail.com"
 
 # ------------------------------------------------- cores locais (nao no core)
 RED      = "C0392B"      # destaques nos prints e faixas de alerta
 RED_LT   = "FCEDEB"
 AMBER_LT = "FDF4E3"
-GOVBR    = "1351B4"      # azul institucional gov.br, uso pontual
+AMBER_DK = "B08535"
 
 
 def _sync_fonts():
@@ -132,10 +143,33 @@ def ic_user_plus(sl, x, y, s, c=INDIGO, lw=1.25):
     return sl
 
 
+def ic_user_check(sl, x, y, s, c=GREEN, lw=1.25):
+    """Usuario autorizado."""
+    circle(sl, x + 0.38 * s, y + 0.32 * s, 0.30 * s, fill=None, line=c, lw=lw)
+    poly(sl, x, y, s, arc_pts(38, 78, 0, 195, 345, 22, rx=26, ry=22), color=c,
+         lw=lw)
+    poly(sl, x, y, s, [(64, 68), (74, 78), (94, 56)], color=c, lw=lw * 1.15)
+    return sl
+
+
 def ic_ban(sl, x, y, s, c=RED, lw=1.25):
     """Bloqueado / nao funciona mais."""
     circle(sl, x + 0.5 * s, y + 0.5 * s, 0.86 * s, fill=None, line=c, lw=lw)
     poly(sl, x, y, s, [(20, 80), (80, 20)], color=c, lw=lw)
+    return sl
+
+
+def ic_menu(sl, x, y, s, c=INDIGO, lw=1.25):
+    """Menu de configuracoes: engrenagem simplificada + linhas de menu."""
+    circle(sl, x + 0.30 * s, y + 0.30 * s, 0.34 * s, fill=None, line=c, lw=lw)
+    circle(sl, x + 0.30 * s, y + 0.30 * s, 0.13 * s, fill=None, line=c, lw=lw * 0.8)
+    for k in range(6):
+        a = k * 60
+        p0 = nl._rot((30 + 19, 30), (30, 30), a)
+        p1 = nl._rot((30 + 26, 30), (30, 30), a)
+        poly(sl, x, y, s, [p0, p1], color=c, lw=lw * 0.85)
+    for i, yy in enumerate((62, 76, 90)):
+        poly(sl, x, y, s, [(46, yy), (94 - i * 14, yy)], color=c, lw=lw * 0.85)
     return sl
 
 
@@ -206,6 +240,48 @@ def kv_card(sl, x, y, w, h, titulo, pares, icon=None, accent=INDIGO,
     return yy
 
 
+def breadcrumb(sl, x, y, w, itens, rh=0.44, gap=0.08, ativo=INDIGO):
+    """Caminho de menu em blocos empilhados, ultimo bloco destacado."""
+    for i, item in enumerate(itens):
+        yy = y + i * (rh + gap)
+        ultimo = i == len(itens) - 1
+        rect(sl, x, yy, w, rh, fill=ativo if ultimo else TINT,
+             line=None if ultimo else RULE, lw=1.0)
+        txt(sl, x + 0.24, yy, w - 0.48, rh, item, font=F_SB, size=10.2,
+            color=WHITE if ultimo else INK, anchor="m")
+        if not ultimo:
+            arrow_abs(sl, [(x + 0.36, yy + rh + 0.005),
+                           (x + 0.36, yy + rh + gap - 0.005)], GREY_LT, 1.0,
+                      0.050)
+    return y + len(itens) * (rh + gap)
+
+
+def form_mock(sl, x, y, w, h, titulo, campos, nota=None, accent=INDIGO):
+    """Esquema vetorial de uma janela de formulario (nao e print)."""
+    rect(sl, x, y, w, h, fill=WHITE, line=RULE, lw=1.0)
+    rect(sl, x, y, w, 0.42, fill=accent)
+    txt(sl, x + 0.24, y, w - 0.90, 0.42, titulo, font=F_SB, size=9.8,
+        color=WHITE, anchor="m")
+    poly(sl, x + w - 0.44, y + 0.14, 0.14, [(0, 0), (100, 100)], color=WHITE,
+         lw=1.1)
+    poly(sl, x + w - 0.44, y + 0.14, 0.14, [(100, 0), (0, 100)], color=WHITE,
+         lw=1.1)
+    yy = y + 0.66
+    for rot, val in campos:
+        txt(sl, x + 0.26, yy, w - 0.52, 0.20, rot, font=F_REG, size=7.6,
+            color=GREY, tracking=1.1, caps=True)
+        rect(sl, x + 0.26, yy + 0.22, w - 0.52, 0.34, fill=TINT, line=RULE,
+             lw=0.9)
+        if val:
+            txt(sl, x + 0.38, yy + 0.22, w - 0.76, 0.34, val, font=F_SB,
+                size=9.2, color=INK, anchor="m")
+        yy += 0.68
+    if nota:
+        txt(sl, x + 0.26, yy - 0.04, w - 0.52, 0.40, nota, size=8.4,
+            color=GREY, ls=1.26)
+    return yy
+
+
 # =============================================================== IMAGENS
 _SIZES = {}
 
@@ -254,16 +330,16 @@ def hl(sl, box, fx, fy, fw, fh, n=None, color=RED, lw=1.9, badge="tl",
 
 
 # ================================================== LAYOUTS RECORRENTES
-def passo_1fig(sl, page, passo, titulo, itens, fig, cap, hls=(), obs=None,
+def passo_1fig(sl, eb, titulo, page, itens, fig, cap, hls=(), obs=None,
                fonte=None, esq_w=3.70):
     """Passo com lista a esquerda e um print grande a direita."""
-    head(sl, f"Passo {passo} de 9  ·  Caminho 2", titulo, page)
+    head(sl, eb, titulo, page)
     y0 = 2.02
     steps_list(sl, ML, y0, esq_w, itens)
     ix = ML + esq_w + 0.42
     iw = CR - ix
     box = shot(sl, fig, ix, y0, iw, cap=cap, max_h=3.55, center_in=(ix, iw))
-    for i, h in enumerate(hls):
+    for h in hls:
         hl(sl, box, *h[:4], n=h[4] if len(h) > 4 else None,
            badge=h[5] if len(h) > 5 else "tl")
     if obs:
@@ -272,10 +348,10 @@ def passo_1fig(sl, page, passo, titulo, itens, fig, cap, hls=(), obs=None,
     return sl
 
 
-def passo_2fig(sl, page, passo, titulo, banda, figs, hls_a=(), hls_b=(),
+def passo_2fig(sl, eb, titulo, page, banda, figs, hls_a=(), hls_b=(),
                obs=None):
     """Passo com faixa de instrucao no topo e dois prints lado a lado."""
-    head(sl, f"Passo {passo} de 9  ·  Caminho 2", titulo, page)
+    head(sl, eb, titulo, page)
     note(sl, 1.98, banda, icon=ic_clipboard, h=0.60)
     cw = (CW - 0.32) / 2
     y = 2.80
@@ -284,10 +360,10 @@ def passo_2fig(sl, page, passo, titulo, banda, figs, hls_a=(), hls_b=(),
         x = ML + i * (cw + 0.32)
         boxes.append(shot(sl, fig, x, y, cw, cap=cap, max_h=2.42,
                           center_in=(x, cw)))
-    for i, h in enumerate(hls_a):
+    for h in hls_a:
         hl(sl, boxes[0], *h[:4], n=h[4] if len(h) > 4 else None,
            badge=h[5] if len(h) > 5 else "tl")
-    for i, h in enumerate(hls_b):
+    for h in hls_b:
         hl(sl, boxes[1], *h[:4], n=h[4] if len(h) > 4 else None,
            badge=h[5] if len(h) > 5 else "tl")
     if obs:
@@ -301,7 +377,6 @@ def s01(prs):
     sl = add_slide(prs)
     bg_dark(sl, "cover")
 
-    # painel vetorial a direita: cartao de login estilizado
     px, pw = 8.15, 4.35
     vline(sl, px - 0.35, 0, H_IN, WHITE, 0.75, alpha=0.18)
     cx, cy, cwd, chg = px + 0.30, 2.28, 3.55, 2.95
@@ -335,8 +410,8 @@ def s01(prs):
           size=32, color=WHITE, ls=1.16)
     hline(sl, ML, 4.24, 1.05, WHITE, 1.8, alpha=0.75)
     txt(sl, ML, 4.50, 6.6, 1.0,
-        "O que mudou desde 1º de agosto de 2026, por que isso afeta a emissão\n"
-        "dos seus MTRs e o que fazer para continuar operando sem interrupção.",
+        "O que mudou desde 1º de agosto de 2026 e como autorizar o nosso\n"
+        "acesso para continuarmos emitindo os seus MTRs sem interrupção.",
         font=F_LIGHT, size=13.5, color=WHITE, ls=1.40)
 
     txt(sl, ML, 5.86, 4.0, 0.22, "Material preparado por", font=F_REG,
@@ -534,7 +609,6 @@ def s05(prs):
     box = shot(sl, "mtr_perfil.png", 6.95, 2.10, 5.53,
                cap="Cabeçalho da nossa conta no MTR Nacional. O CPF do usuário "
                    "administrador foi tarjado.", max_h=1.10)
-    # sem badge numerado: a tarja e estreita e qualquer badge cai sobre o texto
     hl(sl, box, 0.010, 0.640, 0.560, 0.320)
     txt(sl, 6.95, 3.42, 5.53, 0.60,
         "O nosso perfil no sistema é de Transportador. Ele nos permite "
@@ -549,77 +623,29 @@ def s05(prs):
     return sl
 
 
-# ============================================== 06 · SUAS DUAS OPCOES
+# ============================================ 06 · O QUE PRECISAMOS
 def s06(prs):
     sl = add_slide(prs)
     bg_white(sl)
-    head(sl, "Suas duas opções",
-         [("Como ", {}), ("continuar emitindo MTR", {"font": F_SB}),
-          (" a partir de agora", {})], 6)
+    head(sl, "A solução",
+         [("Você autoriza o nosso CPF ", {}),
+          ("na sua unidade", {"font": F_SB})], 6)
 
-    cw = (CW - 0.32) / 2
-    y = 2.02
-    opts = [
-        (INDIGO, "Caminho 1", "Você nos autoriza como usuário da sua unidade",
-         ic_user_plus, "Recomendado",
-         ["Você informa o CPF do nosso responsável.",
-          "O Administrador da sua unidade cadastra ou aprova esse acesso.",
-          "Voltamos a emitir os seus MTRs normalmente.",
-          "Nenhuma senha pessoal é compartilhada.",
-          "Cada emissão fica registrada com identificação."]),
-        (GREEN, "Caminho 2", "Sua equipe passa a emitir os próprios MTRs",
-         ic_doc_check, None,
-         ["Autonomia total sobre a emissão.",
-          "Exige conta Gov.br do responsável pela empresa.",
-          "Tutorial completo nos próximos slides.",
-          "Você usa os nossos dados como transportadora.",
-          "Nossa equipe apoia na transição."]),
-    ]
-    for i, (cl, kicker, t, ic, pill_txt, its) in enumerate(opts):
-        x = ML + i * (cw + 0.32)
-        card(sl, x, y, cw, 3.86, fill=WHITE, line=RULE, accent=cl)
-        ic(sl, x + 0.30, y + 0.34, 0.46, cl)
-        txt(sl, x + 0.92, y + 0.36, 2.2, 0.24, kicker, font=F_SB, size=8.6,
-            color=cl, tracking=1.5, caps=True)
-        if pill_txt:
-            pill(sl, x + cw - 1.42, y + 0.34, 1.12, 0.28, pill_txt, fill=cl,
-                 size=7.6)
-        txt(sl, x + 0.30, y + 0.98, cw - 0.60, 0.70, t, font=F_LIGHT,
-            size=15.5, color=INK, ls=1.22)
-        hline(sl, x + 0.30, y + 1.78, cw - 0.60, RULE, 1.0)
-        bullets(sl, x + 0.30, y + 1.96, cw - 0.66, 1.8, its, size=9.6,
-                color=INK_SOFT, dot_color=cl, ls=1.28, gap=8)
-
-    note(sl, 6.10,
-         "Os dois caminhos são válidos e podem coexistir: você pode nos "
-         "autorizar agora e migrar para a emissão própria quando quiser.",
-         icon=ic_bulb, h=0.58)
-    return sl
-
-
-# ============================================ 07 · CAMINHO 1 · VISAO
-def s07(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Caminho 1  ·  Recomendado",
-         [("Você nos autoriza como ", {}),
-          ("usuário da sua unidade", {"font": F_SB})], 7)
-
-    steps = [("01", "Você nos envia os dados", ic_cpf,
-              "Nome completo e CPF do nosso responsável já estão no card "
-              "abaixo."),
+    steps = [("01", "Você recebe os nossos dados", ic_cpf,
+              "Nome, CPF e e-mail da nossa responsável estão no card abaixo."),
              ("02", "Seu Administrador autoriza", ic_user_plus,
               "Cadastro direto no sistema ou aprovação da nossa solicitação."),
-             ("03", "Voltamos a emitir", ic_doc_check,
+             ("03", "Voltamos a emitir", ic_user_check,
               "A emissão volta ao normal, sem mudança na sua rotina.")]
     cw, gap = 3.71, 0.26
     y = 2.04
     for i, (num, t, ic, d) in enumerate(steps):
         x = ML + i * (cw + gap)
-        card(sl, x, y, cw, 2.24, fill=WHITE, line=RULE, accent=INDIGO)
+        cl = GREEN if i == 2 else INDIGO
+        card(sl, x, y, cw, 2.24, fill=WHITE, line=RULE, accent=cl)
         txt(sl, x + 0.28, y + 0.28, 1.2, 0.5, num, font=F_LIGHT, size=30,
-            color=INDIGO, ls=1.0)
-        ic(sl, x + cw - 0.82, y + 0.32, 0.46, INDIGO)
+            color=cl, ls=1.0)
+        ic(sl, x + cw - 0.82, y + 0.32, 0.46, cl)
         txt(sl, x + 0.28, y + 1.06, cw - 0.56, 0.56, t, font=F_SB, size=11.4,
             color=INK, ls=1.22)
         txt(sl, x + 0.28, y + 1.60, cw - 0.56, 0.56, d, size=9.0, color=GREY,
@@ -629,10 +655,10 @@ def s07(prs):
                            (x + cw + gap - 0.04, y + 1.12)], GREY_LT, 1.0,
                       0.070)
 
-    kv_card(sl, ML, 4.58, 5.66, 1.90, "Dados do nosso responsável",
-            [("Nome completo", "[INSERIR NOME]"),
-             ("CPF", "[INSERIR CPF]"),
-             ("E-mail", "[INSERIR E-MAIL]")],
+    kv_card(sl, ML, 4.58, 5.66, 1.90, "Dados da nossa responsável",
+            [("Nome completo", NL_NOME),
+             ("CPF", NL_CPF),
+             ("E-mail", NL_EMAIL)],
             icon=ic_people, accent=INDIGO, rh=0.32)
 
     note(sl, 4.58, "Nenhuma senha pessoal é compartilhada neste caminho. "
@@ -643,64 +669,382 @@ def s07(prs):
     return sl
 
 
-# ======================================= 08 · CAMINHO 1 · COMO CADASTRAR
-def s08(prs):
+# =============================================== 07 · AS DUAS ROTAS
+def s07(prs):
     sl = add_slide(prs)
     bg_white(sl)
-    head(sl, "Caminho 1  ·  Passo a passo",
-         [("Como o Administrador da sua unidade ", {}),
-          ("nos cadastra", {"font": F_SB})], 8)
+    head(sl, "As duas rotas",
+         [("Escolha ", {}), ("como prefere autorizar", {"font": F_SB})], 7)
 
-    txt(sl, ML, 1.98, 5.50, 0.30, "Rota A — o Administrador cadastra",
-        font=F_SB, size=10.6, color=INDIGO, tracking=1.0)
-    caminho = ["Configurações", "Meus Usuários", "Gerenciador de Usuários",
-               "Adicionar Usuário"]
-    y = 2.42
-    for i, item in enumerate(caminho):
-        yy = y + i * 0.52
-        rect(sl, ML, yy, 4.30, 0.42, fill=TINT if i < 3 else INDIGO)
-        txt(sl, ML + 0.22, yy, 4.0, 0.42, item, font=F_SB, size=10.2,
-            color=INK if i < 3 else WHITE, anchor="m")
-        if i < 3:
-            arrow_abs(sl, [(ML + 0.34, yy + 0.44), (ML + 0.34, yy + 0.50)],
-                      GREY_LT, 1.0, 0.055)
-    txt(sl, ML, 4.52, 5.40, 0.50,
-        "Preencha os dados solicitados na janela. Para conceder perfil de "
-        "Administrador, marque a opção correspondente.",
-        size=9.6, color=GREY, ls=1.30)
+    cw = (CW - 0.32) / 2
+    y = 2.02
+    rotas = [
+        (INDIGO, "Rota A", "Você cadastra o nosso CPF", ic_menu, "Mais rápida",
+         [("Quem executa", "o Administrador da sua unidade"),
+          ("Quanto tempo", "poucos minutos"),
+          ("O que precisa", "nome, CPF e e-mail (slide 6)"),
+          ("Detalhada nos slides", "8 a 12")]),
+        (GREEN, "Rota B", "Nós solicitamos, você aprova", ic_user_check,
+         "Menos trabalho",
+         [("Quem executa", "nossa equipe faz o pedido"),
+          ("Seu papel", "apenas aprovar a solicitação"),
+          ("O que precisa", "nada de antemão"),
+          ("Detalhada nos slides", "13 a 15")]),
+    ]
+    for i, (cl, kicker, t, ic, pill_txt, pares) in enumerate(rotas):
+        x = ML + i * (cw + 0.32)
+        card(sl, x, y, cw, 3.62, fill=WHITE, line=RULE, accent=cl)
+        ic(sl, x + 0.30, y + 0.34, 0.46, cl)
+        txt(sl, x + 0.92, y + 0.36, 2.2, 0.24, kicker, font=F_SB, size=8.6,
+            color=cl, tracking=1.5, caps=True)
+        pill(sl, x + cw - 1.72, y + 0.32, 1.42, 0.28, pill_txt, fill=cl,
+             size=7.2)
+        txt(sl, x + 0.30, y + 0.96, cw - 0.60, 0.70, t, font=F_LIGHT,
+            size=15.5, color=INK, ls=1.22)
+        hline(sl, x + 0.30, y + 1.72, cw - 0.60, RULE, 1.0)
+        yy = y + 1.92
+        for k, v in pares:
+            txt(sl, x + 0.30, yy, 1.90, 0.30, k, font=F_MED, size=9.0,
+                color=GREY, ls=1.2)
+            txt(sl, x + 2.24, yy, cw - 2.54, 0.30, v, font=F_SB, size=9.4,
+                color=INK, ls=1.2)
+            yy += 0.38
 
-    txt(sl, 6.95, 1.98, 5.53, 0.30, "Rota B — nós solicitamos, você aprova",
-        font=F_SB, size=10.6, color=GREEN, tracking=1.0)
-    bullets(sl, 6.95, 2.42, 5.40, 1.5,
-            ["Nosso responsável entra com o CPF dele no MTR Nacional.",
-             "Clica em “Pesquisar CPF/CNPJ” e localiza a sua empresa.",
-             "Solicita acesso e preenche os dados de contato.",
-             "O Administrador da sua unidade aprova a solicitação."],
-            size=9.8, color=INK_SOFT, dot_color=GREEN, ls=1.28, gap=9)
-    note(sl, 4.40,
-         "O detalhe de cada tela dessa rota está nos passos 6 e 7 (slides 16 "
-         "a 19).", icon=ic_route, color=GREEN, fill=GREEN_LT, h=0.56,
-         x=6.95, w=5.53, size=9.4)
-
-    kv_card(sl, ML, 5.02, CW, 1.30, "Para retirar um acesso depois",
-            [("Caminho", "Configurações › Meus Usuários › Gerenciador de "
-                         "Usuários › ícone de edição"),
-             ("Ação", "desmarcar “Ativo” e, se aplicável, “Administrador”")],
-            icon=ic_shield, accent=INDIGO, rh=0.28, top=0.70)
-    source(sl, 6.40,
-           "Fonte: comunicado oficial do SINIR. A inativação de um "
-           "Administrador só é permitida se houver outro cadastrado na "
-           "unidade.  [PRINT PENDENTE — tela do Gerenciador de Usuários]")
+    note(sl, 5.88,
+         "As duas rotas levam ao mesmo resultado. Escolha a que for mais "
+         "prática para a sua equipe — e, se preferir, comece pela Rota B: "
+         "nós damos o primeiro passo.", icon=ic_bulb, h=0.70)
     return sl
 
 
-# ==================================== 09 · CAMINHO 1 · LOGIN E SENHA
+# ================================= 08 · ROTA A · ENTRAR NO SISTEMA
+def s08(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    return passo_1fig(
+        sl, "Rota A  ·  Passo 1 de 4",
+        [("Entre no MTR Nacional pelo ", {}), ("Gov.br", {"font": F_SB})], 8,
+        [("Abra mtr.sinir.gov.br",
+          "Ignore os campos CNPJ, CPF e Senha: são do login antigo."),
+         ("Clique em “Entrar com GOV.BR”",
+          "É o único caminho de acesso desde 01/08/2026."),
+         ("Informe o CPF e a senha Gov.br",
+          "Do responsável pela empresa, não a senha antiga do MTR."),
+         ("Selecione a sua unidade",
+          "Clique no ícone da coluna “Selecionar”.")],
+        "guia_fig01.png",
+        "Figura 1 — tela inicial do MTR Nacional. O destaque marca o botão "
+        "“Entrar com GOV.BR”.",
+        hls=[(0.734, 0.750, 0.116, 0.052, 2, "tl")],
+        obs="Sem conta Gov.br ainda? Crie em gov.br antes. Atenção: e-mails "
+            "Outlook, Hotmail e Live não são aceitos no cadastro no momento.")
+
+
+# ============================ 09 · ROTA A · GERENCIADOR DE USUARIOS
 def s09(prs):
     sl = add_slide(prs)
     bg_white(sl)
-    head(sl, "Caminho 1  ·  Alternativa",
+    head(sl, "Rota A  ·  Passo 2 de 4",
+         [("Abra o ", {}), ("Gerenciador de Usuários", {"font": F_SB})], 9)
+
+    steps_list(sl, ML, 2.02, 5.40,
+               [("Confirme que você é Administrador",
+                 "Só o Usuário Administrador vê o menu de usuários."),
+                ("Abra o menu Configurações",
+                 "Fica no menu principal do sistema, já dentro da unidade."),
+                ("Entre em Meus Usuários",
+                 "Depois, em Gerenciador de Usuários."),
+                ("Clique em Adicionar Usuário",
+                 "Abre a janela de cadastro do novo acesso.")],
+               gap=0.94)
+
+    txt(sl, 6.95, 1.98, 5.53, 0.28, "Caminho no menu", font=F_SB, size=9.2,
+        color=INDIGO, tracking=1.5, caps=True)
+    breadcrumb(sl, 6.95, 2.34, 5.53,
+               ["Configurações", "Meus Usuários", "Gerenciador de Usuários",
+                "Adicionar Usuário"], rh=0.50, gap=0.12)
+
+    note(sl, 4.88,
+         "Não encontrou o menu Configurações? Então esse login não é "
+         "Administrador da unidade. Peça a quem cadastrou a empresa no MTR, "
+         "ou fale com a gente.", icon=ic_warning, color=AMBER_DK,
+         fill=AMBER_LT, h=0.70, x=6.95, w=5.53, size=9.2)
+
+    note(sl, 5.90,
+         "O Administrador é quem cadastrou a empresa no MTR. Ele edita dados "
+         "cadastrais, gerencia usuários e concede permissões de acesso.",
+         icon=ic_shield, h=0.56)
+    source(sl, 6.50,
+           "Fonte: comunicado oficial do SINIR.  [PRINT PENDENTE — tela do "
+           "Gerenciador de Usuários]")
+    return sl
+
+
+# ================================ 10 · ROTA A · ADICIONAR USUARIO
+def s10(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Rota A  ·  Passo 3 de 4",
+         [("Preencha os dados do ", {}), ("novo usuário", {"font": F_SB})], 10)
+
+    kv_card(sl, ML, 2.02, 5.66, 1.86, "Copie exatamente estes dados",
+            [("Nome completo", NL_NOME),
+             ("CPF", NL_CPF),
+             ("E-mail", NL_EMAIL)],
+            icon=ic_cpf, accent=INDIGO, rh=0.32)
+
+    bullets(sl, ML, 4.10, 5.40, 1.7,
+            ["O CPF precisa ser digitado sem erro: é ele que liga a conta "
+             "Gov.br à sua unidade.",
+             "O e-mail é o canal pelo qual o sistema comunica o acesso.",
+             "Marque a opção de Administrador conforme o slide 11.",
+             "Salve a janela para concluir o cadastro."],
+            size=9.8, color=INK_SOFT, dot_color=INDIGO, ls=1.30, gap=9)
+
+    form_mock(sl, 6.95, 2.02, 5.53, 3.60, "Adicionar Usuário",
+              [("Nome completo", NL_NOME),
+               ("CPF", NL_CPF),
+               ("E-mail", NL_EMAIL)],
+              nota="Esquema ilustrativo da janela de cadastro, montado a "
+                   "partir do procedimento descrito no comunicado do SINIR. "
+                   "Não é uma captura de tela: os rótulos e a ordem dos "
+                   "campos podem variar no sistema.")
+
+    source(sl, 5.98,
+           "Fonte: comunicado oficial do SINIR — “Menu Configurações > Meus "
+           "Usuários > Gerenciador de Usuários > Adicionar Usuário. Preencha "
+           "os dados solicitados na janela”.  [CONFIRMAR — rótulos exatos dos "
+           "campos]  [PRINT PENDENTE — janela Adicionar Usuário]")
+    return sl
+
+
+# ============================ 11 · ROTA A · ADMINISTRADOR OU PADRAO
+def s11(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Rota A  ·  Passo 4 de 4",
+         [("Marque o tipo: ", {}),
+          ("Administrador ou Padrão", {"font": F_SB})], 11)
+
+    cw = (CW - 0.32) / 2
+    y = 2.02
+    tipos = [
+        (INDIGO, "Marque “Administrador”", ic_shield, "Mais autonomia",
+         ["Cuidamos também da gestão de acessos da sua unidade.",
+          "Conseguimos incluir e desativar usuários da nossa equipe.",
+          "Útil se a sua equipe não quiser administrar o sistema.",
+          "Você continua Administrador: o seu acesso não muda."]),
+        (GREY, "Deixe como “Padrão”", ic_people, "Mais restrito",
+         ["Acessamos apenas a operação da unidade.",
+          "Não temos acesso aos dados cadastrais da empresa.",
+          "Não conseguimos gerenciar usuários da unidade.",
+          "Suficiente para a rotina de emissão. [CONFIRMAR]"]),
+    ]
+    for i, (cl, t, ic, pill_txt, its) in enumerate(tipos):
+        x = ML + i * (cw + 0.32)
+        card(sl, x, y, cw, 3.20, fill=WHITE, line=RULE, accent=cl)
+        ic(sl, x + 0.30, y + 0.32, 0.44, cl)
+        pill(sl, x + cw - 1.62, y + 0.32, 1.32, 0.28, pill_txt, fill=cl,
+             size=7.2)
+        txt(sl, x + 0.30, y + 0.92, cw - 0.60, 0.60, t, font=F_LIGHT,
+            size=15.5, color=INK, ls=1.22)
+        hline(sl, x + 0.30, y + 1.60, cw - 0.60, RULE, 1.0)
+        bullets(sl, x + 0.30, y + 1.78, cw - 0.66, 1.3, its, size=9.6,
+                color=INK_SOFT, dot_color=cl, ls=1.28, gap=8)
+
+    note(sl, 5.34,
+         "Nossa sugestão: marque “Administrador” para a nossa responsável. "
+         "Assim resolvemos qualquer ajuste de acesso sem precisar acionar a "
+         "sua equipe de novo.", icon=ic_bulb, h=0.66)
+    source(sl, 6.14,
+           "Fonte: comunicado oficial do SINIR (atribuições de cada tipo de "
+           "usuário). [CONFIRMAR — se o perfil Padrão basta para emitir MTR "
+           "na sua unidade]  Você pode trocar o tipo depois, a qualquer "
+           "momento.")
+    return sl
+
+
+# =============================== 12 · ROTA A · CONCLUIR E REVOGAR
+def s12(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Rota A  ·  Conclusão",
+         [("Salve, confirme com a gente e ", {}),
+          ("saiba como revogar", {"font": F_SB})], 12)
+
+    txt(sl, ML, 1.98, 5.50, 0.28, "Depois de salvar", font=F_SB, size=9.2,
+        color=GREEN, tracking=1.5, caps=True)
+    checks = [("Confira o CPF cadastrado",
+               "Um dígito errado impede o vínculo."),
+              ("Confirme se o usuário ficou “Ativo”",
+               "É o que libera o acesso à unidade."),
+              ("Nos avise por escrito",
+               "Testamos o acesso e retomamos a emissão na mesma hora.")]
+    y = 2.36
+    for i, (t, d) in enumerate(checks):
+        yy = y + i * 0.80
+        rect(sl, ML, yy + 0.06, 0.30, 0.30, fill=None, line=GREEN, lw=1.3)
+        poly(sl, ML + 0.055, yy + 0.115, 0.19, [(10, 52), (40, 80), (92, 18)],
+             color=GREEN, lw=1.5)
+        txt(sl, ML + 0.50, yy, 5.0, 0.30, t, font=F_SB, size=10.6, color=INK,
+            ls=1.22)
+        txt(sl, ML + 0.50, yy + 0.30, 5.0, 0.30, d, size=9.0, color=GREY,
+            ls=1.24)
+
+    txt(sl, 6.95, 1.98, 5.53, 0.28, "Para retirar o acesso depois", font=F_SB,
+        size=9.2, color=INDIGO, tracking=1.5, caps=True)
+    breadcrumb(sl, 6.95, 2.34, 5.53,
+               ["Configurações", "Meus Usuários", "Gerenciador de Usuários",
+                "Ícone de edição do usuário"], rh=0.46, gap=0.10)
+    txt(sl, 6.95, 4.68, 5.53, 0.50,
+        "Na janela de edição, desmarque a opção “Ativo” e, se aplicável, "
+        "“Administrador”.", size=9.6, color=INK_SOFT, ls=1.30)
+
+    note(sl, 5.42,
+         "O acesso é reversível a qualquer momento e não depende de nós. "
+         "Regra do sistema: um Administrador só pode ser inativado se houver "
+         "outro Administrador cadastrado na unidade.",
+         icon=ic_shield, color=GREEN, fill=GREEN_LT, h=0.76, size=10.0)
+    source(sl, 6.30,
+           "Fonte: comunicado oficial do SINIR (procedimento de inativação de "
+           "usuário).  [PRINT PENDENTE — janela de edição do usuário]")
+    return sl
+
+
+# ================================= 13 · ROTA B · CPF SEM VINCULO
+def s13(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    return passo_2fig(
+        sl, "Rota B  ·  Passo 1 de 3",
+        [("Nós entramos e o sistema avisa que ", {}),
+         ("falta o vínculo", {"font": F_SB})], 13,
+        "Nossa responsável entra no MTR Nacional com o CPF dela. Como ela "
+        "ainda não está vinculada à sua unidade, o sistema exibe o aviso e "
+        "oferece o botão “Pesquisar CPF/CNPJ”.",
+        [("guia_fig06.png",
+          "Figura 6 — aviso de CPF sem vínculo com nenhum empreendimento."),
+         ("guia_fig07.png",
+          "Figura 7 — destaque no botão “Pesquisar CPF/CNPJ”.")],
+        hls_b=[(0.6916, 0.2040, 0.0906, 0.0580, 1, "tl")],
+        obs="Este passo é executado pela nossa equipe. Você não precisa fazer "
+            "nada ainda.")
+
+
+# ============================== 14 · ROTA B · SOLICITAR O ACESSO
+def s14(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Rota B  ·  Passo 2 de 3",
+         [("Localizamos a sua empresa e ", {}),
+          ("solicitamos o acesso", {"font": F_SB})], 14)
+    note(sl, 1.98,
+         "Buscamos a sua empresa pelo CNPJ. Na coluna “Solicitar acesso”, "
+         "selecionamos a unidade e preenchemos os dados cadastrais da nossa "
+         "responsável. Ainda é tudo do nosso lado.",
+         icon=ic_clipboard, h=0.60)
+
+    cw = (CW - 0.32) / 2
+    b1 = shot(sl, "guia_fig08.png", ML, 2.80, cw,
+              cap="Figura 8 — coluna “Solicitar acesso”.", max_h=2.42,
+              center_in=(ML, cw))
+    hl(sl, b1, 0.7100, 0.2620, 0.0720, 0.6800, n=1, badge="tr")
+    b2 = shot(sl, "guia_fig09.png", ML + cw + 0.32, 2.80, cw,
+              cap="Figura 9 — janela “Dados Cadastrais” e botão “Enviar”.",
+              max_h=2.42, center_in=(ML + cw + 0.32, cw))
+    hl(sl, b2, 0.5950, 0.6740, 0.0470, 0.0520, n=2, badge="tl")
+
+    note(sl, 5.70,
+         "Depois do envio, a solicitação fica pendente de aprovação. A sua "
+         "unidade pode nos contatar por e-mail ou telefone antes de aprovar.",
+         icon=ic_route, color=GREEN, fill=GREEN_LT, h=0.52)
+    source(sl, 6.30, FONTE_GUIA + "  ·  Figuras 8 e 9.")
+    return sl
+
+
+# ================================ 15 · ROTA B · VOCE APROVA
+def s15(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Rota B  ·  Passo 3 de 3",
+         [("Seu Administrador ", {}), ("aprova a solicitação", {"font": F_SB}),
+          (" — e pronto", {})], 15)
+
+    steps_list(sl, ML, 2.02, 5.40,
+               [("A solicitação chega para o Administrador",
+                 "É quem cadastrou a sua empresa no MTR Nacional."),
+                ("Ele entra no Gerenciador de Usuários",
+                 "Configurações › Meus Usuários › Gerenciador de Usuários."),
+                ("Confere o nome e o CPF da solicitante",
+                 f"{NL_NOME} · {NL_CPF}"),
+                ("Aprova e deixa o usuário “Ativo”",
+                 "O acesso é liberado e a emissão volta ao normal.")],
+               gap=0.94, color=GREEN)
+
+    box = shot(sl, "guia_fig10.png", 6.95, 2.02, 5.53,
+               cap="Figura 10 — confirmação de que a solicitação foi enviada e "
+                   "aguarda aprovação.", max_h=2.40, center_in=(6.95, 5.53))
+
+    note(sl, 5.06,
+         "Se preferir, o Administrador pode simplesmente nos cadastrar direto, "
+         "pela Rota A (slides 8 a 12). O resultado é o mesmo.",
+         icon=ic_bulb, h=0.56, x=6.95, w=5.53, size=9.2)
+
+    note(sl, 5.90,
+         "Aprovado o acesso, nos avise: testamos na hora e retomamos a emissão "
+         "dos seus MTRs.", icon=ic_user_check, color=GREEN, fill=GREEN_LT,
+         h=0.56)
+    source(sl, 6.50, FONTE_GUIA + "  ·  Figura 10.  [PRINT PENDENTE — tela de "
+                                  "aprovação da solicitação]")
+    return sl
+
+
+# ================== 16 · SE A EMPRESA AINDA NAO EXISTE NO MTR
+def s16(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Caso especial",
+         [("Se a sua empresa ", {}),
+          ("ainda não existe no MTR", {"font": F_SB})], 16)
+    note(sl, 1.98,
+         "Se a busca não encontrar o CNPJ, o empreendimento ainda não está "
+         "cadastrado. O próprio sistema oferece o cadastro — e quem o solicita "
+         "passa a ser o Administrador da unidade.",
+         icon=ic_warning, color=AMBER_DK, fill=AMBER_LT, h=0.60)
+
+    figs = [("guia_fig12.png", "1", "Informe o CPF ou CNPJ na janela "
+                                    "“Pesquisar Empreendimento”."),
+            ("guia_fig13.png", "2", "Não localizado: clique em “Cadastrar "
+                                    "Empreendimento”."),
+            ("guia_fig15.png", "3", "Preencha o formulário e clique em "
+                                    "“Solicitar Acesso”.")]
+    cw, gap = 3.71, 0.26
+    hls = [None,
+           (0.4392, 0.5539, 0.1204, 0.0447),
+           (0.4290, 0.8700, 0.0900, 0.0270)]
+    for i, (fig, num, cap) in enumerate(figs):
+        x = ML + i * (cw + gap)
+        num_badge(sl, x + 0.16, 2.86, 0.30, num, fill=INDIGO)
+        box = shot(sl, fig, x, 3.08, cw, max_h=1.86, center_in=(x, cw))
+        if hls[i]:
+            hl(sl, box, *hls[i])
+        txt(sl, x, 5.06, cw, 0.56, cap, size=8.8, color=INK_SOFT, ls=1.28)
+
+    note(sl, 5.76,
+         "Atenção: a pessoa que solicitar o cadastro fica responsável pela "
+         "gestão de acessos e pela aprovação dos novos usuários da unidade. "
+         "Escolha bem quem fará isso.", icon=ic_shield, h=0.62)
+    source(sl, 6.52, FONTE_GUIA + "  ·  Figuras 12, 13 e 15.")
+    return sl
+
+
+# ==================================== 17 · ALTERNATIVA: LOGIN E SENHA
+def s17(prs):
+    sl = add_slide(prs)
+    bg_white(sl)
+    head(sl, "Alternativa",
          [("Se preferir ", {}),
-          ("repassar o login e a senha Gov.br", {"font": F_SB})], 9)
+          ("repassar o login e a senha Gov.br", {"font": F_SB})], 17)
 
     cw = (CW - 0.32) / 2
     y = 2.02
@@ -731,9 +1075,9 @@ def s09(prs):
             size=9.6, color=INK_SOFT, dot_color=RED, ls=1.28, gap=8)
 
     note(sl, 5.48,
-         "Nossa recomendação: prefira o cadastro de usuário do slide 8. O "
-         "resultado prático é o mesmo — nós emitimos os seus MTRs — sem expor "
-         "a conta pessoal do responsável e sem depender da senha dele.",
+         "Nossa recomendação: prefira a Rota A ou a Rota B. O resultado "
+         "prático é o mesmo — nós emitimos os seus MTRs — sem expor a conta "
+         "pessoal do responsável e sem depender da senha dele.",
          icon=ic_shield, color=GREEN, fill=GREEN_LT, h=0.76, size=10.2)
     source(sl, 6.34,
            "A decisão é da sua empresa. Seguiremos a orientação que você nos "
@@ -741,410 +1085,12 @@ def s09(prs):
     return sl
 
 
-# ========================================== 10 · CAMINHO 2 · VISAO GERAL
-def s10(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Caminho 2  ·  Visão geral",
-         [("Emitindo seus próprios MTRs em ", {}),
-          ("9 passos", {"font": F_SB})], 10)
-
-    passos = [("Conta Gov.br", "Criar ou regularizar", ic_cpf, INDIGO),
-              ("Acessar o MTR", "mtr.sinir.gov.br", ic_browser, INDIGO),
-              ("Informar o CPF", "Tela do Gov.br", ic_cpf, INDIGO),
-              ("Informar a senha", "Tela do Gov.br", ic_lock, INDIGO),
-              ("Selecionar a unidade", "Escolher o empreendimento",
-               ic_factory, INDIGO),
-              ("Solicitar acesso", "Se o CPF não tiver vínculo",
-               ic_user_plus, AQUA),
-              ("Cadastrar a empresa", "Se ainda não existir no MTR",
-               ic_clipboard, AQUA),
-              ("Preencher e emitir", "O MTR propriamente dito",
-               ic_doc_check, GREEN),
-              ("Consultar e baixar", "MTRs emitidos e CDF", ic_route, GREEN)]
-    cw, gap = 3.71, 0.26
-    rh, rgap = 1.24, 0.14
-    y0 = 2.04
-    for i, (t, d, ic, cl) in enumerate(passos):
-        r, c = divmod(i, 3)
-        x = ML + c * (cw + gap)
-        y = y0 + r * (rh + rgap)
-        card(sl, x, y, cw, rh, fill=WHITE, line=RULE, accent=cl)
-        num_badge(sl, x + 0.44, y + 0.46, 0.38, f"{i + 1:02d}", fill=cl,
-                  size=9.4)
-        ic(sl, x + cw - 0.72, y + 0.28, 0.36, cl)
-        txt(sl, x + 0.74, y + 0.28, cw - 1.52, 0.32, t, font=F_SB, size=10.6,
-            color=INK, ls=1.20)
-        txt(sl, x + 0.74, y + 0.62, cw - 1.0, 0.30, d, size=8.6, color=GREY,
-            ls=1.24)
-        txt(sl, x + 0.24, y + 0.92, cw - 0.48, 0.30,
-            "obrigatório" if i < 5 or i >= 7 else "só se necessário",
-            font=F_REG, size=7.4, color=GREY_LT, tracking=1.0, caps=True)
-
-    note(sl, 6.10,
-         "Os passos 6 e 7 só se aplicam se o CPF ainda não estiver vinculado à "
-         "unidade ou se a empresa ainda não existir no MTR Nacional.",
-         icon=ic_bulb, h=0.52)
-    return sl
-
-
-# ============================================== 11 · PASSO 1 · CONTA GOV.BR
-def s11(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Passo 1 de 9  ·  Caminho 2",
-         [("Crie ou regularize a ", {}),
-          ("conta Gov.br do responsável", {"font": F_SB})], 11)
-
-    steps_list(sl, ML, 2.02, 5.50,
-               [("Acesse gov.br e crie a conta",
-                 "Use o CPF do responsável pela empresa no MTR."),
-                ("Confirme os dados pessoais",
-                 "Nome, data de nascimento e e-mail de contato."),
-                ("Cadastre uma senha forte",
-                 "Ela passa a ser a senha de acesso ao MTR Nacional."),
-                ("Verifique o nível da conta",
-                 "Bronze, Prata ou Ouro — conforme a forma de comprovação.")],
-               gap=0.94)
-
-    niveis = [("Bronze", GREY), ("Prata", NEUTRAL), ("Ouro", "B08535")]
-    cwn = 1.70
-    for i, (n, cl) in enumerate(niveis):
-        x = ML + i * (cwn + 0.20)
-        rect(sl, x, 5.86, cwn, 0.46, fill=TINT, line=RULE, lw=1.0)
-        rect(sl, x, 5.86, 0.035, 0.46, fill=cl)
-        txt(sl, x + 0.22, 5.86, cwn - 0.34, 0.46, n, font=F_SB, size=9.6,
-            color=INK, anchor="m")
-
-    card(sl, 6.95, 2.02, 5.53, 1.74, fill=AMBER_LT, line=None, accent="B08535")
-    ic_warning(sl, 6.95 + 0.28, 2.02 + 0.28, 0.40, "B08535")
-    txt(sl, 6.95 + 0.80, 2.02 + 0.34, 4.4, 0.30, "Atenção ao e-mail do cadastro",
-        font=F_SB, size=11.0, color=INK)
-    txt(sl, 6.95 + 0.28, 2.02 + 0.84, 5.53 - 0.56, 0.80,
-        "Contas de e-mail do ambiente Microsoft — Outlook, Hotmail, Live e "
-        "similares — não estão disponíveis para uso nos cadastros no momento. "
-        "Prefira outro provedor.",
-        size=9.4, color=INK_SOFT, ls=1.32)
-
-    kv_card(sl, 6.95, 4.00, 5.53, 1.62, "Guarde estas informações",
-            [("Onde criar a conta", "gov.br"),
-             ("Onde usar", "mtr.sinir.gov.br"),
-             ("Suporte do MTR", "mtr.sinir@mma.gov.br")],
-            icon=ic_bulb, accent=INDIGO, rh=0.30)
-
-    source(sl, 6.44,
-           "Fonte: comunicado oficial do SINIR (restrição de e-mails Microsoft "
-           "e canal de atendimento) e portal gov.br (níveis de conta).  "
-           "[CONFIRMAR — nível mínimo exigido pelo MTR Nacional]")
-    return sl
-
-
-# =================================================== 12 a 19 · PASSOS 2 a 7
-def s12(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    return passo_1fig(
-        sl, 12, 2,
-        [("Abra o endereço do sistema", {}),
-         (" mtr.sinir.gov.br", {"font": F_SB})],
-        [("Digite o endereço no navegador",
-          "https://mtr.sinir.gov.br"),
-         ("Ignore os campos CNPJ, CPF e Senha",
-          "Eles pertencem ao login antigo, já descontinuado."),
-         ("Clique em “Entrar com GOV.BR”",
-          "É o único caminho de acesso a partir de 01/08/2026.")],
-        "guia_fig01.png",
-        "Figura 1 — tela inicial do MTR Nacional. O destaque marca o botão "
-        "“Entrar com GOV.BR”.",
-        hls=[(0.734, 0.750, 0.116, 0.052, 3, "tl")],
-        obs="Salve o endereço nos favoritos do navegador. Desconfie de links "
-            "de e-mail: confira sempre se o domínio termina em "
-            "mtr.sinir.gov.br.")
-
-
-def s13(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    return passo_1fig(
-        sl, 13, 3,
-        [("Informe o ", {}), ("número do CPF", {"font": F_SB})],
-        [("Digite o CPF do responsável",
-          "O mesmo CPF que está vinculado à unidade no MTR."),
-         ("Clique em “Continuar”",
-          "O Gov.br segue para a tela de senha."),
-         ("Sem conta ainda?",
-          "A própria tela oferece a opção de criar a conta gov.br.")],
-        "guia_fig02.png",
-        "Figura 2 — tela de identificação do Gov.br. Os destaques marcam o "
-        "campo de CPF e o botão “Continuar”.",
-        hls=[(0.625, 0.274, 0.180, 0.060, 1, "tl"),
-             (0.7215, 0.3500, 0.0830, 0.0580, 2, "br")],
-        obs="Também existem outras formas de identificação no Gov.br, como "
-            "login pelo banco, QR code e certificado digital.")
-
-
-def s14(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    return passo_1fig(
-        sl, 14, 4,
-        [("Informe a ", {}), ("senha da conta Gov.br", {"font": F_SB})],
-        [("Digite a senha da conta Gov.br",
-          "Não é a antiga senha do sistema MTR."),
-         ("Clique em “Entrar”",
-          "O Gov.br devolve você ao MTR Nacional autenticado."),
-         ("Esqueceu a senha?",
-          "Use “Esqueci minha senha” — a recuperação é feita no Gov.br.")],
-        "guia_fig03.png",
-        "Figura 3 — tela de senha do Gov.br. Os destaques marcam o campo de "
-        "senha e o botão “Entrar”.",
-        hls=[(0.586, 0.376, 0.208, 0.070, 1, "tl"),
-             (0.6930, 0.5330, 0.0900, 0.0760, 2, "br")],
-        obs="A recuperação de senha agora é sempre pelo Gov.br. O sistema MTR "
-            "não envia mais senha por e-mail.")
-
-
-def s15(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    return passo_2fig(
-        sl, 15, 5,
-        [("Selecione a ", {}), ("unidade (empreendimento)", {"font": F_SB})],
-        "Se o seu CPF já estiver vinculado a uma ou mais unidades, o sistema "
-        "lista todas elas. Clique no ícone da coluna “Selecionar” "
-        "correspondente à unidade desejada.",
-        [("guia_fig04.png",
-          "Figura 4 — lista de unidades encontradas. Destaques: o botão "
-          "“Pesquisar CPF/CNPJ” e a coluna “Selecionar”."),
-         ("guia_fig05.png",
-          "Figura 5 — tela inicial do sistema, já dentro da unidade "
-          "escolhida.")],
-        hls_a=[(0.7150, 0.5150, 0.0640, 0.1700, 1, "tr")],
-        obs="Trabalha com mais de um CNPJ ou filial? Cada unidade aparece "
-            "como uma linha separada e é selecionada individualmente.")
-
-
-def s16(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    return passo_2fig(
-        sl, 16, 6,
-        [("CPF sem vínculo? ", {}), ("Solicite o acesso", {"font": F_SB})],
-        "Se o CPF ainda não estiver vinculado a nenhum empreendimento, o "
-        "sistema avisa e oferece o botão “Pesquisar CPF/CNPJ” para localizar a "
-        "empresa.",
-        [("guia_fig06.png",
-          "Figura 6 — aviso de CPF sem vínculo com nenhum empreendimento."),
-         ("guia_fig07.png",
-          "Figura 7 — destaque no botão “Pesquisar CPF/CNPJ”.")],
-        hls_b=[(0.6916, 0.2040, 0.0906, 0.0580, 1, "tl")],
-        obs="É exatamente por aqui que a Nunes & Lucato solicita acesso à sua "
-            "unidade na Rota B do Caminho 1 (slide 8).")
-
-
-def s17(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Passo 6 de 9  ·  Caminho 2",
-         [("Escolha o empreendimento e ", {}),
-          ("preencha seus dados", {"font": F_SB})], 17)
-    note(sl, 1.98,
-         "Na coluna “Solicitar acesso”, selecione o empreendimento desejado e "
-         "preencha os dados cadastrais. Depois, aguarde a aprovação do "
-         "Administrador da unidade.", icon=ic_clipboard, h=0.60)
-
-    cw = (CW - 0.32) / 2
-    b1 = shot(sl, "guia_fig08.png", ML, 2.82, cw,
-              cap="Figura 8 — coluna “Solicitar acesso”.", max_h=2.30,
-              center_in=(ML, cw))
-    hl(sl, b1, 0.7100, 0.2620, 0.0720, 0.6800, n=1, badge="tr")
-    b2 = shot(sl, "guia_fig09.png", ML + cw + 0.32, 2.82, cw,
-              cap="Figura 9 — janela “Dados Cadastrais” e botão “Enviar”.",
-              max_h=2.30, center_in=(ML + cw + 0.32, cw))
-    hl(sl, b2, 0.5950, 0.6740, 0.0470, 0.0520, n=2, badge="tl")
-
-    note(sl, 5.62,
-         "Depois do envio, o sistema informa o status da solicitação. A "
-         "unidade responsável pode entrar em contato por e-mail ou telefone "
-         "antes de aprovar.", icon=ic_route, color=GREEN, fill=GREEN_LT,
-         h=0.58)
-    source(sl, 6.28, FONTE_GUIA + "  ·  Figuras 8, 9 e 10.")
-    return sl
-
-
+# ================================================ 18 · FAQ
 def s18(prs):
     sl = add_slide(prs)
     bg_white(sl)
-    return passo_2fig(
-        sl, 18, 7,
-        [("Empresa ainda ", {}), ("não cadastrada no MTR", {"font": F_SB})],
-        "Se a busca não encontrar o CNPJ, é porque o empreendimento ainda não "
-        "existe no MTR Nacional. Nesse caso, o próprio sistema oferece o "
-        "cadastro.",
-        [("guia_fig12.png",
-          "Figura 12 — janela “Pesquisar Empreendimento”: informe o CPF ou "
-          "CNPJ."),
-         ("guia_fig13.png",
-          "Figura 13 — aviso de empreendimento não localizado e botão "
-          "“Cadastrar Empreendimento”.")],
-        hls_b=[(0.4392, 0.5539, 0.1204, 0.0447, 1, "tl")],
-        obs="Atenção: quem solicita o cadastro passa a ser o Administrador da "
-            "unidade, responsável pela gestão de acessos e pela aprovação de "
-            "novos usuários.")
-
-
-def s19(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    return passo_1fig(
-        sl, 19, 7,
-        [("Preencha o cadastro e ", {}),
-          ("solicite o acesso", {"font": F_SB})],
-        [("Preencha o formulário completo",
-          "Perfil do declarante, dados do empreendimento e do responsável."),
-         ("Aceite os termos",
-          "Termos de Uso e Política de Privacidade do sistema."),
-         ("Clique em “Solicitar Acesso”",
-          "O sistema segue para a liberação e envia as informações de "
-          "login."),
-         ("Guarde quem ficou Administrador",
-          "É essa pessoa que vai autorizar os demais usuários.")],
-        "guia_fig15.png",
-        "Figura 15 — formulário de cadastro do empreendimento. O destaque "
-        "marca o botão “Solicitar Acesso”.",
-        hls=[(0.4290, 0.8700, 0.0900, 0.0270, 3, "tl")],
-        obs="Marque o perfil correto do declarante: Gerador, Transportador, "
-            "Armazenador Temporário ou Destinador. É isso que define o que a "
-            "sua unidade pode fazer no sistema.")
-
-
-# ================================== 20 · PASSO 8 · EMITIR MTR (GERADOR)
-def s20(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Passo 8 de 9  ·  Caminho 2",
-         [("Emitindo o MTR: ", {}), ("dados do gerador", {"font": F_SB})], 20)
-
-    steps_list(sl, ML, 2.02, 3.70,
-               [("Abra a emissão de MTR",
-                 "No menu do sistema, escolha a opção de novo MTR."),
-                ("Confirme o gerador",
-                 "Razão social, CNPJ e endereço da unidade que gerou o "
-                 "resíduo."),
-                ("Informe o responsável",
-                 "Quem responde pela carga na sua empresa, e a UF.")],
-               gap=0.94)
-
-    box = shot(sl, "mtr_gerador.png", 4.82, 2.02, CR - 4.82,
-               cap="Tela real de emissão de MTR — bloco de identificação do "
-                   "gerador (conta da Nunes & Lucato).", max_h=3.30)
-    hl(sl, box, 0.010, 0.020, 0.480, 0.180, n=2, badge="tl")
-    hl(sl, box, 0.010, 0.780, 0.310, 0.190, n=3, badge="bl")
-
-    note(sl, 5.76,
-         "[PRINT PENDENTE — tela do menu de emissão / botão de novo MTR]  "
-         "Envie-nos esse print e nós o inserimos no passo 1 deste slide.",
-         icon=ic_warning, color=RED, fill=RED_LT, h=0.58)
-    source(sl, 6.42,
-           "Print próprio da Nunes & Lucato. O CPF do usuário administrador "
-           "foi tarjado por se tratar de material distribuído a clientes.")
-    return sl
-
-
-# ============================ 21 · PASSO 8 · DADOS DO TRANSPORTADOR
-def s21(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Passo 8 de 9  ·  Caminho 2",
-         [("Dados do transportador: ", {}),
-          ("use os nossos", {"font": F_SB})], 21)
-
-    box = shot(sl, "mtr_transportador.png", ML, 2.02, 6.90,
-               cap="Tela real de emissão — bloco “Dados do Transportador”, "
-                   "com motorista e placa.", max_h=3.20)
-    hl(sl, box, 0.010, 0.150, 0.480, 0.130, n=1, badge="tl")
-    hl(sl, box, 0.010, 0.820, 0.560, 0.150, n=2, badge="bl")
-
-    yy = kv_card(sl, 8.10, 2.02, 4.38, 3.06, "Nunes & Lucato — transportadora",
-                 [("Razão social", "Nunes&Lucato GSA Ltda"),
-                  ("CNPJ", "13.762.164/0001-06"),
-                  ("Código no SINIR", "39087"),
-                  ("Endereço", "Mário Augusto do Carmo, 275"),
-                  ("CEP / Bairro", "03227-070 · Jardim Avelino"),
-                  ("Cidade / UF", "São Paulo · SP"),
-                  ("Licença", "[INSERIR]"),
-                  ("Órgão emissor", "[INSERIR]")],
-                 icon=ic_truck, accent=INDIGO, rh=0.29, size=9.0)
-
-    note(sl, 5.52,
-         "Motorista e placa mudam a cada coleta: confirme com a nossa equipe "
-         "antes de emitir, ou deixe que informemos no ato da retirada.",
-         icon=ic_route, h=0.58)
-    source(sl, 6.20,
-           "Dados extraídos do nosso próprio cadastro no MTR Nacional. "
-           "[CONFIRMAR — rótulo exato do código 39087 e campos de licença "
-           "ambiental]")
-    return sl
-
-
-# =============================== 22 · PASSO 9 · RESIDUOS, SALVAR, CDF
-def s22(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
-    head(sl, "Passo 9 de 9  ·  Caminho 2",
-         [("Resíduos, emissão e ", {}),
-          ("acompanhamento", {"font": F_SB})], 22)
-
-    blocos = [("Identifique o resíduo", ic_clipboard,
-               ["Código e descrição do resíduo",
-                "Classe (I, II-A, II-B)",
-                "Estado físico e acondicionamento"]),
-              ("Informe a quantidade", ic_scale,
-               ["Quantidade enviada",
-                "Unidade de medida",
-                "Tecnologia de destinação"]),
-              ("Gere e imprima", ic_doc_check,
-               ["Confira antes de salvar",
-                "Salve e gere o MTR",
-                "Imprima: acompanha a carga"])]
-    cw, gap = 3.71, 0.26
-    y = 2.02
-    for i, (t, ic, its) in enumerate(blocos):
-        x = ML + i * (cw + gap)
-        card(sl, x, y, cw, 2.16, fill=WHITE, line=RULE, accent=INDIGO)
-        ic(sl, x + 0.28, y + 0.30, 0.42, INDIGO)
-        txt(sl, x + 0.28, y + 0.88, cw - 0.56, 0.32, t, font=F_SB, size=11.0,
-            color=INK)
-        bullets(sl, x + 0.28, y + 1.30, cw - 0.62, 0.8, its, size=9.0,
-                color=GREY, dot_color=INDIGO, ls=1.26, gap=6)
-
-    hline(sl, ML, 4.44, CW, RULE, 1.0)
-    ic_route(sl, ML, 4.66, 0.52, GREEN)
-    rich(sl, ML + 0.74, 4.64, 9.6, 0.6,
-         [("Depois da emissão: acompanhe o MTR até o CDF",
-           {"font": F_LIGHT, "size": 17, "color": INK})], ls=1.14)
-    txt(sl, ML + 0.74, 5.08, 11.0, 0.34,
-        "O destinador confirma o recebimento e informa o tratamento dado à "
-        "carga. Com isso, o Certificado de Destinação Final fica disponível "
-        "para você.", size=9.6, color=GREY, ls=1.28)
-
-    note(sl, 5.62,
-         "[PRINTS PENDENTES — bloco de resíduos, tela de MTR gerado/impressão, "
-         "consulta de MTRs emitidos, emissão em lote e modelos salvos, e "
-         "download do CDF]  Não descrevemos telas que não temos.",
-         icon=ic_warning, color=RED, fill=RED_LT, h=0.76)
-    source(sl, 6.44,
-           "Fluxo de destinação e CDF conforme os serviços descritos em "
-           "gov.br (Emitir o MTR e Emitir o Certificado de Destinação Final).")
-    return sl
-
-
-# ================================================ 23 · PERGUNTAS FREQUENTES
-def s23(prs):
-    sl = add_slide(prs)
-    bg_white(sl)
     head(sl, "Perguntas frequentes",
-         [("O que mais ", {}), ("costuma gerar dúvida", {"font": F_SB})], 23)
+         [("O que mais ", {}), ("costuma gerar dúvida", {"font": F_SB})], 18)
 
     qas = [
         ("Vou perder meu cadastro e meu histórico?",
@@ -1152,15 +1098,15 @@ def s23(prs):
          "MTRs já emitidos continuam."),
         ("Minha senha antiga do MTR ainda funciona?",
          "Não. Desde 01/08/2026 o acesso é apenas pelo Login Único Gov.br."),
-        ("Preciso de certificado digital?",
-         "O acesso descrito aqui é por CPF e senha Gov.br. [CONFIRMAR — "
-         "exigência de certificado digital para o seu perfil]"),
-        ("Mais de uma pessoa pode emitir MTR?",
-         "Sim. O Administrador da unidade cadastra quantos usuários precisar, "
-         "cada um com o seu CPF."),
-        ("A Nunes & Lucato pode continuar emitindo?",
-         "Sim, desde que a sua empresa nos autorize como usuário da unidade "
-         "(Caminho 1)."),
+        ("Autorizar vocês dá acesso a mais alguma coisa?",
+         "Não. O acesso vale só para a unidade autorizada e pode ser retirado "
+         "quando você quiser."),
+        ("Preciso marcar “Administrador” para vocês?",
+         "Não é obrigatório. Marque se quiser que a gente também cuide da "
+         "gestão de acessos da unidade."),
+        ("Mais de uma pessoa pode ter acesso?",
+         "Sim. O Administrador cadastra quantos usuários precisar, cada um com "
+         "o seu CPF."),
         ("Quem tira dúvidas sobre o sistema?",
          "O canal oficial do módulo MTR Nacional é mtr.sinir@mma.gov.br. "
          "Nossa equipe também apoia."),
@@ -1179,32 +1125,31 @@ def s23(prs):
     return sl
 
 
-# ================================================ 24 · ERROS COMUNS
-def s24(prs):
+# ================================================ 19 · PONTOS DE ATENCAO
+def s19(prs):
     sl = add_slide(prs)
     bg_white(sl)
-    head(sl, "Erros comuns",
-         [("Problema e ", {}), ("solução", {"font": F_SB})], 24)
+    head(sl, "Pontos de atenção",
+         [("Situação e ", {}), ("o que fazer", {"font": F_SB})], 19)
 
     rows = [
-        ("“Usuário não vinculado a nenhum empreendimento”",
-         "Use “Pesquisar CPF/CNPJ”, solicite acesso e aguarde o Administrador "
-         "aprovar (passo 6)."),
-        ("“Nenhum empreendimento localizado para o CPF/CNPJ”",
-         "A empresa ainda não existe no MTR. Clique em “Cadastrar "
-         "Empreendimento” (passo 7)."),
-        ("Não consigo concluir o cadastro com meu e-mail",
-         "E-mails Outlook, Hotmail e Live não são aceitos no momento. Use "
-         "outro provedor."),
-        ("A senha antiga do MTR não funciona",
-         "É esperado. Entre pelo botão “Entrar com GOV.BR” e use a senha da "
+        ("A senha antiga do MTR não funciona mais",
+         "É esperado. Entre pelo botão “Entrar com GOV.BR” com a senha da "
          "conta Gov.br."),
+        ("O responsável ainda não tem conta Gov.br",
+         "Crie em gov.br antes de tudo. E-mails Outlook, Hotmail e Live não "
+         "são aceitos no momento."),
+        ("Não aparece o menu Configurações",
+         "Esse login não é Administrador da unidade. Procure quem cadastrou a "
+         "empresa no MTR."),
         ("O Administrador saiu da empresa",
-         "Outro Administrador deve assumir antes da inativação: só é possível "
-         "inativar se houver outro cadastrado."),
+         "Outro Administrador precisa assumir antes: só é possível inativar se "
+         "houver outro cadastrado."),
+        ("A autorização ainda não foi concedida",
+         "Sem o vínculo, não conseguimos emitir e a coleta fica parada. É o "
+         "item mais urgente."),
     ]
-    y = 2.04
-    rh = 0.82
+    y, rh = 2.04, 0.82
     for i, (p, s) in enumerate(rows):
         yy = y + i * rh
         if i % 2 == 0:
@@ -1218,33 +1163,32 @@ def s24(prs):
             color=INK_SOFT, ls=1.28, anchor="m")
 
     note(sl, 6.14,
-         "Travou em alguma dessas telas? Fale com a gente antes de tentar "
-         "várias vezes — resolvemos junto.", icon=ic_people, h=0.48,
-         size=9.2)
+         "Travou em qualquer um desses pontos? Fale com a gente — resolvemos "
+         "junto.", icon=ic_people, h=0.48, size=9.2)
     return sl
 
 
-# ============================================ 25 · O QUE FAZER AGORA
-def s25(prs):
+# ============================================ 20 · O QUE FAZER AGORA
+def s20(prs):
     sl = add_slide(prs)
     bg_white(sl)
     head(sl, "O que fazer agora",
          [("Um ", {}), ("checklist curto", {"font": F_SB}),
-          (" para a sua equipe", {})], 25)
+          (" para a sua equipe", {})], 20)
 
     checks = [
-        ("Defina quem responde pelo MTR na sua empresa",
-         "É o CPF dessa pessoa que vai acessar o sistema."),
+        ("Identifique o Administrador da sua unidade no MTR",
+         "É quem cadastrou a empresa e pode autorizar novos usuários."),
         ("Confirme se essa pessoa tem conta Gov.br ativa",
-         "Se não tiver, crie antes de qualquer outra coisa."),
-        ("Verifique se o CPF já está vinculado à sua unidade",
-         "Entre em mtr.sinir.gov.br e confira."),
-        ("Escolha o caminho: nos autorizar ou emitir por conta própria",
-         "Os dois funcionam e podem coexistir."),
-        ("Se optar por nos autorizar, nos avise por escrito",
-         "Cadastre o CPF do nosso responsável ou aprove a nossa solicitação."),
+         "Sem ela, não há como entrar no sistema."),
+        ("Escolha a rota: A (você cadastra) ou B (nós solicitamos)",
+         "As duas levam ao mesmo resultado."),
+        ("Cadastre ou aprove o CPF da nossa responsável",
+         f"{NL_NOME} · {NL_CPF}"),
+        ("Nos avise por escrito quando estiver feito",
+         "Testamos o acesso e retomamos a emissão na mesma hora."),
         ("Revise periodicamente os usuários da unidade",
-         "Desative quem saiu da empresa."),
+         "Desative quem não faz mais parte da operação."),
     ]
     y = 2.02
     for i, (t, d) in enumerate(checks):
@@ -1273,8 +1217,8 @@ def s25(prs):
     return sl
 
 
-# ================================================= 26 · ENCERRAMENTO
-def s26(prs):
+# ================================================= 21 · ENCERRAMENTO
+def s21(prs):
     sl = add_slide(prs)
     bg_dark(sl, "deep")
     px, pw = 8.55, 4.78
@@ -1292,9 +1236,9 @@ def s26(prs):
 
     hline(sl, ML, 3.92, 1.05, WHITE, 1.8, alpha=0.75)
 
-    contatos = [("Fale com a nossa equipe", "[INSERIR RESPONSÁVEL]"),
+    contatos = [("Fale com a nossa equipe", NL_NOME),
+                ("E-mail", NL_EMAIL),
                 ("Telefone / WhatsApp", "[INSERIR TELEFONE]"),
-                ("E-mail", "[INSERIR E-MAIL]"),
                 ("Suporte oficial do MTR Nacional", "mtr.sinir@mma.gov.br")]
     y = 4.18
     for i, (k, v) in enumerate(contatos):
@@ -1311,11 +1255,12 @@ def s26(prs):
     hline(sl, px + 0.30, 2.72, pw - 0.60, WHITE, 0.75, alpha=0.30)
     fontes = [
         "Portal do SINIR — Sistema MTR: sinir.gov.br/sistemas/mtr",
-        "Comunicado “Login Único (Gov.br) — Sistema MTR Nacional”, SINIR.",
+        "Comunicado “Login Único (Gov.br) — Sistema MTR Nacional”, SINIR: "
+        "tipos de usuário e gerenciamento de acessos.",
         "Guia Rápido “Login Único GOV.BR — MTR Nacional/Sinir”, MMA/SINIR, "
         "v. 1.0, 05/01/2026 — origem das Figuras 1 a 15.",
-        "gov.br — serviços Emitir o MTR, Emitir o CDF e Criar conta gov.br.",
-        "Prints das telas de emissão: acervo próprio da Nunes & Lucato.",
+        "gov.br — serviços Emitir o MTR e Criar sua conta gov.br.",
+        "Print da tela do sistema: acervo próprio da Nunes & Lucato.",
     ]
     yy = 2.86
     for f in fontes:
@@ -1326,14 +1271,13 @@ def s26(prs):
         "Reprodução das figuras oficiais permitida sem fins lucrativos, "
         "citada a fonte (MMA).", size=7.0, color=WHITE, ls=1.26)
 
-    footer(sl, 26, TOTAL, dark=True, label=LABEL)
+    footer(sl, 21, TOTAL, dark=True, label=LABEL)
     return sl
 
 
 # ================================================================ MONTAGEM
 BUILDERS = [s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11, s12, s13,
-            s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26]
-
+            s14, s15, s16, s17, s18, s19, s20, s21]
 
 SAFE_BOTTOM = FOOT_RULE_Y - 0.04      # 6.74 in: limite inferior do conteudo
 
