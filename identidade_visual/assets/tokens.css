@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Nunes & Lucato · Gestão Ambiental — tokens de identidade visual
+   Fonte: identidade_visual/README.md
+   ========================================================================== */
+
+/* Fontes (SIL Open Font License) */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---------- Índigo — primária ---------- */
+  --nl-indigo-900: #0D0C24; /* noite: fundo escuro, capa, rodapé */
+  --nl-indigo-800: #17165D; /* profundo */
+  --nl-indigo-700: #201F7A; /* escuro */
+  --nl-indigo-600: #2A28A0; /* INSTITUCIONAL: botão primário, rótulo, ícone */
+  --nl-indigo-500: #3432C9; /* base / link / hover */
+  --nl-indigo-400: #5C5ADB; /* ativo, traço sobre fundo escuro */
+  --nl-indigo-200: #C9C8F0; /* névoa */
+  --nl-indigo-100: #EEEEFB; /* fundo de seção */
+
+  /* ---------- Neutras ---------- */
+  --nl-grafite:    #383838; /* EXCLUSIVO da logomarca — não usar em UI */
+  --nl-ink:        #14142E; /* texto principal */
+  --nl-ink-soft:   #3A3C55; /* texto de apoio forte */
+  --nl-grey:       #6E7288; /* texto secundário */
+  --nl-grey-light: #9A9DB0; /* rótulo desativado */
+  --nl-rule:       #DFE2F0; /* borda, divisor */
+  --nl-tint:       #F4F5FC; /* fundo de cartão */
+  --nl-white:      #FFFFFF;
+
+  /* ---------- Acentos funcionais — só em dado, nunca em decoração ---------- */
+  --nl-green:      #12A87B; /* verde ciclo: material recuperado, Aterro Zero */
+  --nl-green-dark: #0B7F5C; /* texto sobre verde claro */
+  --nl-aqua:       #1E86C9; /* água / ciclo hídrico */
+  /* Substitui o âmbar do deck antigo ao representar "modelo linear".
+     Âmbar está FORA da paleta: é o acento da Momo Ambiental (#FFC03D). */
+  --nl-linear:     #8A8EA3;
+
+  /* ---------- Tipografia ---------- */
+  --nl-font-display: "Playfair Display", Georgia, serif;
+  --nl-font-ui:      "Montserrat", system-ui, -apple-system, sans-serif;
+  --nl-font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---------- Layout ---------- */
+  --nl-container: 1280px;
+  --nl-radius: 0px; /* o sistema é de cantos retos */
+}
+
+/* ==========================================================================
+   Escala tipográfica
+   ========================================================================== */
+
+.nl-h1 {
+  font-family: var(--nl-font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5vw, 4.875rem); /* 40 -> 78 px */
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  color: var(--nl-ink);
+}
+
+.nl-h2 {
+  font-family: var(--nl-font-display);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem); /* 28 -> 44 px */
+  line-height: 1.10;
+  letter-spacing: -0.010em;
+  color: var(--nl-ink);
+}
+
+/* Acima de 32 px o título é SEMPRE Playfair. Montserrat só a partir do H3. */
+.nl-h3 {
+  font-family: var(--nl-font-ui);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem); /* 20 -> 24 px */
+  line-height: 1.30;
+  color: var(--nl-ink);
+}
+
+.nl-body {
+  font-family: var(--nl-font-ui);
+  font-weight: 400;
+  font-size: 1rem; /* 16 px */
+  line-height: 1.62;
+  color: var(--nl-grey);
+}
+
+.nl-label {
+  font-family: var(--nl-font-ui);
+  font-weight: 600;
+  font-size: 0.6875rem; /* 11 px */
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--nl-indigo-600);
+}
+
+/* Dados de conformidade: MTR, CNPJ, lote, nº de laudo, tonelagem.
+   Tabular para evitar ambiguidade em documento oficial. */
+.nl-data {
+  font-family: var(--nl-font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--nl-indigo-600);
+}
+
+/* ==========================================================================
+   Componentes base
+   ========================================================================== */
+
+.nl-btn {
+  font-family: var(--nl-font-ui);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  padding: 0.875rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--nl-radius);
+  cursor: pointer;
+  transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+.nl-btn--primary {
+  background: var(--nl-indigo-600);
+  color: var(--nl-white);
+}
+.nl-btn--primary:hover { background: var(--nl-indigo-500); }
+
+.nl-btn--ghost {
+  background: transparent;
+  border-color: var(--nl-ink);
+  color: var(--nl-ink);
+}
+.nl-btn--ghost:hover { background: var(--nl-ink); color: var(--nl-white); }
+
+.nl-rule { border: 0; border-top: 1px solid var(--nl-rule); }
+
+.nl-card {
+  background: var(--nl-white);
+  border: 1px solid var(--nl-rule);
+  border-radius: var(--nl-radius);
+}
+/* Cartão de dado: faixa superior índigo (operação) ou verde (Aterro Zero) */
+.nl-card--op    { border-top: 2px solid var(--nl-indigo-600); }
+.nl-card--cycle { border-top: 2px solid var(--nl-green); }
+
+/* Fundo institucional escuro (capa, hero, encerramento) */
+.nl-bg-dark {
+  background:
+    radial-gradient(120% 90% at 88% 12%, var(--nl-indigo-500) 0%, rgba(52, 50, 201, 0) 58%),
+    linear-gradient(103deg, var(--nl-indigo-900) 0%, var(--nl-indigo-800) 44%,
+                    var(--nl-indigo-700) 72%, var(--nl-indigo-600) 100%);
+  color: var(--nl-white);
+}
+
+/* Foco visível — obrigatório em todo elemento interativo */
+.nl-btn:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--nl-indigo-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
