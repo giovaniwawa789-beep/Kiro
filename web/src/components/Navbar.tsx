@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { site, linkWhatsApp } from "@/content/site";
@@ -52,7 +53,7 @@ export default function Navbar() {
           aria-label={`${site.nome} — página inicial`}
         >
           <Image
-            src="/simbolo_branco.png"
+            src={asset("/simbolo_branco.png")}
             alt=""
             width={30}
             height={30}

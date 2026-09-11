@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 import { site, linkWhatsApp } from "@/content/site";
 import { servicos } from "@/content/servicos";
 
@@ -12,7 +13,7 @@ export default function Footer() {
         <div>
           <div className="flex items-center gap-2.5">
             <Image
-              src="/simbolo_branco.png"
+              src={asset("/simbolo_branco.png")}
               alt=""
               width={28}
               height={28}

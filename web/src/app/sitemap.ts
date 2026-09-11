@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { site } from "@/content/site";
 import { servicos } from "@/content/servicos";
 
+/** Necessário para o `output: "export"` gerar o arquivo em build. */
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const agora = new Date();
 

@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 import { motion } from "framer-motion";
 import { site } from "@/content/site";
 import { revelar, noViewport } from "@/lib/motion";
@@ -101,7 +102,7 @@ export default function Produtos() {
               <div className="relative aspect-[4/3] bg-surface-2">
                 {produto.imagem ? (
                   <Image
-                    src={produto.imagem}
+                    src={asset(produto.imagem)}
                     alt={produto.alt}
                     fill
                     sizes="(max-width: 640px) 78vw, (max-width: 1024px) 46vw, 31vw"

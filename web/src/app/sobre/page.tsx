@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 import { site, linkWhatsApp } from "@/content/site";
 import { projetos } from "@/content/projetos";
 import Botao from "@/components/ui/Botao";
@@ -149,7 +150,7 @@ export default function Sobre() {
                 {p.imagem ? (
                   <div className="relative aspect-[3/2]">
                     <Image
-                      src={p.imagem}
+                      src={asset(p.imagem)}
                       alt={p.alt}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

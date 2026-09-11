@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 import { motion } from "framer-motion";
 import { projetos, antesDepois } from "@/content/projetos";
 import { revelar, escalonar, noViewport } from "@/lib/motion";
@@ -49,7 +50,7 @@ export default function Projetos() {
                   {i === 0 ? "Antes" : "Depois"}
                 </span>
                 <Image
-                  src={lado.imagem}
+                  src={asset(lado.imagem)}
                   alt={lado.alt}
                   width={1000}
                   height={1000}
@@ -103,7 +104,7 @@ export default function Projetos() {
               {projeto.imagem ? (
                 <div className="relative aspect-[3/2] overflow-hidden">
                   <Image
-                    src={projeto.imagem}
+                    src={asset(projeto.imagem)}
                     alt={projeto.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"

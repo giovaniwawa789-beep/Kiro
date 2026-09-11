@@ -49,19 +49,24 @@ export default function Hero() {
           animate="visivel"
           className="max-w-5xl text-[clamp(2.75rem,7vw,6rem)] leading-[1.02]"
         >
+          {/* O espaço entre as palavras é um nó de texto real, não margem:
+              assim o textContent do h1 sai com espaços (importante para SEO e
+              para o usuário copiar o texto). */}
           {palavras.map((p, i) => (
-            <motion.span
-              key={`${p}-${i}`}
-              variants={menosMovimento ? undefined : palavra}
-              aria-hidden
-              className="mr-[0.28em] inline-block"
-            >
-              {i >= palavras.length - 2 ? (
-                <span className="text-primary">{p}</span>
-              ) : (
-                p
-              )}
-            </motion.span>
+            <span key={`${p}-${i}`}>
+              <motion.span
+                variants={menosMovimento ? undefined : palavra}
+                aria-hidden
+                className="inline-block"
+              >
+                {i >= palavras.length - 2 ? (
+                  <span className="text-primary">{p}</span>
+                ) : (
+                  p
+                )}
+              </motion.span>
+              {i < palavras.length - 1 ? " " : ""}
+            </span>
           ))}
         </motion.h1>
 
