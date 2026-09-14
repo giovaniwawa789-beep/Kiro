@@ -14,7 +14,6 @@ import {
 } from "@/content/funil";
 import { revelar, noViewport } from "@/lib/motion";
 import { TituloSecao } from "@/components/ui/Secao";
-import Monta3D from "@/components/webgl3d/Monta3D";
 
 /**
  * Funil VIP de duas etapas.
@@ -154,12 +153,8 @@ export default function FunilVip() {
   return (
     <section
       id="consultoria"
-      className="relative isolate overflow-hidden border-y border-white/8 py-24 md:py-32"
+      className="relative isolate overflow-hidden border-y border-regua-2 bg-creme py-20 md:py-28"
     >
-      {/* fluido reage ao ponteiro; three só entra perto da seção */}
-      <Monta3D carregar={() => import("@/components/webgl3d/FluidoHover")} />
-      <div className="noise" aria-hidden />
-
       <div className="shell relative">
         <motion.div
           variants={revelar}
@@ -173,7 +168,7 @@ export default function FunilVip() {
             titulo={
               <>
                 Uma hora com quem assina{" "}
-                <span className="text-primary">o laudo</span>
+                <span className="text-indigo">o laudo</span>
               </>
             }
             apoio="Diagnóstico conduzido pela responsável técnica, não por equipe comercial. Saímos da conversa com o seu enquadramento legal, o volume que está sendo perdido e o que dele volta como produto."
@@ -207,13 +202,13 @@ export default function FunilVip() {
                 <li key={item.t} className="flex gap-4">
                   <span
                     aria-hidden
-                    className="flex h-8 w-8 flex-none items-center justify-center rounded-full border border-white/15 font-mono text-[12px] text-primary"
+                    className="flex h-8 w-8 flex-none items-center justify-center rounded-full border border-regua-2 font-mono text-[12px] text-indigo"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
                     <h3 className="text-[16px]">{item.t}</h3>
-                    <p className="mt-1.5 text-[14px] leading-relaxed text-body">
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-corpo">
                       {item.d}
                     </p>
                   </div>
@@ -221,17 +216,17 @@ export default function FunilVip() {
               ))}
             </ol>
 
-            <div className="glass mt-8 rounded-2xl p-6">
-              <p className="text-[14px] leading-relaxed text-body">
+            <div className="mt-8 rounded-2xl border border-regua-2 bg-branco p-6">
+              <p className="text-[14px] leading-relaxed text-corpo">
                 Conduzido por{" "}
-                <span className="text-ink">{site.contato.responsavel}</span>,
+                <span className="text-tinta">{site.contato.responsavel}</span>,
                 responsável técnica e sócia. Cadastro no SINIR{" "}
-                <span className="font-mono text-ink">{site.contato.sinir}</span>{" "}
+                <span className="font-mono text-tinta">{site.contato.sinir}</span>{" "}
                 como {site.contato.perfilMtr}.
               </p>
             </div>
 
-            <p className="mt-6 text-[13.5px] text-body">
+            <p className="mt-6 text-[13.5px] text-corpo">
               Prefere conversar agora?{" "}
               <a
                 href={linkWhatsApp(
@@ -239,7 +234,7 @@ export default function FunilVip() {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:text-accent"
+                className="font-medium text-indigo underline decoration-indigo/40 underline-offset-4 transition-colors hover:text-indigo"
               >
                 Fale pelo WhatsApp
               </a>
@@ -247,12 +242,12 @@ export default function FunilVip() {
           </div>
 
           {/* ---------------- formulário ---------------- */}
-          <div className="glass rounded-2xl p-7 md:p-9">
+          <div className="rounded-2xl border border-regua-2 bg-branco p-7 shadow-[0_2px_18px_rgba(20,20,46,0.05)] md:p-9">
             {estado === "enviado" ? (
               <div role="status">
                 <div
                   aria-hidden
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-primary"
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo/10 text-indigo"
                 >
                   <svg
                     viewBox="0 0 16 16"
@@ -267,7 +262,7 @@ export default function FunilVip() {
                   </svg>
                 </div>
                 <h3 className="mt-5 text-[22px]">Solicitação preparada</h3>
-                <p className="mt-3 max-w-md text-[15px] leading-relaxed text-body">
+                <p className="mt-3 max-w-md text-[15px] leading-relaxed text-corpo">
                   Abrimos o seu programa de e-mail com a qualificação e o horário
                   escolhido. Confirmamos a agenda em até um dia útil. Se nada
                   abriu, chame no WhatsApp.
@@ -278,7 +273,7 @@ export default function FunilVip() {
                     setDados(VAZIO);
                     setEstado("etapa1");
                   }}
-                  className="mt-7 rounded-full border border-white/20 px-6 py-3 text-[14px] text-ink transition-colors duration-300 hover:border-accent hover:text-accent"
+                  className="mt-7 rounded-full border border-regua px-6 py-3 text-[14px] text-tinta transition-colors duration-300 hover:border-accent hover:text-indigo"
                 >
                   Nova solicitação
                 </button>
@@ -288,10 +283,10 @@ export default function FunilVip() {
                 {/* progresso */}
                 <div className="mb-8">
                   <div className="flex items-center justify-between">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo">
                       Etapa {etapaAtual} de 2
                     </p>
-                    <p className="text-[12px] text-body">
+                    <p className="text-[12px] text-corpo">
                       {etapaAtual === 1 ? "Qualificação" : "Agendamento"}
                     </p>
                   </div>
@@ -301,10 +296,10 @@ export default function FunilVip() {
                     aria-valuemin={1}
                     aria-valuemax={2}
                     aria-label="Progresso do agendamento"
-                    className="mt-3 h-px w-full bg-white/12"
+                    className="mt-3 h-px w-full bg-regua-2"
                   >
                     <div
-                      className="h-full bg-primary transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                      className="h-full bg-indigo-esc transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                       style={{ width: `${etapaAtual * 50}%` }}
                     />
                   </div>
@@ -370,7 +365,7 @@ export default function FunilVip() {
                     <button
                       type="button"
                       onClick={avancar}
-                      className="mt-8 w-full rounded-full bg-primary px-7 py-4 text-[15px] font-semibold text-[#04120b] transition-colors duration-300 hover:bg-accent sm:w-auto"
+                      className="mt-8 w-full rounded-full bg-indigo-esc px-7 py-4 text-[15px] font-semibold text-branco transition-colors duration-300 hover:bg-indigo sm:w-auto"
                     >
                       Continuar para a agenda
                     </button>
@@ -388,20 +383,20 @@ export default function FunilVip() {
 
                     {/* ----- dia ----- */}
                     <fieldset className="mt-7">
-                      <legend className="mb-3 block text-[13px] font-medium text-ink">
-                        Dia <span className="text-body">*</span>
+                      <legend className="mb-3 block text-[13px] font-medium text-tinta">
+                        Dia <span className="text-corpo">*</span>
                       </legend>
                       {dias.length === 0 ? (
-                        <p className="text-[13px] text-body">Carregando agenda…</p>
+                        <p className="text-[13px] text-corpo">Carregando agenda…</p>
                       ) : (
                         <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6">
                           {dias.map((d) => (
                             <label
                               key={d.iso}
-                              className={`cursor-pointer rounded-xl border px-2 py-3 text-center transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ${
+                              className={`cursor-pointer rounded-xl border px-2 py-3 text-center transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-indigo ${
                                 dados.data === d.iso
-                                  ? "border-accent bg-accent/10"
-                                  : "border-white/12 hover:border-white/30"
+                                  ? "border-indigo bg-indigo-nevoa"
+                                  : "border-regua-2 hover:border-indigo/40"
                               }`}
                             >
                               <input
@@ -412,13 +407,13 @@ export default function FunilVip() {
                                 onChange={() => definir("data", d.iso)}
                                 className="sr-only"
                               />
-                              <span className="block text-[11px] uppercase text-body">
+                              <span className="block text-[11px] uppercase text-corpo">
                                 {d.diaSemana.replace(".", "")}
                               </span>
-                              <span className="mt-0.5 block font-display text-[17px] font-semibold text-ink">
+                              <span className="mt-0.5 block font-display text-[17px] font-semibold text-tinta">
                                 {d.dia}
                               </span>
-                              <span className="block text-[10.5px] text-body">
+                              <span className="block text-[10.5px] text-corpo">
                                 {d.mes.replace(".", "")}
                               </span>
                             </label>
@@ -426,23 +421,23 @@ export default function FunilVip() {
                         </div>
                       )}
                       {erros.data ? (
-                        <p className="mt-2 text-[13px] text-red-300">{erros.data}</p>
+                        <p className="mt-2 text-[13px] text-red-600">{erros.data}</p>
                       ) : null}
                     </fieldset>
 
                     {/* ----- horário ----- */}
                     <fieldset className="mt-6">
-                      <legend className="mb-3 block text-[13px] font-medium text-ink">
-                        Horário <span className="text-body">*</span>
+                      <legend className="mb-3 block text-[13px] font-medium text-tinta">
+                        Horário <span className="text-corpo">*</span>
                       </legend>
                       <div className="flex flex-wrap gap-2.5">
                         {horarios.map((h) => (
                           <label
                             key={h.valor}
-                            className={`cursor-pointer rounded-full border px-5 py-2.5 text-[14px] transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ${
+                            className={`cursor-pointer rounded-full border px-5 py-2.5 text-[14px] transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-indigo ${
                               dados.horario === h.valor
-                                ? "border-accent bg-accent/10 text-ink"
-                                : "border-white/12 text-body hover:border-white/30"
+                                ? "border-indigo bg-indigo-nevoa text-tinta"
+                                : "border-regua-2 text-corpo hover:border-indigo/40"
                             }`}
                           >
                             <input
@@ -458,7 +453,7 @@ export default function FunilVip() {
                         ))}
                       </div>
                       {erros.horario ? (
-                        <p className="mt-2 text-[13px] text-red-300">
+                        <p className="mt-2 text-[13px] text-red-600">
                           {erros.horario}
                         </p>
                       ) : null}
@@ -509,19 +504,19 @@ export default function FunilVip() {
                       <button
                         type="button"
                         onClick={() => setEstado("etapa1")}
-                        className="rounded-full border border-white/20 px-6 py-4 text-[15px] text-ink transition-colors duration-300 hover:border-accent hover:text-accent"
+                        className="rounded-full border border-regua px-6 py-4 text-[15px] text-tinta transition-colors duration-300 hover:border-accent hover:text-indigo"
                       >
                         Voltar
                       </button>
                       <button
                         type="submit"
-                        className="flex-1 rounded-full bg-primary px-7 py-4 text-[15px] font-semibold text-[#04120b] transition-colors duration-300 hover:bg-accent sm:flex-none"
+                        className="flex-1 rounded-full bg-indigo-esc px-7 py-4 text-[15px] font-semibold text-branco transition-colors duration-300 hover:bg-indigo sm:flex-none"
                       >
                         Confirmar solicitação
                       </button>
                     </div>
 
-                    <p className="mt-4 text-[12.5px] leading-relaxed text-body">
+                    <p className="mt-4 text-[12.5px] leading-relaxed text-corpo">
                       Confirmamos a agenda em até um dia útil. Usamos os dados
                       apenas para responder ao seu contato, conforme a LGPD.
                     </p>
@@ -557,7 +552,7 @@ function GrupoRadio({
 }) {
   return (
     <fieldset className="mt-7">
-      <legend className="mb-3 block text-[13px] font-medium text-ink">
+      <legend className="mb-3 block text-[13px] font-medium text-tinta">
         {titulo}
       </legend>
       <div
@@ -566,10 +561,10 @@ function GrupoRadio({
         {opcoes.map((o) => (
           <label
             key={o.valor}
-            className={`cursor-pointer rounded-xl border px-4 py-3 transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ${
+            className={`cursor-pointer rounded-xl border px-4 py-3 transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-indigo ${
               valor === o.valor
-                ? "border-accent bg-accent/10"
-                : "border-white/12 hover:border-white/30"
+                ? "border-indigo bg-indigo-nevoa"
+                : "border-regua-2 hover:border-indigo/40"
             }`}
           >
             <input
@@ -580,14 +575,14 @@ function GrupoRadio({
               onChange={() => aoMudar(o.valor)}
               className="sr-only"
             />
-            <span className="block text-[14px] text-ink">{o.rotulo}</span>
+            <span className="block text-[14px] text-tinta">{o.rotulo}</span>
             {o.nota ? (
-              <span className="mt-0.5 block text-[12px] text-body">{o.nota}</span>
+              <span className="mt-0.5 block text-[12px] text-corpo">{o.nota}</span>
             ) : null}
           </label>
         ))}
       </div>
-      {erro ? <p className="mt-2 text-[13px] text-red-300">{erro}</p> : null}
+      {erro ? <p className="mt-2 text-[13px] text-red-600">{erro}</p> : null}
     </fieldset>
   );
 }
@@ -615,8 +610,8 @@ function Campo({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-[13px] font-medium text-ink">
-        {rotulo} {obrigatorio ? <span className="text-body">*</span> : null}
+      <label htmlFor={id} className="mb-2 block text-[13px] font-medium text-tinta">
+        {rotulo} {obrigatorio ? <span className="text-corpo">*</span> : null}
       </label>
       <input
         id={id}
@@ -627,12 +622,12 @@ function Campo({
         onChange={(e) => aoMudar(e.target.value)}
         aria-invalid={Boolean(erro)}
         aria-describedby={erro ? `${id}-erro` : undefined}
-        className={`w-full rounded-xl border bg-white/[0.03] px-4 py-3.5 text-[15px] text-ink outline-none transition-colors duration-300 placeholder:text-body/80 focus:border-accent ${
-          erro ? "border-red-400/70" : "border-white/12"
+        className={`w-full rounded-xl border bg-branco px-4 py-3.5 text-[15px] text-tinta outline-none transition-colors duration-300 placeholder:text-corpo/80 focus:border-indigo ${
+          erro ? "border-red-500" : "border-regua-2"
         }`}
       />
       {erro ? (
-        <p id={`${id}-erro`} className="mt-2 text-[13px] text-red-300">
+        <p id={`${id}-erro`} className="mt-2 text-[13px] text-red-600">
           {erro}
         </p>
       ) : null}

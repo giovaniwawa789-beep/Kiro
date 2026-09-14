@@ -1,118 +1,119 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
+import Image from "next/image";
 import { servicos } from "@/content/servicos";
 import { linkWhatsApp } from "@/content/site";
-import { revelar, escalonar, noViewport } from "@/lib/motion";
-import { TituloSecao } from "@/components/ui/Secao";
+import { asset } from "@/lib/asset";
+import Padrao from "@/components/ui/Padrao";
 import Icone from "@/components/Icone";
+
+/**
+ * Grade de soluções: cartões índigo cheios, cada um com a peça ou o ícone
+ * numa moldura padronizada, rótulo e "Saiba mais".
+ *
+ * Estrutura espelhada da referência do setor (duas fileiras de três, régua fina
+ * acima de cada fileira). Cor, padrão e conteúdo são da Nunes e Lucato.
+ */
+
+/** Foto real quando existe; senão o ícone do serviço na moldura. */
+const FOTOS: Record<string, { src: string; alt: string } | undefined> = {
+  "descarte-reciclagem-uniformes": {
+    src: "/fotos/midea_uniforme_origem.jpg",
+    alt: "Uniformes corporativos fora de uso separados para descaracterização",
+  },
+  "desenvolvimento-produtos-sustentaveis": {
+    src: "/fotos/produto_necessaire.jpg",
+    alt: "Necessaire confeccionada a partir de uniforme reaproveitado",
+  },
+  "coleta-seletiva-textil": {
+    src: "/fotos/residuo_aparas.jpg",
+    alt: "Fardos de aparas têxteis aguardando coleta",
+  },
+  "gestao-residuos-texteis-logistica-reversa": {
+    src: "/fotos/confeccao_denim.jpg",
+    alt: "Costura de peça em denim recuperado",
+  },
+};
 
 export default function Servicos() {
   return (
-    <section id="servicos" className="relative py-24 md:py-32">
+    <section id="servicos" className="bg-branco pb-20 md:pb-28">
       <div className="shell">
-        <motion.div
-          variants={revelar}
-          initial="oculto"
-          whileInView="visivel"
-          viewport={noViewport}
-        >
-          <TituloSecao
-            rotulo="Serviços"
-            titulo={
-              <>
-                Da documentação exigida por lei
-                <br />
-                <span className="text-primary">à destinação do último quilo</span>
-              </>
-            }
-            apoio="Seis frentes que cobrem o ciclo completo: diagnóstico, plano, operação e prova documental. Você contrata só o que precisa ou o pacote inteiro."
-          />
-        </motion.div>
-
-        <motion.ul
-          variants={escalonar(0.05, 0.07)}
-          initial="oculto"
-          whileInView="visivel"
-          viewport={noViewport}
-          className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2"
-        >
-          {servicos.map((servico) => (
-            <motion.li key={servico.slug} variants={revelar}>
-              <Link
-                href={`/servicos/${servico.slug}`}
-                className="group glass relative flex h-full flex-col rounded-2xl p-7 transition-[transform,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.02] hover:border-accent/60 md:p-8"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-primary transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-[-8deg] group-hover:text-accent">
-                    <Icone nome={servico.icone} className="h-9 w-9" />
-                  </span>
-                  <span className="font-display text-[13px] tabular-nums text-body">
-                    {servico.numero}
-                  </span>
-                </div>
-
-                <h3 className="mt-6 text-[21px] leading-snug md:text-[23px]">
-                  {servico.titulo}
-                </h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-body">
-                  {servico.resumo}
-                </p>
-
-                <ul className="mt-6 space-y-2 border-t border-white/8 pt-5">
-                  {servico.entregas.map((entrega) => (
-                    <li
-                      key={entrega}
-                      className="flex items-start gap-2.5 text-[13.5px] text-body"
-                    >
-                      <span
-                        aria-hidden
-                        className="mt-[7px] h-1 w-1 flex-none rounded-full bg-primary"
-                      />
-                      {entrega}
-                    </li>
-                  ))}
-                </ul>
-
-                <span className="mt-7 inline-flex items-center gap-2 text-[14px] font-medium text-ink transition-colors duration-300 group-hover:text-accent">
-                  Ver o serviço
-                  <svg
-                    aria-hidden
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                  >
-                    <path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5" />
-                  </svg>
-                </span>
-              </Link>
-            </motion.li>
-          ))}
-        </motion.ul>
-
-        <motion.p
-          variants={revelar}
-          initial="oculto"
-          whileInView="visivel"
-          viewport={noViewport}
-          className="mt-10 text-[15px] text-body"
-        >
-          Não sabe por onde começar?{" "}
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="rotulo">Soluções</p>
+            <h2 className="display mt-3 max-w-[18ch]">
+              Conheça as nossas soluções
+            </h2>
+          </div>
           <a
-            href={linkWhatsApp("Olá! Não sei qual serviço preciso. Podem me orientar?")}
+            href={linkWhatsApp(
+              "Olá! Quero falar com um especialista sobre resíduos têxteis.",
+            )}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:text-accent"
+            className="pilula pilula-indigo"
           >
-            Fale conosco
-          </a>{" "}
-          e o diagnóstico aponta o caminho.
-        </motion.p>
+            Fale com um especialista
+          </a>
+        </div>
+
+        <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {servicos.map((servico, i) => {
+            const foto = FOTOS[servico.slug];
+            return (
+              <li key={servico.slug} className="flex flex-col">
+                {/* régua fina acima de cada cartão, como na referência */}
+                <div className="regua-fina mb-6" aria-hidden />
+                <Link
+                  href={`/servicos/${servico.slug}`}
+                  className="cartao-servico group flex h-full flex-col p-5 md:p-6"
+                >
+                  <div className="moldura relative flex aspect-[4/3] items-center justify-center">
+                    <div className="absolute inset-0 opacity-40">
+                      <Padrao variante="fina" />
+                    </div>
+                    {foto ? (
+                      <Image
+                        src={asset(foto.src)}
+                        alt={foto.alt}
+                        width={600}
+                        height={450}
+                        sizes="(max-width: 640px) 88vw, (max-width: 1024px) 42vw, 28vw"
+                        className="relative h-[86%] w-[88%] rounded object-cover shadow-[0_8px_22px_rgba(20,20,46,0.18)]"
+                      />
+                    ) : (
+                      <span className="relative flex h-[86%] w-[88%] items-center justify-center rounded bg-branco text-indigo shadow-[0_8px_22px_rgba(20,20,46,0.14)]">
+                        <Icone nome={servico.icone} className="h-14 w-14" />
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="mt-6 text-center text-[15px] font-semibold leading-snug text-branco">
+                    {servico.titulo}
+                  </p>
+
+                  <span
+                    aria-hidden
+                    className="mx-auto mt-4 block h-px w-8 bg-branco/45"
+                  />
+
+                  <span className="mt-4 text-center text-[15px] font-bold text-branco">
+                    Saiba mais
+                  </span>
+
+                  <span className="sr-only">sobre {servico.titulo}</span>
+                  {/* numeração discreta, ajuda a ler a grade como um conjunto */}
+                  <span
+                    aria-hidden
+                    className="mt-4 text-center text-[11px] font-semibold tracking-[0.18em] text-branco/50"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

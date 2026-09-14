@@ -39,15 +39,15 @@ const CHROME = "/opt/playwright/chromium-1148/chrome-linux/chrome";
   });
   await semJs.goto(BASE + "/", { waitUntil: "domcontentloaded" });
   const conteudoSemJs = await semJs.evaluate(() => ({
-    muro: !!document.getElementById("credibilidade"),
+    impactos: !!document.getElementById("impactos"),
     funil: !!document.getElementById("consultoria"),
-    numeros: document.querySelectorAll("#credibilidade dt").length,
-    casos: document.querySelectorAll("#credibilidade li").length,
+    numeros: document.querySelectorAll("#impactos dt").length,
+    casos: document.querySelectorAll("#projetos li").length,
     radios: document.querySelectorAll("#consultoria input[type=radio]").length,
     legends: document.querySelectorAll("#consultoria legend").length,
   }));
   console.log("\nsem JavaScript:", JSON.stringify(conteudoSemJs));
-  if (!conteudoSemJs.muro) problemas.push("muro ausente sem JS");
+  if (!conteudoSemJs.impactos) problemas.push("impactos ausente sem JS");
   if (!conteudoSemJs.funil) problemas.push("funil ausente sem JS");
   if (conteudoSemJs.radios < 10) problemas.push("radios do funil ausentes sem JS");
   if (conteudoSemJs.legends < 4) problemas.push("legends do funil ausentes sem JS");
@@ -147,7 +147,7 @@ const CHROME = "/opt/playwright/chromium-1148/chrome-linux/chrome";
   });
   await p2.waitForTimeout(500);
   const errosVisiveis = await p2.evaluate(
-    () => document.querySelectorAll("#consultoria .text-red-300").length,
+    () => document.querySelectorAll("#consultoria .text-red-600").length,
   );
   console.log(`erros de validação exibidos ao submeter vazio: ${errosVisiveis}`);
   if (errosVisiveis === 0)
@@ -169,8 +169,9 @@ const CHROME = "/opt/playwright/chromium-1148/chrome-linux/chrome";
 
   /* ---------- 4. muro: imprensa não inventada ---------- */
   const imprensa = await p2.evaluate(() => {
-    const s = document.getElementById("credibilidade");
-    return s ? s.textContent.includes("Nenhuma menção de imprensa verificável") : false;
+    return document.body.textContent.includes(
+      "Não encontrei menção de imprensa verificável",
+    );
   });
   console.log(`\naviso de imprensa não verificada presente: ${imprensa}`);
   if (!imprensa) problemas.push("aviso de imprensa provisória não aparece");

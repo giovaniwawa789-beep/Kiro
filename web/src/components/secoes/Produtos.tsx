@@ -19,7 +19,7 @@ export default function Produtos() {
   };
 
   return (
-    <section id="produtos" className="relative py-24 md:py-32">
+    <section id="produtos" className="relative bg-branco py-20 md:py-28">
       <div className="shell">
         <motion.div
           variants={revelar}
@@ -33,7 +33,7 @@ export default function Produtos() {
             titulo={
               <>
                 O resíduo volta como{" "}
-                <span className="text-primary">produto de marca</span>
+                <span className="text-indigo">produto de marca</span>
               </>
             }
             apoio="Peças produzidas a partir do resíduo da própria empresa, personalizáveis. Indicadas para brindes corporativos e ações de ESG."
@@ -45,7 +45,7 @@ export default function Produtos() {
               onClick={() => rolar(-1)}
               aria-label="Ver produtos anteriores"
               aria-controls="trilha-produtos"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-ink transition-colors duration-300 hover:border-accent hover:text-accent"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-regua-2 text-tinta transition-colors duration-300 hover:border-indigo hover:text-indigo"
             >
               <svg
                 aria-hidden
@@ -65,7 +65,7 @@ export default function Produtos() {
               onClick={() => rolar(1)}
               aria-label="Ver próximos produtos"
               aria-controls="trilha-produtos"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-ink transition-colors duration-300 hover:border-accent hover:text-accent"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-regua-2 text-tinta transition-colors duration-300 hover:border-indigo hover:text-indigo"
             >
               <svg
                 aria-hidden
@@ -97,9 +97,9 @@ export default function Produtos() {
           {site.produtos.map((produto) => (
             <li
               key={produto.nome}
-              className="glass w-[78vw] flex-none snap-start overflow-hidden rounded-2xl sm:w-[46%] lg:w-[31%]"
+              className="border border-regua-2 bg-branco w-[78vw] flex-none snap-start overflow-hidden rounded-2xl sm:w-[46%] lg:w-[31%]"
             >
-              <div className="relative aspect-[4/3] bg-surface-2">
+              <div className="relative aspect-[4/3] bg-creme">
                 {produto.imagem ? (
                   <Image
                     src={asset(produto.imagem)}
@@ -113,9 +113,9 @@ export default function Produtos() {
                   <div
                     role="img"
                     aria-label={produto.alt}
-                    className="flex h-full w-full items-center justify-center border-b border-white/8"
+                    className="flex h-full w-full items-center justify-center border-b border-regua-2"
                   >
-                    <span className="rounded-full border border-white/12 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-body">
+                    <span className="rounded-full border border-regua-2 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-corpo">
                       Foto pendente
                     </span>
                   </div>
@@ -123,7 +123,7 @@ export default function Produtos() {
               </div>
               <div className="p-6">
                 <h3 className="text-[18px]">{produto.nome}</h3>
-                <p className="mt-2.5 text-[14px] leading-relaxed text-body">
+                <p className="mt-2.5 text-[14px] leading-relaxed text-corpo">
                   {produto.descricao}
                 </p>
               </div>

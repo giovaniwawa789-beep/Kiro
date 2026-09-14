@@ -3,152 +3,144 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { asset } from "@/lib/asset";
 import clsx from "clsx";
-import { AnimatePresence, motion } from "framer-motion";
-import { site, linkWhatsApp } from "@/content/site";
-import { EASE } from "@/lib/motion";
+import { site } from "@/content/site";
+import { asset } from "@/lib/asset";
 
+/**
+ * Barra fixa clara: logomarca à esquerda, links em índigo, "Contato" destacado.
+ * Estrutura espelhada da referência do setor; a logomarca é a original da
+ * Nunes e Lucato, em grafite.
+ */
 export default function Navbar() {
-  const [reduzida, setReduzida] = useState(false);
-  const [menuAberto, setMenuAberto] = useState(false);
+  const [compacta, setCompacta] = useState(false);
+  const [aberto, setAberto] = useState(false);
 
-  /** Reduz a altura e liga o fundo translúcido depois de 80px de scroll. */
   useEffect(() => {
-    const aoRolar = () => setReduzida(window.scrollY > 80);
+    const aoRolar = () => setCompacta(window.scrollY > 60);
     aoRolar();
     window.addEventListener("scroll", aoRolar, { passive: true });
     return () => window.removeEventListener("scroll", aoRolar);
   }, []);
 
-  /** Trava o corpo e permite fechar no Esc enquanto o menu está aberto. */
   useEffect(() => {
-    if (!menuAberto) return;
+    if (!aberto) return;
     const anterior = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const aoTeclar = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuAberto(false);
+      if (e.key === "Escape") setAberto(false);
     };
     document.addEventListener("keydown", aoTeclar);
     return () => {
       document.body.style.overflow = anterior;
       document.removeEventListener("keydown", aoTeclar);
     };
-  }, [menuAberto]);
+  }, [aberto]);
 
   return (
     <header
       className={clsx(
-        "fixed inset-x-0 top-0 z-50 transition-[height,background-color,border-color,backdrop-filter]",
-        "duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] border-b",
-        reduzida
-          ? "h-16 border-white/10 bg-base/80 backdrop-blur-xl"
-          : "h-20 border-transparent bg-transparent",
+        "fixed inset-x-0 top-0 z-50 border-b bg-branco/95 backdrop-blur-md",
+        "transition-[height,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        compacta
+          ? "h-[68px] border-regua-2 shadow-[0_1px_16px_rgba(20,20,46,0.06)]"
+          : "h-20 border-transparent",
       )}
     >
-      <div className="shell flex h-full items-center gap-6">
+      <div className="shell flex h-full items-center gap-8">
         <Link
           href="/"
-          className="flex flex-none items-center gap-2.5"
           aria-label={`${site.nome} — página inicial`}
+          className="flex-none"
         >
           <Image
-            src={asset("/simbolo_branco.png")}
-            alt=""
-            width={30}
-            height={30}
+            src={asset("/logo_dark.png")}
+            alt={site.nomeCompleto}
+            width={620}
+            height={128}
             priority
-            className="h-7 w-7 object-contain"
+            className={clsx(
+              "w-auto transition-[height] duration-300",
+              compacta ? "h-7" : "h-8",
+            )}
           />
-          <span className="font-display text-[15px] font-semibold tracking-tight text-ink">
-            {site.nome}
-          </span>
         </Link>
 
         <nav
           aria-label="Navegação principal"
           className="ml-auto hidden items-center gap-8 lg:flex"
         >
-          {site.navegacao.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-[14px] text-body transition-colors duration-300 hover:text-ink"
-            >
-              {item.rotulo}
-            </Link>
-          ))}
+          {/* Contato sai da lista e vira destaque no fim, como na referência.
+              Sem isso ele aparecia duas vezes. */}
+          {site.navegacao
+            .filter((item) => item.href !== "/contato")
+            .map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-[15px] font-semibold text-indigo-esc transition-colors duration-300 hover:text-indigo"
+              >
+                {item.rotulo}
+              </Link>
+            ))}
+          <Link
+            href="/contato"
+            className="text-[15px] font-bold text-indigo transition-colors duration-300 hover:text-indigo-esc"
+          >
+            Contato
+          </Link>
         </nav>
-
-        <a
-          href={linkWhatsApp()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-auto hidden rounded-full bg-primary px-6 py-3 text-[14px] font-semibold leading-none text-[#04120b] transition-colors duration-300 hover:bg-accent lg:ml-0 lg:inline-flex"
-        >
-          Fale conosco
-        </a>
 
         <button
           type="button"
-          onClick={() => setMenuAberto((v) => !v)}
-          aria-expanded={menuAberto}
+          onClick={() => setAberto((v) => !v)}
+          aria-expanded={aberto}
           aria-controls="menu-mobile"
-          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-          className="ml-auto flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-full border border-white/15 lg:hidden"
+          aria-label={aberto ? "Fechar menu" : "Abrir menu"}
+          className="ml-auto flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-full border border-regua-2 lg:hidden"
         >
           <span
             className={clsx(
-              "block h-px w-4 bg-ink transition-transform duration-300",
-              menuAberto && "translate-y-[3px] rotate-45",
+              "block h-[1.5px] w-4 bg-indigo-esc transition-transform duration-300",
+              aberto && "translate-y-[3.5px] rotate-45",
             )}
           />
           <span
             className={clsx(
-              "block h-px w-4 bg-ink transition-transform duration-300",
-              menuAberto && "-translate-y-[3px] -rotate-45",
+              "block h-[1.5px] w-4 bg-indigo-esc transition-transform duration-300",
+              aberto && "-translate-y-[3.5px] -rotate-45",
             )}
           />
         </button>
       </div>
 
-      <AnimatePresence>
-        {menuAberto && (
-          <motion.div
-            id="menu-mobile"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="border-b border-white/10 bg-base/95 backdrop-blur-xl lg:hidden"
+      {aberto ? (
+        <div
+          id="menu-mobile"
+          className="border-b border-regua-2 bg-branco lg:hidden"
+        >
+          <nav
+            aria-label="Navegação principal (mobile)"
+            className="shell flex flex-col py-3"
           >
-            <nav
-              aria-label="Navegação principal (mobile)"
-              className="shell flex flex-col py-4"
-            >
-              {site.navegacao.map((item) => (
+            {[
+              ...site.navegacao.filter((i) => i.href !== "/contato"),
+              { rotulo: "Contato", href: "/contato" },
+            ].map(
+              (item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setMenuAberto(false)}
-                  className="border-b border-white/8 py-4 font-display text-2xl font-semibold text-ink"
+                  onClick={() => setAberto(false)}
+                  className="border-b border-regua-2 py-4 text-[19px] font-bold text-indigo-esc last:border-0"
                 >
                   {item.rotulo}
                 </Link>
-              ))}
-              <a
-                href={linkWhatsApp()}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMenuAberto(false)}
-                className="mt-5 rounded-full bg-primary px-6 py-4 text-center text-[14px] font-semibold text-[#04120b]"
-              >
-                Fale conosco
-              </a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              ),
+            )}
+          </nav>
+        </div>
+      ) : null}
     </header>
   );
 }

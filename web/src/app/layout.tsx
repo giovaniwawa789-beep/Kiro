@@ -1,24 +1,16 @@
 import type { Metadata } from "next";
-import { Sora, Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { servicos } from "@/content/servicos";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SmoothScroll from "@/components/SmoothScroll";
-import Cursor from "@/components/Cursor";
 
-/* Satoshi não está no Google Fonts; Sora é a display escolhida, Inter é o corpo. */
-const sora = Sora({
+/* Montserrat é a fonte institucional dos materiais da Nunes e Lucato. */
+const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-sora",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -111,17 +103,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${sora.variable} ${inter.variable}`}>
+    <html lang="pt-BR" className={montserrat.variable}>
       <body className="antialiased">
         <a
           href="#conteudo"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-5 focus:py-3 focus:text-[14px] focus:font-semibold focus:text-[#04120b]"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-indigo focus:px-5 focus:py-3 focus:text-[14px] focus:font-semibold focus:text-white"
         >
           Ir para o conteúdo
         </a>
 
-        <SmoothScroll />
-        <Cursor />
         <Navbar />
         <main id="conteudo">{children}</main>
         <Footer />
