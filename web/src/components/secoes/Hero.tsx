@@ -1,12 +1,27 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import { site, linkWhatsApp } from "@/content/site";
 import { palavra, escalonar, EASE } from "@/lib/motion";
 import Botao from "@/components/ui/Botao";
 
-const TITULO = "Gestão ambiental têxtil, do diagnóstico ao resíduo zero.";
-const PROVAS = ["Conformidade legal", "Logística reversa", "Lixo zero"];
+/**
+ * O campo de fibras entra fora do bundle inicial: o hero pinta primeiro com a
+ * aurora em CSS (LCP intacto) e o WebGL sobe depois, por cima. Se não carregar
+ * ou o dispositivo não aguentar, a aurora continua sendo o fundo.
+ */
+const FiberField = dynamic(() => import("@/components/webgl/FiberField"), {
+  ssr: false,
+});
+
+const TITULO = "Do inventário legal ao produto acabado, sem passar pelo aterro.";
+const PROVAS = [
+  "PGRS e conformidade",
+  "Coleta com MTR",
+  "Aterro Zero",
+  "Upcycle rastreado",
+];
 
 export default function Hero() {
   const menosMovimento = useReducedMotion();
@@ -14,12 +29,17 @@ export default function Hero() {
 
   return (
     <section className="relative isolate overflow-hidden pb-20 pt-32 md:pb-28 md:pt-44">
-      {/* fundo aurora + grão. Ambos absolutos: não empurram layout (sem CLS). */}
+      {/* Camada 1 — aurora em CSS: pinta imediato e é o fallback definitivo.
+          Ambas as camadas são absolutas: não empurram layout (sem CLS). */}
       <div className="aurora" aria-hidden>
         <span />
         <span />
         <span />
       </div>
+
+      {/* Camada 2 — campo de fibras em WebGL, por cima, quando disponível. */}
+      <FiberField />
+
       <div className="noise" aria-hidden />
       <div
         aria-hidden
@@ -37,7 +57,7 @@ export default function Hero() {
             aria-hidden
             className="h-1.5 w-1.5 rounded-full bg-accent"
           />
-          Consultoria e operação para indústrias e confecções têxteis
+          Consultoria e operação · Resíduos têxteis · São Paulo
         </motion.p>
 
         {/* Título revelado palavra por palavra. O texto completo fica acessível
@@ -76,10 +96,10 @@ export default function Hero() {
           transition={{ duration: 0.55, delay: 0.55, ease: EASE }}
           className="mt-8 max-w-2xl text-[17px] leading-relaxed text-body md:text-[19px]"
         >
-          Adequação legal e destinação correta dos resíduos têxteis da sua
-          produção. Assumimos o diagnóstico, a documentação exigida pelo órgão
-          ambiental, a coleta e a rastreabilidade — até a última fração sair da
-          rota do aterro.
+          Assumimos a cadeia inteira do resíduo têxtil da sua indústria: o PGRS
+          que o órgão ambiental exige, a coleta com MTR, a descaracterização
+          peça por peça e o retorno do material como produto de marca.
+          <span className="text-ink"> Uma custódia, um responsável, um relatório.</span>
         </motion.p>
 
         <motion.div
@@ -88,11 +108,18 @@ export default function Hero() {
           transition={{ duration: 0.55, delay: 0.7, ease: EASE }}
           className="mt-10 flex flex-wrap items-center gap-3"
         >
-          <Botao href={linkWhatsApp()} externo>
-            Fale conosco
+          {/* CTA primário de intenção alta: "diagnóstico" qualifica melhor que
+              "fale conosco" e é o primeiro passo real do serviço. */}
+          <Botao
+            href={linkWhatsApp(
+              "Olá! Gostaria de solicitar um diagnóstico de resíduos têxteis para a minha empresa.",
+            )}
+            externo
+          >
+            Solicitar diagnóstico
           </Botao>
-          <Botao href="/#servicos" variante="secundario">
-            Ver serviços
+          <Botao href="/#hierarquia" variante="secundario">
+            Onde o material termina
           </Botao>
         </motion.div>
 

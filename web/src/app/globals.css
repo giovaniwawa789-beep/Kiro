@@ -56,7 +56,14 @@
     letter-spacing: -0.02em;
     line-height: 1.05;
     text-wrap: balance;
+    /* números alinhados em títulos com dado (ex.: "1.000 t/mês") */
+    font-variant-numeric: tabular-nums;
   }
+
+  /* Títulos grandes pedem tracking mais fechado: em display, o espaçamento
+     ótico cresce com o corpo da letra. */
+  h1 { letter-spacing: -0.032em; }
+  h2 { letter-spacing: -0.024em; }
 
   p { text-wrap: pretty; }
 
