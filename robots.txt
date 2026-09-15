@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://www.nuneselucato.com.br
+Sitemap: https://www.nuneselucato.com.br/sitemap.xml
