@@ -236,25 +236,8 @@ export const operacao = {
   ],
 };
 
-/** Time. */
-export interface Pessoa {
-  nome: string;
-  cargo: string;
-  frase: string | null;
-  foto: string | null;
-}
-
-export const time: Pessoa[] = [
-  {
-    nome: "Ana Paola Nunes Lucato",
-    cargo: "Sócia e responsável técnica",
-    frase: null, // {{PREENCHER}} uma frase da Ana sobre o trabalho
-    foto: null, // {{PREENCHER}} foto de retrato
-  },
-  {
-    nome: "{{PREENCHER}}",
-    cargo: "{{PREENCHER}} — demais lideranças",
-    frase: null,
-    foto: null,
-  },
-];
+/**
+ * A seção de time saiu do site por decisão do cliente. A responsável técnica
+ * segue nomeada no rodapé (`site.contato.responsavel`), que é onde a informação
+ * tem função de conformidade — não de vitrine.
+ */

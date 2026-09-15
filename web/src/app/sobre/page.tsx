@@ -10,7 +10,6 @@ import {
   missao,
   impactoSocial,
   operacao,
-  time,
 } from "@/content/sobre";
 import { contextoProblema, notaDivergencia } from "@/content/impacto";
 import Timeline from "@/components/ui/Timeline";
@@ -32,7 +31,7 @@ export default function Sobre() {
         <div className="shell">
           <p className="rotulo">Sobre</p>
           <h1 className="mt-4 max-w-[24ch] text-[clamp(2.3rem,5.4vw,4rem)] leading-[1.04]">
-            Existimos porque tecido bom
+            Existimos porque tecido bom{" "}
             <br />
             <span className="text-indigo">estava virando aterro.</span>
           </h1>
@@ -274,56 +273,11 @@ export default function Sobre() {
         </div>
       </section>
 
-      {/* ---------------- time ---------------- */}
-      <section className="bg-branco py-20 md:py-28">
-        <div className="shell">
-          <p className="rotulo">Time</p>
-          <h2 className="display mt-3 max-w-[18ch]">Quem responde por isso</h2>
-
-          <ul className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {time.map((p, i) => (
-              <li
-                key={i}
-                className="overflow-hidden rounded-2xl border border-regua-2"
-              >
-                <div className="flex aspect-[4/3] items-center justify-center bg-creme p-6">
-                  {p.foto ? (
-                    <Image
-                      src={asset(p.foto)}
-                      alt={`Retrato de ${p.nome}`}
-                      width={600}
-                      height={450}
-                      className="h-full w-full rounded-lg object-cover"
-                    />
-                  ) : (
-                    <Pendente titulo="Foto">Retrato de {p.nome}</Pendente>
-                  )}
-                </div>
-                <div className="p-6">
-                  <h3 className="text-[17px]">{p.nome}</h3>
-                  <p className="mt-1 text-[13.5px] font-semibold text-indigo">
-                    {p.cargo}
-                  </p>
-                  {p.frase ? (
-                    <p className="mt-3 text-[14px] leading-relaxed text-corpo">
-                      “{p.frase}”
-                    </p>
-                  ) : (
-                    <p className="mt-3">
-                      <Pendente titulo="Frase">
-                        Uma frase sobre o trabalho, na voz da pessoa.
-                      </Pendente>
-                    </p>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* ---------------- credenciais ---------------- */}
-      <section className="bg-creme py-20 md:py-28">
+      {/* branco de propósito: a seção de operação acima é creme, e a de time que
+          ficava entre as duas saiu. Sem esta troca, as duas faixas creme se
+          fundiriam numa só. */}
+      <section className="bg-branco py-20 md:py-28">
         <div className="shell">
           <FaixaSelos />
         </div>

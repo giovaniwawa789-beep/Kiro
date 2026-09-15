@@ -16,7 +16,7 @@ export default function Contato() {
         <div>
           <p className="rotulo">Orçamento</p>
           <h1 className="mt-4 text-[clamp(2.1rem,4.6vw,3.4rem)] leading-[1.05]">
-            Quanto resíduo a sua
+            Quanto resíduo a sua{" "}
             <br />
             operação gera por mês?
           </h1>
@@ -57,7 +57,7 @@ export default function Contato() {
                 Unidade
               </dt>
               <dd className="mt-2 text-[15.5px] leading-relaxed text-corpo">
-                {site.contato.endereco}
+                {site.contato.endereco}{" "}
                 <br />
                 {site.contato.cidade}/{site.contato.uf} · CEP {site.contato.cep}
               </dd>

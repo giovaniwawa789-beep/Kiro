@@ -17,9 +17,11 @@ export default function Hero() {
           <p className="rotulo">Gestão de resíduos têxteis · São Paulo e região</p>
 
           <h1 className="mt-4 text-[clamp(2.3rem,5.6vw,4.15rem)] leading-[1.03]">
-            Seu resíduo têxtil não
+            {/* o {" "} antes de cada <br /> não muda o visual, mas mantém o
+                espaço no textContent — é o que buscador e leitor de tela leem */}
+            Seu resíduo têxtil não{" "}
             <br />
-            precisa terminar
+            precisa terminar{" "}
             <br />
             <span className="text-indigo">em aterro.</span>
           </h1>

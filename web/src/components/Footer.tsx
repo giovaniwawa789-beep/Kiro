@@ -23,7 +23,7 @@ export default function Footer() {
             {site.descricao}
           </p>
           <p className="mt-5 text-[13px] leading-relaxed text-branco/55">
-            {site.contato.endereco}
+            {site.contato.endereco}{" "}
             <br />
             {site.contato.cidade}/{site.contato.uf} · CEP {site.contato.cep}
           </p>
@@ -114,7 +114,7 @@ export default function Footer() {
           </ul>
 
           <p className="mt-6 text-[13px] leading-relaxed text-branco/55">
-            Responsável técnica
+            Responsável técnica{" "}
             <br />
             <span className="text-branco/80">{site.contato.responsavel}</span>
           </p>

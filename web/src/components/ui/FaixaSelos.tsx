@@ -1,5 +1,4 @@
 import { site } from "@/content/site";
-import Pendente from "./Pendente";
 
 /**
  * Faixa de selos de conformidade — compacta, do ponto de vista do benefício.
@@ -100,8 +99,11 @@ export default function FaixaSelos({
         ))}
       </ul>
 
-      {/* credenciais: aqui sim entram os números de cadastro */}
-      <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 rounded-xl bg-creme px-6 py-5">
+      {/* Credenciais: aqui sim entram os números de cadastro.
+          `creme-2` + borda em vez de `creme`: este bloco aparece tanto em seção
+          branca (Sobre, página de serviço) quanto creme (home). Com fundo creme
+          ele desaparecia por completo na home. */}
+      <div className="mt-10 rounded-xl border border-regua bg-creme-2 px-6 py-5">
         <dl className="flex flex-wrap items-center gap-x-8 gap-y-3">
           <div className="flex items-baseline gap-2">
             <dt className="text-[12px] text-corpo">CNPJ</dt>
@@ -122,10 +124,6 @@ export default function FaixaSelos({
             </dd>
           </div>
         </dl>
-        <Pendente titulo="Licenças e certificações">
-          Licença ambiental de operação (órgão emissor e número), CADRI se
-          houver, e certificações como ISO 14001 ou Sistema B.
-        </Pendente>
       </div>
     </div>
   );
