@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Nunes e Lucato — sistema claro, corporativo e quente.
+   Referência de estrutura: retalhar.com.br (concorrente direta).
+   Identidade: índigo próprio, derivado da logomarca da Nunes e Lucato.
+   Para trocar a paleta, edite só os tokens abaixo.
+   ========================================================================== */
+@theme {
+  /* superfícies */
+  --color-branco: #ffffff;
+  --color-creme: #f3f1ec;      /* seções alternadas, papel reciclado */
+  --color-creme-2: #e9e6df;    /* faixa mais funda */
+
+  /* marca — índigo institucional, extraído da identidade da empresa */
+  --color-indigo: #2a28a0;     /* primário: botões, rótulos, ícones */
+  --color-indigo-esc: #17165d; /* títulos de apoio, rodapé */
+  --color-indigo-noite: #0d0c24;
+  --color-indigo-claro: #5c5ada;
+  --color-indigo-nevoa: #eeeefb;
+
+  /* neutras */
+  --color-tinta: #14142e;      /* títulos */
+  --color-corpo: #52526b;      /* texto corrido */
+  --color-suave: #62627a;      /* legendas — escuro o bastante para AA em 13px */
+  --color-regua: #ddd9d1;      /* bordas sobre creme */
+  --color-regua-2: #e6e6f2;    /* bordas sobre branco */
+
+  /* acento funcional — só em dado, nunca decoração */
+  --color-verde: #0c7454;      /* Aterro Zero — escurecido: #0f8a63 media 3.85:1 em 14px sobre creme */
+  --color-grafite: #383838;    /* tinta original da logomarca */
+
+  /* tipografia: Montserrat é a fonte institucional dos materiais da empresa */
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-marca: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-branco);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-branco);
+    color: var(--color-corpo);
+    font-family: var(--font-sans);
+    font-size: 16.5px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-tinta);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* display grande pede tracking mais fechado */
+  h1 { letter-spacing: -0.035em; }
+
+  p { text-wrap: pretty; }
+
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-indigo);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-indigo);
+    color: #fff;
+  }
+
+  /* a barra fixa mede 80px; compensa o salto por âncora */
+  :target { scroll-margin-top: 104px; }
+}
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .shell { padding-inline: 2.5rem; }
+  }
+
+  /* ---------- rótulo de seção: índigo, acima do título ---------- */
+  .rotulo {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-indigo);
+    letter-spacing: 0.01em;
+  }
+
+  /* ---------- título gigante da seção ---------- */
+  .display {
+    font-size: clamp(2.4rem, 5.6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+
+  /* ---------- título com tracking largo (timeline) ---------- */
+  .largo {
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-indigo);
+  }
+
+  /* ---------- botões pílula ---------- */
+  .pilula {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: 1;
+    padding: 1rem 1.75rem;
+    transition: background-color 300ms var(--ease-marca),
+                color 300ms var(--ease-marca),
+                border-color 300ms var(--ease-marca);
+  }
+  .pilula-indigo {
+    background: var(--color-indigo-esc);
+    color: #fff;
+  }
+  .pilula-indigo:hover { background: var(--color-indigo); }
+
+  .pilula-vazada {
+    border: 1.5px solid var(--color-indigo-esc);
+    color: var(--color-indigo-esc);
+  }
+  .pilula-vazada:hover {
+    background: var(--color-indigo-esc);
+    color: #fff;
+  }
+
+  .pilula-branca {
+    background: #fff;
+    color: var(--color-indigo-esc);
+  }
+  .pilula-branca:hover { background: var(--color-indigo-nevoa); }
+
+  /* ---------- cartão de serviço: bloco índigo cheio ---------- */
+  .cartao-servico {
+    background: var(--color-indigo);
+    border-radius: 1.25rem;
+    transition: transform 300ms var(--ease-marca),
+                background-color 300ms var(--ease-marca);
+  }
+  .cartao-servico:hover {
+    transform: translateY(-4px);
+    background: var(--color-indigo-esc);
+  }
+
+  /* ---------- moldura de foto com o padrão "O Fio" ---------- */
+  .moldura {
+    background: var(--color-creme);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  /* régua fina acima de fileiras de cartão */
+  .regua-fina {
+    height: 1px;
+    background: var(--color-regua);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -9,3 +9,6 @@ analysis/audio/
 analysis/audio_boost/
 *.trf
 __pycache__/
+
+# previas: versionar so JPG (PNG de screenshot pesa MB)
+web/preview/*.png
