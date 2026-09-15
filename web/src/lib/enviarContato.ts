@@ -1,88 +1,119 @@
 /**
- * Envio do formulário de contato — camada abstraída de propósito.
+ * Envio do formulário — camada isolada de propósito.
  *
- * Hoje não há backend: a implementação padrão abre o cliente de e-mail com a
- * mensagem pré-preenchida. Para integrar de verdade (Resend, Formspree, API
- * própria, HubSpot...), troque SOMENTE o corpo de `enviarContato`. A UI não
- * precisa mudar: ela só depende do tipo `ResultadoEnvio`.
+ * Hoje não há backend: a implementação abre o cliente de e-mail com a mensagem
+ * pronta. Para integrar de verdade (Resend, Formspree, API própria, CRM), troque
+ * SOMENTE o corpo de `enviarOrcamento`. A UI depende apenas do tipo de retorno.
  */
 
 import { site } from "@/content/site";
 
-export interface DadosContato {
+export interface DadosOrcamento {
   nome: string;
   empresa: string;
   email: string;
   telefone: string;
-  tipoServico: string;
+  tipoResiduo: string;
+  volumeMensal: string;
+  cidade: string;
   mensagem: string;
+  /** Campo-armadilha: bot preenche, humano não vê. */
+  isca: string;
+  /** Instante em que o formulário foi montado, para medir o tempo de preenchimento. */
+  aberto: number;
 }
 
-export type ResultadoEnvio =
-  | { ok: true }
-  | { ok: false; erro: string };
-
-export type ErrosContato = Partial<Record<keyof DadosContato, string>>;
+export type Resultado = { ok: true } | { ok: false; erro: string };
+export type Erros = Partial<Record<keyof DadosOrcamento, string>>;
 
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-/** Aceita telefone brasileiro com 10 ou 11 dígitos, com ou sem máscara. */
 const RE_TELEFONE = /^\d{10,11}$/;
 
-export function validarContato(dados: DadosContato): ErrosContato {
-  const erros: ErrosContato = {};
+/** Menos de 3s entre abrir e enviar é comportamento de robô, não de pessoa. */
+const TEMPO_MINIMO_MS = 3000;
 
-  if (dados.nome.trim().length < 2) {
-    erros.nome = "Informe o seu nome.";
-  }
-  if (dados.empresa.trim().length < 2) {
-    erros.empresa = "Informe o nome da empresa.";
-  }
-  if (!RE_EMAIL.test(dados.email.trim())) {
-    erros.email = "Informe um e-mail válido.";
-  }
-  const digitos = dados.telefone.replace(/\D/g, "");
-  if (digitos && !RE_TELEFONE.test(digitos)) {
-    erros.telefone = "Informe um telefone com DDD.";
-  }
-  if (dados.mensagem.trim().length < 10) {
-    erros.mensagem = "Conte um pouco mais: pelo menos 10 caracteres.";
-  }
+export function validarOrcamento(d: DadosOrcamento): Erros {
+  const e: Erros = {};
 
-  return erros;
+  if (d.nome.trim().length < 2) e.nome = "Informe o seu nome.";
+  if (d.empresa.trim().length < 2) e.empresa = "Informe a empresa.";
+  if (!RE_EMAIL.test(d.email.trim())) e.email = "Informe um e-mail válido.";
+
+  const digitos = d.telefone.replace(/\D/g, "");
+  if (!RE_TELEFONE.test(digitos)) e.telefone = "Informe um telefone com DDD.";
+
+  if (!d.tipoResiduo) e.tipoResiduo = "Selecione o tipo de resíduo.";
+  if (!d.volumeMensal) e.volumeMensal = "Selecione o volume mensal.";
+  if (d.cidade.trim().length < 2) e.cidade = "Informe a cidade.";
+
+  return e;
 }
 
-export async function enviarContato(
-  dados: DadosContato,
-): Promise<ResultadoEnvio> {
-  const erros = validarContato(dados);
-  if (Object.keys(erros).length > 0) {
+export async function enviarOrcamento(d: DadosOrcamento): Promise<Resultado> {
+  // Anti-spam 1: campo-armadilha preenchido = robô.
+  if (d.isca.trim() !== "") {
+    return { ok: false, erro: "Não foi possível enviar. Tente novamente." };
+  }
+
+  // Anti-spam 2: preenchimento instantâneo = robô.
+  if (Date.now() - d.aberto < TEMPO_MINIMO_MS) {
+    return {
+      ok: false,
+      erro: "Aguarde um instante e envie novamente.",
+    };
+  }
+
+  if (Object.keys(validarOrcamento(d)).length > 0) {
     return { ok: false, erro: "Confira os campos destacados." };
   }
 
   try {
     const corpo = [
-      `Nome: ${dados.nome}`,
-      `Empresa: ${dados.empresa}`,
-      `E-mail: ${dados.email}`,
-      `Telefone: ${dados.telefone || "não informado"}`,
-      `Serviço de interesse: ${dados.tipoServico}`,
+      "PEDIDO DE ORÇAMENTO — site",
       "",
-      dados.mensagem,
-    ].join("\n");
+      `Empresa: ${d.empresa}`,
+      `Contato: ${d.nome}`,
+      `E-mail: ${d.email}`,
+      `Telefone: ${d.telefone}`,
+      `Cidade: ${d.cidade}`,
+      "",
+      `Tipo de resíduo: ${d.tipoResiduo}`,
+      `Volume mensal estimado: ${d.volumeMensal}`,
+      "",
+      d.mensagem.trim() ? `Observações: ${d.mensagem}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const url =
       `mailto:${site.contato.email}` +
-      `?subject=${encodeURIComponent(`Contato pelo site — ${dados.empresa}`)}` +
+      `?subject=${encodeURIComponent(`Orçamento — ${d.empresa}`)}` +
       `&body=${encodeURIComponent(corpo)}`;
 
-    if (typeof window !== "undefined") {
-      window.location.href = url;
-    }
+    if (typeof window !== "undefined") window.location.href = url;
     return { ok: true };
   } catch {
     return {
       ok: false,
-      erro: "Não foi possível enviar agora. Tente pelo WhatsApp.",
+      erro: "Não foi possível enviar agora. Fale pelo WhatsApp.",
     };
   }
 }
+
+export const tiposResiduo = [
+  "Retalho, aparas e sobra de corte",
+  "Uniformes e EPIs",
+  "Peças com defeito ou sobra de estoque",
+  "Enxoval e rouparia",
+  "Coleção não vendida",
+  "Outro / não sei classificar",
+] as const;
+
+export const volumesMensais = [
+  "Até 200 kg",
+  "200 kg a 1 t",
+  "1 a 5 t",
+  "5 a 20 t",
+  "Acima de 20 t",
+  "Ainda não sei estimar",
+] as const;

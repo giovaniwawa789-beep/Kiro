@@ -1,212 +1,263 @@
 /**
- * Serviços — texto institucional fornecido pelo cliente, usado como está.
- * Para editar um serviço, altere apenas este arquivo: a Home e as páginas
- * /servicos/[slug] são geradas a partir daqui.
+ * Vitrine de serviços — orientada a benefício, não a procedimento.
+ *
+ * Regra de escrita aplicada aqui: a primeira frase diz o que o cliente RESOLVE,
+ * não o que nós executamos. Conformidade (MTR, certificado, licença) aparece
+ * como consequência do serviço, nunca como aula.
+ *
+ * `confirmar: true` marca serviço que veio do briefing mas não tem lastro nos
+ * materiais internos que li — precisa de validação antes de publicar.
  */
 
 export type IconeServico =
-  | "consultoria"
-  | "reciclagem"
-  | "documento"
   | "coleta"
   | "uniforme"
-  | "produto";
+  | "estoque"
+  | "reciclagem"
+  | "produto"
+  | "pev"
+  | "documento";
 
 export interface Servico {
   slug: string;
   numero: string;
   titulo: string;
-  /** Frase curta para o card na Home. */
-  resumo: string;
-  /** Texto completo, exibido na página do serviço. */
-  descricao: string;
+  /** Nome curto, para navegação e breadcrumb. */
+  curto: string;
+  /** Uma linha de benefício, para o card da vitrine. */
+  beneficio: string;
+  /** Abertura da página do serviço: a dor, em segunda pessoa. */
+  dor: string;
+  /** Como resolvemos — sem passo a passo burocrático. */
+  solucao: string;
+  /** O que o cliente recebe. */
   entregas: string[];
+  /** Para quem esse serviço é. */
+  paraQuem: string[];
   icone: IconeServico;
-  /** Benefícios objetivos, exibidos na página interna. */
-  beneficios: string[];
-  /** Base legal aplicável. */
-  baseLegal: string[];
+  foto?: { src: string; alt: string };
+  confirmar?: boolean;
   seo: { title: string; description: string };
 }
 
 export const servicos: Servico[] = [
   {
-    slug: "consultoria-gestao-ambiental-sustentabilidade",
+    slug: "logistica-reversa-residuo-textil-industrial",
     numero: "01",
-    titulo: "Consultoria em Gestão Ambiental e Sustentabilidade",
-    resumo:
-      "Gestão ambiental da sua indústria têxtil estruturada de ponta a ponta, com processos auditáveis.",
-    descricao:
-      "Estruturamos a gestão ambiental da sua indústria têxtil de ponta a ponta: definição de política ambiental, planejamento, implantação dos controles, acompanhamento dos indicadores e revisão gerencial. Você opera em conformidade com a legislação e com processos auditáveis.",
+    titulo: "Coleta e logística reversa de resíduo têxtil industrial",
+    curto: "Resíduo industrial",
+    beneficio:
+      "Retalho, aparas e sobra de corte saem da sua fábrica com destino comprovado e sem parar sua produção.",
+    dor: "Sobra de corte acumulada ocupa área útil, gera custo de caçamba e vira passivo quando o órgão ambiental pergunta para onde foi.",
+    solucao:
+      "Assumimos a retirada em frequência combinada com o seu volume. O material é segregado por composição e cor, e cada coleta fecha com a documentação que o seu time usa em auditoria.",
     entregas: [
-      "Diagnóstico ambiental",
-      "Plano de adequação",
-      "Indicadores e revisão periódica",
+      "Coleta programada na sua unidade",
+      "Segregação por composição e cor",
+      "MTR e certificado de destinação final",
+      "Relatório mensal de volume e destino",
     ],
-    icone: "consultoria",
-    beneficios: [
-      "Conformidade legal demonstrável em auditoria e fiscalização",
-      "Indicadores ambientais próprios, no lugar de estimativas",
-      "Política ambiental escrita e revisada em ciclo gerencial",
-    ],
-    baseLegal: [
-      "Lei nº 12.305/2010 — Política Nacional de Resíduos Sólidos",
-      "Decreto nº 10.936/2022 — regulamenta a PNRS",
-      "Exigências do órgão ambiental estadual e municipal aplicáveis à atividade",
-    ],
-    seo: {
-      title: "Consultoria ambiental têxtil | Nunes e Lucato",
-      description:
-        "Consultoria em gestão ambiental e sustentabilidade para indústrias e confecções têxteis: política ambiental, plano de adequação, indicadores e revisão gerencial.",
-    },
-  },
-  {
-    slug: "gestao-residuos-texteis-logistica-reversa",
-    numero: "02",
-    titulo: "Gestão de Resíduos Têxteis e Logística Reversa",
-    resumo:
-      "Seu resíduo têxtil volta à cadeia como matéria-prima, dentro de um ciclo real de logística reversa.",
-    descricao:
-      "Assumimos a gestão dos resíduos têxteis gerados na sua produção e os reinserimos na cadeia como matéria-prima. Implantamos a política de lixo zero e colocamos a sua marca dentro de um ciclo real de logística reversa têxtil.",
-    entregas: [
-      "Mapeamento da geração",
-      "Fluxo de logística reversa",
-      "Rastreabilidade e relatório de destinação",
-    ],
-    icone: "reciclagem",
-    beneficios: [
-      "Resíduo tratado como recurso, não como custo de descarte",
-      "Rastreabilidade da coleta até a destinação final",
-      "Base documental para relatório de ESG e comunicação de marca",
-    ],
-    baseLegal: [
-      "Lei nº 12.305/2010 — responsabilidade compartilhada pelo ciclo de vida",
-      "Sistema MTR Nacional / SINIR — manifesto de transporte de resíduos",
-      "Plano Municipal de Gestão Integrada de Resíduos Sólidos de São Paulo",
-    ],
-    seo: {
-      title: "Gestão de resíduos têxteis e logística reversa | Nunes e Lucato",
-      description:
-        "Gestão de resíduos têxteis com logística reversa: mapeamento da geração, rastreabilidade e relatório de destinação para indústrias e confecções.",
-    },
-  },
-  {
-    slug: "pgrs-plano-gerenciamento-residuos-solidos",
-    numero: "03",
-    titulo: "Plano de Gerenciamento de Resíduos Sólidos (PGRS)",
-    resumo:
-      "O documento exigido por lei, com inventário, classificação e destinação de cada resíduo.",
-    descricao:
-      "Elaboramos o PGRS, documento exigido por lei, reunindo o inventário completo dos resíduos gerados pela sua empresa, sua classificação e as formas ambientalmente adequadas de destinação de cada um.",
-    entregas: [
-      "Inventário e classificação",
-      "Plano de destinação",
-      "Documento pronto para o órgão ambiental",
-    ],
-    icone: "documento",
-    beneficios: [
-      "Documento pronto para protocolo no órgão ambiental",
-      "Classificação técnica de cada resíduo, com destinação definida",
-      "Redução do risco de autuação por ausência de plano",
-    ],
-    baseLegal: [
-      "Lei nº 12.305/2010, arts. 20 a 24 — obrigatoriedade e conteúdo mínimo do PGRS",
-      "Decreto nº 10.936/2022 — regulamenta a PNRS",
-      "ABNT NBR 10.004 — classificação de resíduos sólidos",
-    ],
-    seo: {
-      title: "PGRS para indústria têxtil e confecção | Nunes e Lucato",
-      description:
-        "Elaboração de Plano de Gerenciamento de Resíduos Sólidos (PGRS) para o setor têxtil: inventário, classificação e plano de destinação.",
-    },
-  },
-  {
-    slug: "coleta-seletiva-textil",
-    numero: "04",
-    titulo: "Coleta Seletiva Têxtil",
-    resumo:
-      "Coleta agendada na sua empresa, com transporte adequado e comprovação de destinação.",
-    descricao:
-      "Coletamos o resíduo diretamente na sua empresa quando o descarte nos nossos pontos não é viável, garantindo destinação adequada. Coleta agendada, com agilidade e compromisso, para qualquer volume de demanda.",
-    entregas: [
-      "Coleta agendada",
-      "Transporte adequado",
-      "Comprovação de destinação",
+    paraQuem: [
+      "Indústrias de confecção",
+      "Malharias e tecelagens",
+      "Facções e ateliês de grande porte",
     ],
     icone: "coleta",
-    beneficios: [
-      "Retirada na sua unidade, sem depender de ponto de entrega",
-      "Emissão do MTR a cada transporte",
-      "Atendimento para qualquer volume de demanda",
-    ],
-    baseLegal: [
-      "Sistema MTR Nacional / SINIR — manifesto obrigatório no transporte",
-      "Lei nº 12.305/2010 — destinação final ambientalmente adequada",
-      "Resolução CONAMA aplicável ao transporte de resíduos",
-    ],
+    foto: {
+      src: "/fotos/residuo_aparas.jpg",
+      alt: "Fardos e sacos de aparas têxteis organizados para coleta",
+    },
     seo: {
-      title: "Coleta seletiva têxtil em São Paulo | Nunes e Lucato",
+      title: "Logística reversa de resíduo têxtil industrial",
       description:
-        "Coleta seletiva têxtil agendada na sua empresa, com transporte adequado, emissão de MTR e comprovação de destinação.",
+        "Coleta programada de retalho, aparas e sobra de corte com segregação por composição, MTR e certificado de destinação final. São Paulo e região.",
     },
   },
   {
-    slug: "descarte-reciclagem-uniformes",
-    numero: "05",
-    titulo: "Descarte e Reciclagem de Uniformes",
-    resumo:
-      "Descaracterização e reciclagem de uniformes, eliminando o risco de uso indevido da sua marca.",
-    descricao:
-      "Fazemos a descaracterização, o descarte e a reciclagem de uniformes, eliminando o risco de uso indevido da sua marca e garantindo a destinação sustentável das peças.",
+    slug: "logistica-reversa-uniformes-epi",
+    numero: "02",
+    titulo: "Logística reversa de uniformes e EPIs",
+    curto: "Uniformes e EPI",
+    beneficio:
+      "Sua marca sai de circulação junto com a peça: descaracterização registrada peça por peça.",
+    dor: "Uniforme com logo em circulação é risco de imagem. A peça pode reaparecer num contexto que a sua empresa não escolheu — e o descarte comum não impede isso.",
+    solucao:
+      "Recolhemos o lote, avaliamos peça por peça e removemos etiquetas, logos e qualquer referência à marca. O processo é registrado em fotografia e vídeo, e encerra com atestado de descaracterização.",
     entregas: [
-      "Descaracterização",
-      "Certificado de destruição",
-      "Reciclagem do material",
+      "Avaliação peça por peça, não por lote",
+      "Descaracterização com registro audiovisual",
+      "Atestado de descaracterização",
+      "MTR e certificado de destinação final",
+    ],
+    paraQuem: [
+      "Portos e mineração",
+      "Saúde e food service",
+      "Facilities e indústria",
+      "Hotelaria",
     ],
     icone: "uniforme",
-    beneficios: [
-      "Elimina o risco de a peça com a sua marca reaparecer em circulação",
-      "Processo registrado em fotografia e vídeo, peça por peça",
-      "Certificado formal ao final do processo",
-    ],
-    baseLegal: [
-      "Lei nº 12.305/2010 — destinação final ambientalmente adequada",
-      "Sistema MTR Nacional / SINIR — rastreabilidade do transporte",
-      "Lei nº 9.279/1996 — proteção da marca contra uso indevido",
-    ],
+    foto: {
+      src: "/fotos/midea_uniforme_origem.jpg",
+      alt: "Uniformes corporativos fora de uso separados para descaracterização",
+    },
     seo: {
-      title: "Descarte e reciclagem de uniformes | Nunes e Lucato",
+      title: "Descarte de uniformes e EPI com descaracterização de marca",
       description:
-        "Descaracterização, descarte e reciclagem de uniformes corporativos com certificado de destruição e destinação sustentável.",
+        "Logística reversa de uniformes e EPIs com descaracterização peça por peça, registro audiovisual e atestado. Elimina o risco de uso indevido da marca.",
     },
   },
   {
-    slug: "desenvolvimento-produtos-sustentaveis",
-    numero: "06",
-    titulo: "Desenvolvimento de Produtos Sustentáveis",
-    resumo:
-      "Resíduo têxtil transformado em produto com valor de uso e de marca, para brindes e ESG.",
-    descricao:
-      "Transformamos resíduo têxtil em produtos com valor de uso e de marca: ecobags, jogos de escumadeiras, lixeiras basculantes de 7L e jogos de tapetes. Ideais para brindes corporativos e ações de ESG.",
+    slug: "destinacao-defeito-sobra-estoque",
+    numero: "03",
+    titulo: "Destinação de peças com defeito e sobra de estoque",
+    curto: "Sobra de estoque",
+    beneficio:
+      "Coleção não vendida e peça com defeito saem do estoque sem risco de mercado paralelo.",
+    dor: "Peça com defeito e coleção encalhada travam capital e área de estoque. Doar sem controle coloca o seu produto em canal que compete com a sua própria loja.",
+    solucao:
+      "Retiramos o lote com descaracterização quando a marca precisa sair de circulação, e direcionamos cada fração para a rota de maior valor: reinserção como matéria-prima ou transformação em produto novo.",
     entregas: [
-      "Desenvolvimento do produto",
-      "Produção a partir do seu próprio resíduo",
-      "Personalização com a sua marca",
+      "Inventário do lote recebido",
+      "Descaracterização quando aplicável",
+      "Destinação por rota de maior valor",
+      "Documentação completa da operação",
+    ],
+    paraQuem: [
+      "Marcas de moda",
+      "Varejo de vestuário",
+      "E-commerce de moda",
+    ],
+    icone: "estoque",
+    confirmar: true,
+    seo: {
+      title: "Destinação de sobra de estoque e peças com defeito",
+      description:
+        "Destinação responsável de coleção não vendida e peças com defeito, com descaracterização de marca e documentação de destinação final.",
+    },
+  },
+  {
+    slug: "reciclagem-desfibramento-textil",
+    numero: "04",
+    titulo: "Reciclagem e desfibramento",
+    curto: "Reciclagem",
+    beneficio:
+      "A fibra volta ao mercado como matéria-prima, em vez de virar energia numa fornalha.",
+    dor: "Mandar tecido para coprocessamento resolve o descarte e encerra o ciclo têxtil. O material que você pagou para produzir deixa de existir.",
+    solucao:
+      "Separamos por composição e cor, adequamos a granulometria e desfibramos para recuperação da fibra. O que sai daqui volta para a cadeia como insumo — manta, enchimento, estopa, fio.",
+    entregas: [
+      "Triagem por composição e cor",
+      "Picotagem e adequação do material",
+      "Desfibramento para recuperação de fibra",
+      "Relatório de aproveitamento por lote",
+    ],
+    paraQuem: [
+      "Indústrias têxteis",
+      "Confecções de médio e grande porte",
+      "Lavanderias industriais",
+    ],
+    icone: "reciclagem",
+    foto: {
+      src: "/fotos/operacao_fardos.jpg",
+      alt: "Movimentação de fardos de resíduo têxtil no pátio de triagem",
+    },
+    seo: {
+      title: "Reciclagem e desfibramento de resíduo têxtil",
+      description:
+        "Desfibramento com triagem por composição e cor para reinserção da fibra têxtil como matéria-prima. Alternativa ao coprocessamento.",
+    },
+  },
+  {
+    slug: "upcycling-brindes-corporativos",
+    numero: "05",
+    titulo: "Upcycling e brindes corporativos",
+    curto: "Upcycling",
+    beneficio:
+      "O resíduo da sua operação volta como brinde da sua marca, com a origem rastreável por QR Code.",
+    dor: "Brinde corporativo comprado pronto não conta história nenhuma. E a sua ação de sustentabilidade fica sem prova material para mostrar ao time.",
+    solucao:
+      "Desenvolvemos a peça a partir do seu próprio resíduo, com protótipo e ficha técnica aprovados antes do corte. A confecção é feita por artesãs capacitadas, e cada peça sai com QR Code contando de onde veio o material.",
+    entregas: [
+      "Desenvolvimento de produto e protótipo",
+      "Produção com o resíduo da sua empresa",
+      "QR Code de rastreabilidade por peça",
+      "Entrega na unidade escolhida",
+    ],
+    paraQuem: [
+      "Marketing e comunicação interna",
+      "Times de ESG",
+      "RH e endomarketing",
     ],
     icone: "produto",
-    beneficios: [
-      "O brinde nasce do resíduo da própria empresa, com história verificável",
-      "Valor agregado ao material que antes era custo de descarte",
-      "Peça personalizada, aplicável a campanhas de ESG e datas comemorativas",
-    ],
-    baseLegal: [
-      "Lei nº 12.305/2010 — prioridade à reutilização e à reciclagem",
-      "Decreto nº 10.936/2022 — incentivo à economia circular",
-    ],
+    foto: {
+      src: "/fotos/produto_necessaire.jpg",
+      alt: "Necessaire confeccionada a partir de uniforme corporativo reaproveitado",
+    },
     seo: {
-      title: "Produtos sustentáveis de resíduo têxtil | Nunes e Lucato",
+      title: "Upcycling têxtil e brindes corporativos sustentáveis",
       description:
-        "Desenvolvimento de produtos sustentáveis a partir do seu resíduo têxtil: ecobags, tapetes, lixeiras e brindes corporativos personalizados.",
+        "Transformação do seu resíduo têxtil em ecobags, necessaires e brindes corporativos, com QR Code de rastreabilidade e confecção por artesãs.",
+    },
+  },
+  {
+    slug: "coleta-pos-consumo-take-back",
+    numero: "06",
+    titulo: "Programas de coleta pós-consumo",
+    curto: "Pós-consumo",
+    beneficio:
+      "Sua marca recebe de volta o que vendeu, com ponto de coleta em loja e campanha de take-back.",
+    dor: "A responsabilidade pelo ciclo de vida não termina na venda, e o consumidor já pergunta o que fazer com a peça velha. Sem canal de retorno, a resposta é o lixo comum.",
+    solucao:
+      "Estruturamos o ponto de entrega voluntária na sua loja, a logística de recolhimento e a comunicação da campanha. O material recebido entra na nossa cadeia de triagem e destinação.",
+    entregas: [
+      "Implantação de ponto de entrega voluntária",
+      "Logística de recolhimento periódico",
+      "Material de comunicação da campanha",
+      "Relatório de volume por ponto",
+    ],
+    paraQuem: [
+      "Marcas de moda com rede de lojas",
+      "Varejo de vestuário",
+      "Shoppings e redes de franquia",
+    ],
+    icone: "pev",
+    confirmar: true,
+    seo: {
+      title: "Programa de coleta pós-consumo e take-back para marcas",
+      description:
+        "Ponto de entrega voluntária em loja, logística de recolhimento e campanha de take-back para marcas de moda e varejo de vestuário.",
+    },
+  },
+  {
+    slug: "relatorios-impacto-esg",
+    numero: "07",
+    titulo: "Relatórios de impacto e documentação para ESG",
+    curto: "Relatórios e ESG",
+    beneficio:
+      "Você reporta números auditáveis, com a documentação que sustenta cada linha do relatório.",
+    dor: "Na hora de reportar, o dado de resíduo aparece estimado ou não aparece. Auditoria pede comprovação e a planilha não tem lastro documental.",
+    solucao:
+      "Consolidamos volume, rota de destinação e aproveitamento por período, amarrados aos documentos de cada coleta. O material sai pronto para relatório de sustentabilidade, auditoria e renovação de licença.",
+    entregas: [
+      "Relatório periódico de volume e destino",
+      "Documentação amarrada a cada coleta",
+      "Indicadores para relatório de sustentabilidade",
+      "Apoio na elaboração e revisão do PGRS",
+    ],
+    paraQuem: [
+      "Gerências de ESG e sustentabilidade",
+      "Meio ambiente e SGI",
+      "Suprimentos e facilities",
+    ],
+    icone: "documento",
+    foto: {
+      src: "/fotos/confeccao_denim.jpg",
+      alt: "Detalhe de costura em peça de denim recuperado na unidade de transformação",
+    },
+    seo: {
+      title: "Relatórios de impacto e documentação ESG de resíduo têxtil",
+      description:
+        "Relatório de volume, rota de destinação e aproveitamento com lastro documental para auditoria, licença ambiental e relatório de sustentabilidade.",
     },
   },
 ];
@@ -214,3 +265,34 @@ export const servicos: Servico[] = [
 export function servicoPorSlug(slug: string): Servico | undefined {
   return servicos.find((s) => s.slug === slug);
 }
+
+/**
+ * Rotas antigas -> novas. As URLs anteriores podem estar indexadas, então cada
+ * uma ganha redirect 301 em next.config.ts (nunca 302: 301 transfere autoridade).
+ */
+export const redirecionamentos: { de: string; para: string }[] = [
+  {
+    de: "/servicos/coleta-seletiva-textil",
+    para: "/servicos/logistica-reversa-residuo-textil-industrial",
+  },
+  {
+    de: "/servicos/gestao-residuos-texteis-logistica-reversa",
+    para: "/servicos/logistica-reversa-residuo-textil-industrial",
+  },
+  {
+    de: "/servicos/descarte-reciclagem-uniformes",
+    para: "/servicos/logistica-reversa-uniformes-epi",
+  },
+  {
+    de: "/servicos/desenvolvimento-produtos-sustentaveis",
+    para: "/servicos/upcycling-brindes-corporativos",
+  },
+  {
+    de: "/servicos/pgrs-plano-gerenciamento-residuos-solidos",
+    para: "/servicos/relatorios-impacto-esg",
+  },
+  {
+    de: "/servicos/consultoria-gestao-ambiental-sustentabilidade",
+    para: "/servicos/relatorios-impacto-esg",
+  },
+];

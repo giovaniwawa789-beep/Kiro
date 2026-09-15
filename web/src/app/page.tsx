@@ -1,34 +1,34 @@
 import Hero from "@/components/secoes/Hero";
-import QuemSomos from "@/components/secoes/QuemSomos";
-import Servicos from "@/components/secoes/Servicos";
+import FaixaCredibilidade from "@/components/secoes/FaixaCredibilidade";
+import Vitrine from "@/components/secoes/Vitrine";
+import Destinos from "@/components/secoes/Destinos";
+import ComoFunciona from "@/components/secoes/ComoFunciona";
 import Impactos from "@/components/secoes/Impactos";
-import Destinacao from "@/components/secoes/Destinacao";
-import QuemConfia from "@/components/secoes/QuemConfia";
-import Projetos from "@/components/secoes/Projetos";
-import Produtos from "@/components/secoes/Produtos";
-import FunilVip from "@/components/secoes/FunilVip";
-import Faq from "@/components/secoes/Faq";
+import Cases from "@/components/secoes/Cases";
+import Segmentos from "@/components/secoes/Segmentos";
+import Conformidade from "@/components/secoes/Conformidade";
 import CtaFinal from "@/components/secoes/CtaFinal";
 
 /**
- * Ordem da página: identidade, quem somos, o que fazemos, prova quantitativa,
- * o argumento técnico, prova social, casos, produtos, pedido, dúvidas, conversão.
+ * Ordem da home, conforme o briefing:
+ * dor → prova social → vitrine → destino do material → processo → números →
+ * cases → segmentos → conformidade compacta → conversão.
  *
- * Prova antes do pedido: Impactos e Projetos vêm antes do funil de consultoria.
+ * A lógica: o visitante entende o que vendemos antes de qualquer explicação
+ * técnica, e a conformidade entra no fim como reforço de compra, não como aula.
  */
 export default function Home() {
   return (
     <>
       <Hero />
-      <QuemSomos />
-      <Servicos />
+      <FaixaCredibilidade />
+      <Vitrine />
+      <Destinos />
+      <ComoFunciona />
       <Impactos />
-      <Destinacao />
-      <QuemConfia />
-      <Projetos />
-      <Produtos />
-      <FunilVip />
-      <Faq />
+      <Cases />
+      <Segmentos />
+      <Conformidade />
       <CtaFinal />
     </>
   );

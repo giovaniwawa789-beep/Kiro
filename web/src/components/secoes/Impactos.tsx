@@ -1,50 +1,39 @@
 import Image from "next/image";
+import { numerosImpacto } from "@/content/impacto";
 import { asset } from "@/lib/asset";
-import { resultados } from "@/content/credibilidade";
+import BlocoNumeros from "@/components/ui/BlocoNumeros";
 
 /**
- * "Impactos": foto da operação à esquerda, números grandes à direita, cada um
- * separado por régua fina — o padrão de prova quantitativa do setor.
+ * Impacto em números.
  *
- * Todos os números têm origem rastreável em `content/credibilidade.ts`.
+ * Os números ambientais calculados (CO₂, água) exigem metodologia declarada
+ * junto. Sem memória de cálculo, o dado não sobe: é o primeiro item que um
+ * comprador de ESG questiona, e errar aqui contamina a credibilidade do resto.
  */
 export default function Impactos() {
   return (
-    <section id="impactos" className="bg-creme py-20 md:py-28">
+    <section id="impactos" className="bg-branco py-20 md:py-28">
       <div className="shell">
-        <p className="rotulo text-center">Resultados verificáveis</p>
-        <h2 className="display mt-3 text-center">Impactos</h2>
+        <p className="rotulo">Impacto</p>
+        <h2 className="display mt-3 max-w-[24ch]">
+          Números que sua empresa pode reportar
+        </h2>
+        <p className="mt-6 max-w-[56ch] text-[17px] leading-relaxed text-corpo">
+          Todo dado aqui tem origem rastreável. O que ainda não temos aparece
+          marcado — preferimos a lacuna visível a um número que não se sustenta
+          em auditoria.
+        </p>
 
-        <div className="mt-12 grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.25fr] lg:gap-16">
           <Image
             src={asset("/fotos/artesa_costura.jpg")}
             alt="Artesã costurando peça em máquina industrial na unidade de transformação"
             width={1200}
             height={800}
-            sizes="(max-width: 1024px) 90vw, 52vw"
-            className="h-auto w-full rounded-xl"
+            sizes="(max-width: 1024px) 92vw, 42vw"
+            className="h-auto w-full rounded-2xl object-cover"
           />
-
-          <dl>
-            {resultados.map((r, i) => (
-              <div
-                key={r.rotulo}
-                className={
-                  i === 0
-                    ? "pb-6"
-                    : "border-t border-regua pt-6 pb-6 last:pb-0"
-                }
-              >
-                <dt className="font-display text-[clamp(2.6rem,6vw,4.2rem)] font-extrabold leading-none tracking-[-0.04em] text-indigo-esc">
-                  {r.valor}
-                  <span className="text-indigo">{r.unidade}</span>
-                </dt>
-                <dd className="mt-2 max-w-[34ch] text-[14px] leading-snug text-corpo">
-                  {r.rotulo}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <BlocoNumeros numeros={numerosImpacto} colunas={2} />
         </div>
       </div>
     </section>

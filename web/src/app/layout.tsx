@@ -5,6 +5,8 @@ import { site } from "@/content/site";
 import { servicos } from "@/content/servicos";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BotaoWhatsApp from "@/components/BotaoWhatsApp";
+import Rastreio from "@/components/Rastreio";
 
 /* Montserrat é a fonte institucional dos materiais da Nunes e Lucato. */
 const montserrat = Montserrat({
@@ -18,27 +20,27 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default:
-      "Nunes e Lucato | Gestão de resíduos têxteis, PGRS e consultoria ambiental",
+      "Nunes e Lucato | Logística reversa e reciclagem de resíduo têxtil",
     template: "%s | Nunes e Lucato",
   },
   description:
-    "Consultoria ambiental têxtil para indústrias e confecções: PGRS, gestão de resíduos têxteis, logística reversa têxtil, coleta seletiva têxtil e reciclagem de uniformes.",
+    "Coleta e destinação de resíduo têxtil para indústrias, marcas e grandes bases de uniforme. O material volta ao mercado como matéria-prima ou produto, com MTR e certificado de destinação.",
   keywords: [
-    "gestão de resíduos têxteis",
-    "PGRS",
-    "logística reversa têxtil",
-    "consultoria ambiental têxtil",
-    "reciclagem de uniformes",
-    "coleta seletiva têxtil",
+    "logística reversa de resíduo têxtil",
+    "reciclagem de resíduo têxtil",
+    "descarte de uniformes",
+    "destinação de resíduo têxtil São Paulo",
+    "coleta de resíduo têxtil industrial",
+    "upcycling têxtil corporativo",
   ],
   authors: [{ name: site.nomeCompleto }],
   openGraph: {
     type: "website",
     locale: "pt_BR",
     siteName: site.nomeCompleto,
-    title: "Gestão ambiental têxtil, do diagnóstico ao resíduo zero",
+    title: "Seu resíduo têxtil não precisa terminar em aterro",
     description:
-      "Adequação legal e destinação correta dos resíduos têxteis da sua produção, com rastreabilidade completa.",
+      "Coletamos o resíduo da sua produção, uniformes e estoque, devolvemos o material ao mercado e entregamos a documentação que sua auditoria pede.",
     url: site.url,
   },
   twitter: { card: "summary_large_image" },
@@ -54,6 +56,23 @@ function DadosEstruturados() {
   const json = {
     "@context": "https://schema.org",
     "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${site.url}/#organizacao`,
+        name: site.nomeCompleto,
+        legalName: site.razaoSocial,
+        url: site.url,
+        description: site.descricao,
+        taxID: site.contato.cnpj,
+        email: site.contato.email,
+        areaServed: { "@type": "State", name: "São Paulo" },
+        knowsAbout: [
+          "logística reversa de resíduo têxtil",
+          "reciclagem de resíduo têxtil",
+          "descarte de uniformes",
+          "destinação de resíduo têxtil",
+        ],
+      },
       {
         "@type": "LocalBusiness",
         "@id": `${site.url}/#empresa`,
@@ -81,7 +100,7 @@ function DadosEstruturados() {
         "@type": "Service",
         "@id": `${site.url}/servicos/${s.slug}#servico`,
         name: s.titulo,
-        description: s.resumo,
+        description: s.beneficio,
         url: `${site.url}/servicos/${s.slug}`,
         serviceType: s.titulo,
         provider: { "@id": `${site.url}/#empresa` },
@@ -115,6 +134,8 @@ export default function RootLayout({
         <Navbar />
         <main id="conteudo">{children}</main>
         <Footer />
+        <BotaoWhatsApp />
+        <Rastreio />
         <DadosEstruturados />
       </body>
     </html>

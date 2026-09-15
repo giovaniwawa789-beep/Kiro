@@ -36,6 +36,9 @@ export const site = {
     sinir: "39087", // TODO: confirmar com o cliente
     /** Perfil no MTR Nacional. Confirmado no deck de MTR: Transportador. */
     perfilMtr: "Transportador",
+    /** Área de cobertura da operação. */
+    cobertura:
+      "São Paulo capital e região metropolitana. Demais regiões avaliadas por volume e logística.", // TODO: confirmar com o cliente
     responsavel: "Ana Paola Nunes Lucato",
   },
 
@@ -46,9 +49,10 @@ export const site = {
 
   navegacao: [
     { rotulo: "Serviços", href: "/#servicos" },
-    { rotulo: "Produtos", href: "/#produtos" },
+    { rotulo: "Destinos", href: "/#destinos" },
+    { rotulo: "Segmentos", href: "/#segmentos" },
     { rotulo: "Sobre", href: "/sobre" },
-    { rotulo: "Contato", href: "/contato" },
+    { rotulo: "Orçamento", href: "/contato" },
   ],
 
   /**

@@ -1,55 +1,44 @@
-import Link from "next/link";
 import { site, linkWhatsApp } from "@/content/site";
-import Padrao from "@/components/ui/Padrao";
+import FormularioOrcamento from "@/components/FormularioOrcamento";
 
 /**
- * Bloco final de conversão: painel índigo cheio, com o padrão da marca ao fundo.
- * Ancora na dor concreta (fiscalização) em vez de convite genérico.
+ * Conversão final: formulário curto de orçamento com o WhatsApp ao lado.
+ * Quem já decidiu vai para o WhatsApp; quem precisa registrar internamente
+ * usa o formulário.
  */
 export default function CtaFinal() {
   return (
-    <section id="contato-cta" className="bg-branco pb-20 md:pb-28">
-      <div className="shell">
-        <div className="relative overflow-hidden rounded-3xl bg-indigo-esc px-8 py-14 md:px-16 md:py-20">
-          <div className="absolute inset-0 opacity-25">
-            <Padrao />
-          </div>
+    <section id="orcamento" className="bg-branco py-20 md:py-28">
+      <div className="shell grid grid-cols-1 gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div>
+          <p className="rotulo">Orçamento</p>
+          <h2 className="display mt-3 max-w-[20ch]">
+            Vamos calcular o seu volume
+          </h2>
+          <p className="mt-6 max-w-[44ch] text-[17px] leading-relaxed text-corpo">
+            Informe o tipo de material, o volume mensal e a cidade da unidade.
+            Voltamos com frequência de coleta, rota de destinação e o que você
+            recebe de documentação.
+          </p>
 
-          <div className="relative text-center">
-            <h2 className="mx-auto max-w-[26ch] text-[clamp(1.9rem,4.4vw,3.1rem)] text-branco">
-              Numa fiscalização, o seu resíduo tem documento?
-            </h2>
-            <p className="mx-auto mt-6 max-w-[52ch] text-[16px] leading-relaxed text-branco/80">
-              O diagnóstico responde três coisas: em que você está irregular,
-              quanto material está sendo perdido e o que dele pode voltar como
-              produto.
-            </p>
+          <a
+            href={linkWhatsApp(
+              "Olá! Quero um orçamento de coleta de resíduo têxtil.",
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cta="cta-final-whatsapp"
+            className="pilula pilula-indigo mt-8"
+          >
+            Prefiro falar no WhatsApp
+          </a>
 
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href={linkWhatsApp(
-                  "Olá! Gostaria de solicitar um diagnóstico de resíduos têxteis para a minha empresa.",
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pilula pilula-branca"
-              >
-                Solicitar diagnóstico
-              </a>
-              <Link
-                href="/contato"
-                className="pilula border-[1.5px] border-branco/40 text-branco transition-colors hover:bg-branco/10"
-              >
-                Enviar mensagem
-              </Link>
-            </div>
-
-            <p className="mt-8 text-[13px] text-branco/60">
-              Cadastro no SINIR {site.contato.sinir} como{" "}
-              {site.contato.perfilMtr} · CNPJ {site.contato.cnpj}
-            </p>
-          </div>
+          <p className="mt-10 text-[13.5px] leading-relaxed text-suave">
+            {site.contato.cobertura}
+          </p>
         </div>
+
+        <FormularioOrcamento />
       </div>
     </section>
   );
